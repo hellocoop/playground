@@ -118,9 +118,10 @@
           <h2>Standard</h2>
           <ul class="space-y-2 mt-2">
             {#each scopes.standard as scope}
-              <li class="flex items-center">
+              {@const required = scopes.required.includes(scope)}
+              <li class="flex items-center" class:text-red-500={required && !states.scopes.includes(scope)}>
                 <input type="checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
-                <label for={scope} class="ml-2">{scope} {scopes.required.includes(scope) ? '*' : ''}</label>
+                <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
               </li>
             {/each}
           </ul>
@@ -129,7 +130,11 @@
           <h2>Custom</h2>
           <ul class="space-y-2 mt-2">
             {#each scopes.custom as scope}
-              <li class="flex items-center">
+              {@const required = scopes.required.includes(scope)}
+              <li
+                class="flex items-center"
+                class:text-red-500={required && !states.scopes.includes(scope)}
+              >
                 <input type="checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope}</label>
               </li>
@@ -143,26 +148,27 @@
       <h1 class="font-semibold">Query Params (* required)</h1>
       <div class="mt-2">
         <ul class="space-y-2 mt-2">
-          {#each Object.entries(queryParams.params) as [key, value]}
-            <li class="flex items-center">
+          {#each Object.entries(queryParams.params) as [scope, value]}
+            {@const required = queryParams.required.includes(scope)}
+            <li class="flex items-center" class:text-red-500={required && !states.query_params.includes(scope)}>
               <div class="w-2/5 inline-flex items-center">
-                <input type="checkbox" name={key} id={key} value={key} bind:group={states.query_params}>
-                <label for={key} class="ml-2">{key} {queryParams.required.includes(key) ? '*' : ''}</label>
+                <input type="checkbox" name={scope} id={scope} value={scope} bind:group={states.query_params}>
+                <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
               </div>
               {#if Array.isArray(value)}
                 <div class="h-8 px-3 w-full border border-charcoal flex items-center">
                   {#each value as ele}
                     <button
-                      on:click={()=>states.query_param_values[key]=ele} class="w-1/2"
-                      class:bg-charcoal={states.query_param_values[key] === ele}
-                      class:text-gray={states.query_param_values[key] === ele}
+                      on:click={()=>states.query_param_values[scope]=ele} class="w-1/2"
+                      class:bg-charcoal={states.query_param_values[scope] === ele}
+                      class:text-gray={states.query_param_values[scope] === ele}
                     >
                         {ele}
                     </button>
                   {/each}
                 </div>
               {:else}
-                <input type="text" name={key} class="h-8 w-full" bind:value={states.query_param_values[key]}>
+                <input type="text" name={scope} class="h-8 w-full" bind:value={states.query_param_values[scope]}>
               {/if}
             </li>
           {/each}
