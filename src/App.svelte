@@ -40,6 +40,14 @@
     }
   }
 
+  //detect chanes in state -> save to local storage
+  $: states, saveStatesToLocalStorage();
+
+  const saveStatesToLocalStorage = () => {
+    const _states = JSON.stringify(states)
+    localStorage.setItem('states', _states)
+  }
+
   const makeRequestURL = (authServer, scopes, queryParams) => {
     try {
       const url = new URL(authServer)
