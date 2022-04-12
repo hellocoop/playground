@@ -31,6 +31,7 @@
     query_params: ['client_id', 'redirect_uri', 'nonce'],
     query_param_values: {
       ...queryParams.params,
+      nonce: makeNonce(),
       response_mode: 'fragment',
       response_type: 'id_token',
       prompt: 'login'
@@ -45,12 +46,19 @@
   //detect chanes in state -> save to local storage
   $: states, saveStatesToLocalStorage();
 
-  const saveStatesToLocalStorage = () => {
+  function makeNonce(){
+    const nonce = crypto
+      .getRandomValues(new Uint32Array(2))
+      .reduce((a, b) => b.toString() + a.toString())
+    return nonce
+  }
+
+  function saveStatesToLocalStorage(){
     const _states = JSON.stringify(states)
     localStorage.setItem('states', _states)
   }
 
-  const makeRequestURL = (authServer, scopes, queryParams) => {
+  function makeRequestURL(authServer, scopes, queryParams){
     try {
       const url = new URL(authServer)
       if(scopes.length){
@@ -127,7 +135,12 @@
       </ul>
 
       <div class="bg-gray-200 p-4 break-words my-6">
-        <h2>Request URL</h2>
+        <h2 class="inline-flex items-center">
+          <span>Request URL</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </h2>
         <span class="mt-2 block text-sm whitespace-pre-line">
           {requestURL}
         </span>
@@ -175,7 +188,7 @@
         <ul class="space-y-2 mt-2">
           {#each Object.entries(queryParams.params) as [scope, value]}
             {@const required = queryParams.required.includes(scope)}
-            <li class="flex items-center" class:text-red-500={required && !states.query_params.includes(scope)}>
+            <li class="flex items-center relative" class:text-red-500={required && !states.query_params.includes(scope)}>
               <div class="w-2/5 inline-flex items-center">
                 <input type="checkbox" class="text-charcoal" name={scope} id={scope} value={scope} bind:group={states.query_params}>
                 <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
@@ -194,6 +207,13 @@
                 </div>
               {:else}
                 <input type="text" name={scope} class="h-8 w-full" bind:value={states.query_param_values[scope]}>
+                {#if scope === 'nonce'}
+                  <button on:click={()=>states.query_param_values.nonce = makeNonce()} class="absolute right-1 bg-charcoal p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 stroke-gray" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </button>
+                {/if}
               {/if}
             </li>
           {/each}
@@ -205,7 +225,12 @@
   <section>
     <button on:click={()=>states.cards.response=!states.cards.response} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-between items-center px-4"
       >
-      <span>Response</span>
+      <div class="inline-flex items-center">
+        <span>Response</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </div>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
         class:rotate-180={states.cards.response}
       >
@@ -219,7 +244,12 @@
 
   <section class="border border-charcoal dark:border-gray-800">
     <button on:click={()=>states.cards.payload=!states.cards.payload} class="h-12 w-full flex justify-between items-center px-4">
-     <span>Payload</span>
+      <div class="inline-flex items-center">
+        <span>Payload</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </div>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
         class:rotate-180={states.cards.payload}
       >
@@ -259,7 +289,12 @@
   <section>
     <button on:click={()=>states.cards.claims=!states.cards.claims} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-between items-center px-4"
     >
-      <span>Claims</span>
+      <div class="inline-flex items-center">
+        <span>Claims</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </div>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
         class:rotate-180={states.cards.claims}
       >
