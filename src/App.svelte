@@ -4,6 +4,22 @@
     custom: ['profile_update'],
     required: ['openid']
   }
+
+  const queryParams = {
+    params: {
+      client_id: '',
+      redirect_uri: '',
+      response_mode: ['fragment', 'query'],
+      response_type: ['code', 'id_token'],
+      code_challenge: '',
+      code_verifier: '',
+      prompt: ['login', 'profile_update'],
+      nonce: '',
+      login_hint: '',
+      state: ''
+    },
+    required: ['client_id', 'redirect_uri', 'nonce']
+  }
 </script>
 
 <header class="bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-xl">
@@ -77,85 +93,23 @@
       <h1 class="font-semibold">Query Params (* required)</h1>
       <div class="mt-2">
         <ul class="space-y-2 mt-2">
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">client_id *</label>
-            </div>
-            <input type="text" name="client_id" class="h-8 w-full">
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">redirect_uri *</label>
-            </div>
-            <input type="text" name="client_id" class="h-8 w-full">
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">response_mode</label>
-            </div>
-            <div class="h-8 px-3 w-full border border-charcoal flex items-center">
-              <button class="bg-charcoal text-gray w-1/2">fragment</button>
-              <button class="w-1/2">query</button>
-            </div>
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">response_type</label>
-            </div>
-            <div class="h-8 px-3 w-full border border-charcoal flex items-center">
-              <button class="bg-charcoal text-gray w-1/2">code</button>
-              <button class="w-1/2">id_token</button>
-            </div>
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">code_challenge</label>
-            </div>
-            <input type="text" name="client_id" class="h-8 w-full">
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">code_verifier</label>
-            </div>
-            <input type="text" name="client_id" class="h-8 w-full">
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">prompt</label>
-            </div>
-            <div class="h-8 px-3 w-full border border-charcoal flex items-center">
-              <button class="bg-charcoal text-gray w-1/2">login</button>
-              <button class="w-1/2">profile_update</button>
-            </div>
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">nonce *</label>
-            </div>
-            <input type="text" name="client_id" class="h-8 w-full">
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">login_hint</label>
-            </div>
-            <input type="text" name="client_id" class="h-8 w-full">
-          </li>
-          <li class="flex items-center">
-            <div class="w-2/5 inline-flex items-center">
-              <input type="checkbox" name="client_id" id="client_id">
-              <label for="client_id" class="ml-2">state</label>
-            </div>
-            <input type="text" name="client_id" class="h-8 w-full">
-          </li>
+          {#each Object.entries(queryParams.params) as [key, value]}
+            <li class="flex items-center">
+              <div class="w-2/5 inline-flex items-center">
+                <input type="checkbox" name="client_id" id="client_id">
+                <label for="client_id" class="ml-2">{key} {queryParams.required.includes(key) ? '*' : ''}</label>
+              </div>
+              {#if Array.isArray(value)}
+                <div class="h-8 px-3 w-full border border-charcoal flex items-center">
+                  {#each value as ele}
+                    <button class="w-1/2">{ele}</button>
+                  {/each}
+                </div>
+              {:else}
+                <input type="text" name="client_id" class="h-8 w-full">
+              {/if}
+            </li>
+          {/each}
         </ul>
       </div>
     </div>
