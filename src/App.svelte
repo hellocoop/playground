@@ -1,5 +1,24 @@
 <script>
+  import {onMount} from 'svelte'
   import Prism from 'svelte-prism'
+
+  let onMountDone = false
+
+  onMount(()=>{
+    getStatesFromLocalStorage()
+    onMountDone = true
+  })
+
+  function getStatesFromLocalStorage(){
+    if(!localStorage.states) return;
+    try{
+      const _states = JSON.parse(localStorage.getItem('states'))
+      states = _states
+    } catch(err){
+      console.error(err)
+      localStorage.clear()
+    }
+  }
 
   const scopes = {
     standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
@@ -24,7 +43,7 @@
   }
 
   //default values, also binds to user input
-  const states = {
+  let states = {
     auth_server: 'https://consent.hello.coop/',
     custom_auth_server: '',
     scopes: ['openid'],
@@ -54,6 +73,7 @@
   }
 
   function saveStatesToLocalStorage(){
+    if(!onMountDone) return
     const _states = JSON.stringify(states)
     localStorage.setItem('states', _states)
   }
