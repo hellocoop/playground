@@ -32,6 +32,11 @@
       response_mode: 'fragment',
       response_type: 'id_token',
       prompt: 'login'
+    },
+    cards: {
+      response: false,
+      payload: false,
+      claims: false
     }
   }
 
@@ -178,21 +183,30 @@
   </section>
 
   <section>
-    <button class="border border-charcoal h-12 w-full flex justify-start items-center px-4">
+    <button on:click={()=>states.cards.response=!states.cards.response} class="border border-charcoal h-12 w-full flex justify-start items-center px-4">
       Response
     </button>
+    {#if states.cards.response}
+      asdf
+    {/if}
   </section>
 
   <section>
-    <button class="border border-charcoal h-12 w-full flex justify-start items-center px-4">
+    <button on:click={()=>states.cards.payload=!states.cards.payload} class="border border-charcoal h-12 w-full flex justify-start items-center px-4">
       Payload
     </button>
+    {#if states.cards.payload}
+      asdf
+    {/if}
   </section>
 
   <section>
-    <button class="border border-charcoal h-12 w-full flex justify-start items-center px-4">
+    <button on:click={()=>states.cards.claims=!states.cards.claims} class="border border-charcoal h-12 w-full flex justify-start items-center px-4">
       Claims
     </button>
+    {#if states.cards.claims}
+      asdf
+    {/if}
   </section>
 </main>
 
