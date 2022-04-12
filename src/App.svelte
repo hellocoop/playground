@@ -20,6 +20,28 @@
     },
     required: ['client_id', 'redirect_uri', 'nonce']
   }
+
+  //default states, also binds to user input
+  const states = {
+    auth_server: 'https://consent.hello.coop/',
+    scopes: []
+  }
+
+  const makeRequestURL = (authServer, scopes, queryParams) => {
+    try {
+      const url = new URL(authServer)
+      if(scopes.length){
+        const _scopes = scopes.toString().replace(/,/g, ' ') //array of scopes to string separated by space
+        url.searchParams.set('scopes', _scopes)
+      }
+      return url
+    } catch(err){
+      console.info(err)
+      return 'Invalid URL'
+    }
+  }
+
+  $: requestURL = makeRequestURL(states.auth_server, states.scopes)
 </script>
 
 <header class="bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-xl">
@@ -48,13 +70,7 @@
       <div class="bg-gray-200 p-4 break-words my-6">
         <h2>Request URL</h2>
         <span class="mt-2 block text-sm">
-          https://consent.hello.coop/
-          ?client_id=3574f001-0874-4b20-bffd-8f3e37634274
-          &redirect_uri=https://playground.hello.dev
-          &response_mode=fragment
-          &response_type=code
-          &nonce=28063994681536845045
-          &scope=email+picture+openid
+          {requestURL}
         </span>
       </div>
 
@@ -69,7 +85,7 @@
           <ul class="space-y-2 mt-2">
             {#each scopes.standard as scope}
               <li class="flex items-center">
-                <input type="checkbox" name={scope} id={scope}>
+                <input type="checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope} {scopes.required.includes(scope) ? '*' : ''}</label>
               </li>
             {/each}
@@ -80,7 +96,7 @@
           <ul class="space-y-2 mt-2">
             {#each scopes.custom as scope}
               <li class="flex items-center">
-                <input type="checkbox" name={scope} id={scope}>
+                <input type="checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope}</label>
               </li>
             {/each}
