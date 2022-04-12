@@ -66,7 +66,9 @@
 
 <header class="bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-xl">
   <span>Hellō</span>
-  <span>Playground</span>
+  <span>
+    <img src="logo.svg" alt="Hellō Playground">
+  </span>
   <span>Links</span>
 </header>
 
