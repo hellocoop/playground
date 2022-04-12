@@ -85,6 +85,7 @@
             name="auth_servers"
             value="https://consent.hello.coop/"
             id="consent.hello.coop"
+            class="text-charcoal"
             bind:group={states.auth_server}
           >
           <label for="consent.hello.coop" class="ml-2 w-full flex justify-between items-center">
@@ -97,13 +98,14 @@
             type="radio"
             name="auth_servers"
             value={states.custom_auth_server}
+            class="text-charcoal"
             id="consent.hello.coop"
             bind:group={states.auth_server}
           >
           <input
             bind:value={states.custom_auth_server}
             on:input={e=>states.auth_server=e.target.value} type="url" name="custom"
-            class="h-8 ml-2 w-full" placeholder="eg http:/example.com:9000/"
+            class="h-8 ml-2 w-full text-charcoal" placeholder="eg http:/example.com:9000/"
           >
         </li>
       </ul>
@@ -127,7 +129,7 @@
             {#each scopes.standard as scope}
               {@const required = scopes.required.includes(scope)}
               <li class="flex items-center" class:text-red-500={required && !states.scopes.includes(scope)}>
-                <input type="checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
+                <input type="checkbox" class="text-charcoal" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
               </li>
             {/each}
@@ -142,7 +144,7 @@
                 class="flex items-center"
                 class:text-red-500={required && !states.scopes.includes(scope)}
               >
-                <input type="checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
+                <input type="checkbox" class="text-charcoal" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope}</label>
               </li>
             {/each}
@@ -159,7 +161,7 @@
             {@const required = queryParams.required.includes(scope)}
             <li class="flex items-center" class:text-red-500={required && !states.query_params.includes(scope)}>
               <div class="w-2/5 inline-flex items-center">
-                <input type="checkbox" name={scope} id={scope} value={scope} bind:group={states.query_params}>
+                <input type="checkbox" class="text-charcoal" name={scope} id={scope} value={scope} bind:group={states.query_params}>
                 <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
               </div>
               {#if Array.isArray(value)}
