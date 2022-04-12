@@ -1,3 +1,11 @@
+<script>
+  const scopes = {
+    standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
+    custom: ['profile_update'],
+    required: ['openid']
+  }
+</script>
+
 <header class="bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-xl">
   <span>Hellō</span>
   <span>Playground</span>
@@ -43,47 +51,23 @@
         <div class="w-1/2">
           <h2>Standard</h2>
           <ul class="space-y-2 mt-2">
-            <li class="flex items-center">
-              <input type="checkbox" name="openid" id="openid">
-              <label for="openid" class="ml-2">openid *</label>
-            </li>
-            <li class="flex items-center">
-              <input type="checkbox" name="" id="consent.hello.coop">
-              <label for="consent.hello.coop" class="ml-2">name</label>
-            </li>
-            <li class="flex items-center">
-              <input type="checkbox" name="nickname" id="nickname">
-              <label for="nickname" class="ml-2">nickname</label>
-            </li>
-            <li class="flex items-center">
-              <input type="checkbox" name="given_name" id="given_name">
-              <label for="given_name" class="ml-2">given_name</label>
-            </li>
-            <li class="flex items-center">
-              <input type="checkbox" name="family_name" id="family_name">
-              <label for="family_name" class="ml-2">family_name</label>
-            </li>
-            <li class="flex items-center">
-              <input type="checkbox" name="email" id="email">
-              <label for="email" class="ml-2">email</label>
-            </li>
-            <li class="flex items-center">
-              <input type="checkbox" name="phone" id="phone">
-              <label for="phone" class="ml-2">phone</label>
-            </li>
-            <li class="flex items-center">
-              <input type="checkbox" name="picture" id="picture">
-              <label for="picture" class="ml-2">picture</label>
-            </li>
+            {#each scopes.standard as scope}
+              <li class="flex items-center">
+                <input type="checkbox" name={scope} id={scope}>
+                <label for={scope} class="ml-2">{scope} {scopes.required.includes(scope) ? '*' : ''}</label>
+              </li>
+            {/each}
           </ul>
         </div>
         <div class="w-1/2">
           <h2>Custom</h2>
           <ul class="space-y-2 mt-2">
-            <li class="flex items-center">
-              <input type="checkbox" name="" id="consent.hello.coop">
-              <label for="consent.hello.coop" class="ml-2">profile_update</label>
-            </li>
+            {#each scopes.custom as scope}
+              <li class="flex items-center">
+                <input type="checkbox" name={scope} id={scope}>
+                <label for={scope} class="ml-2">{scope}</label>
+              </li>
+            {/each}
           </ul>
         </div>
       </div>
