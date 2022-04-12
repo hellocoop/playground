@@ -74,7 +74,7 @@
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
 </script>
 
-<header class="bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-xl">
+<header class="flex-shrink-0 bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-xl">
   <span class="w-1/3">Hellō</span>
   <span class="block w-1/3 flex justify-center">
     <img src="logo.svg" alt="Hellō Playground">
@@ -88,7 +88,7 @@
   </div>
 </header>
 
-<main class="p-4 space-y-4">
+<main class="p-4 space-y-4 flex-1 overflow-y-auto">
   <section class="border border-charcoal dark:border-gray-800 w-full p-4 flex items-start space-x-12">
    
     <div class="w-1/5">
@@ -272,6 +272,4 @@
   </section>
 </main>
 
-<div class="fixed bottom-0 w-full">
-  <wc-footer/>
-</div>
+<wc-footer/>
