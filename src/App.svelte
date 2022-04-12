@@ -1,4 +1,6 @@
 <script>
+  import Prism from 'svelte-prism'
+
   const scopes = {
     standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
     custom: ['profile_update'],
@@ -215,8 +217,8 @@
     {/if}
   </section>
 
-  <section>
-    <button on:click={()=>states.cards.payload=!states.cards.payload} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-between items-center px-4">
+  <section class="border border-charcoal dark:border-gray-800">
+    <button on:click={()=>states.cards.payload=!states.cards.payload} class="h-12 w-full flex justify-between items-center px-4">
      <span>Payload</span>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
         class:rotate-180={states.cards.payload}
@@ -225,7 +227,32 @@
       </svg>
     </button>
     {#if states.cards.payload}
-      asdf
+      <Prism language="javascript">
+        {`
+          {
+              "glossary": {
+                  "title": "example glossary",
+              "GlossDiv": {
+                      "title": "S",
+                "GlossList": {
+                          "GlossEntry": {
+                              "ID": "SGML",
+                    "SortAs": "SGML",
+                    "GlossTerm": "Standard Generalized Markup Language",
+                    "Acronym": "SGML",
+                    "Abbrev": "ISO 8879:1986",
+                    "GlossDef": {
+                                  "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                      "GlossSeeAlso": ["GML", "XML"]
+                              },
+                    "GlossSee": "markup"
+                          }
+                      }
+                  }
+              }
+          }
+        `}
+      </Prism>
     {/if}
   </section>
 
