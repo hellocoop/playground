@@ -1,4 +1,5 @@
 module.exports = {
+  jit: 'media',
   content: [
     "./index.html",
     "./src/**/*.{svelte,js,ts,html}",
