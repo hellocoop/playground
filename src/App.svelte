@@ -21,10 +21,18 @@
     required: ['client_id', 'redirect_uri', 'nonce']
   }
 
+  //default values, also binds to user input
   const states = {
     auth_server: 'https://consent.hello.coop/',
     custom_auth_server: '',
-    scopes: []
+    scopes: ['openid'],
+    query_params: ['client_id', 'redirect_uri', 'nonce'],
+    query_param_values: {
+      ...queryParams.params,
+      response_mode: 'fragment',
+      response_type: 'id_token',
+      prompt: 'login'
+    }
   }
 
   const makeRequestURL = (authServer, scopes, queryParams) => {
@@ -34,6 +42,13 @@
         const _scopes = scopes.toString().replace(/,/g, ' ') //array of scopes to string separated by space
         url.searchParams.set('scopes', _scopes)
       }
+      if(queryParams.length){
+        for(const param of queryParams){
+          const query_param_value = states.query_param_values[param]
+          if(!query_param_value) continue;
+          url.searchParams.set(param, query_param_value)
+        }
+      }
       const lineBreakedURL = url.toString().replace(/&/g, '\n&').replace(/\?/g, '\n?')
       return lineBreakedURL
     } catch(err){
@@ -41,7 +56,7 @@
     }
   }
 
-  $: requestURL = makeRequestURL(states.auth_server, states.scopes)
+  $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
 </script>
 
 <header class="bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-xl">
@@ -131,17 +146,23 @@
           {#each Object.entries(queryParams.params) as [key, value]}
             <li class="flex items-center">
               <div class="w-2/5 inline-flex items-center">
-                <input type="checkbox" name="client_id" id="client_id">
-                <label for="client_id" class="ml-2">{key} {queryParams.required.includes(key) ? '*' : ''}</label>
+                <input type="checkbox" name={key} id={key} value={key} bind:group={states.query_params}>
+                <label for={key} class="ml-2">{key} {queryParams.required.includes(key) ? '*' : ''}</label>
               </div>
               {#if Array.isArray(value)}
                 <div class="h-8 px-3 w-full border border-charcoal flex items-center">
                   {#each value as ele}
-                    <button class="w-1/2">{ele}</button>
+                    <button
+                      on:click={()=>states.query_param_values[key]=ele} class="w-1/2"
+                      class:bg-charcoal={states.query_param_values[key] === ele}
+                      class:text-gray={states.query_param_values[key] === ele}
+                    >
+                        {ele}
+                    </button>
                   {/each}
                 </div>
               {:else}
-                <input type="text" name="client_id" class="h-8 w-full">
+                <input type="text" name={key} class="h-8 w-full" bind:value={states.query_param_values[key]}>
               {/if}
             </li>
           {/each}
