@@ -21,9 +21,9 @@
     required: ['client_id', 'redirect_uri', 'nonce']
   }
 
-  //default states, also binds to user input
   const states = {
     auth_server: 'https://consent.hello.coop/',
+    custom_auth_server: '',
     scopes: []
   }
 
@@ -34,9 +34,9 @@
         const _scopes = scopes.toString().replace(/,/g, ' ') //array of scopes to string separated by space
         url.searchParams.set('scopes', _scopes)
       }
-      return url
+      const lineBreakedURL = url.toString().replace(/&/g, '\n&').replace(/\?/g, '\n?')
+      return lineBreakedURL
     } catch(err){
-      console.info(err)
       return 'Invalid URL'
     }
   }
@@ -58,18 +58,37 @@
       
       <ul class="space-y-2 mt-2">
         <li class="flex items-center">
-          <input type="radio" name="consent.hello.coop" id="consent.hello.coop">
-          <label for="consent.hello.coop" class="ml-2">https://consent.hello.coop/ <span>(production)</span></label>
+          <input
+            type="radio"
+            name="auth_servers"
+            value="https://consent.hello.coop/"
+            id="consent.hello.coop"
+            bind:group={states.auth_server}
+          >
+          <label for="consent.hello.coop" class="ml-2 w-full flex justify-between items-center">
+            <span>https://consent.hello.coop/</span>
+            <span>(production)</span>
+          </label>
         </li>
         <li class="flex items-center">
-          <input type="radio" name="custom" id="consent.hello.coop">
-          <input type="url" name="custom" class="h-8 ml-2 w-full">
+          <input
+            type="radio"
+            name="auth_servers"
+            value={states.custom_auth_server}
+            id="consent.hello.coop"
+            bind:group={states.auth_server}
+          >
+          <input
+            bind:value={states.custom_auth_server}
+            on:input={e=>states.auth_server=e.target.value} type="url" name="custom"
+            class="h-8 ml-2 w-full" placeholder="eg http:/example.com:9000/"
+          >
         </li>
       </ul>
 
       <div class="bg-gray-200 p-4 break-words my-6">
         <h2>Request URL</h2>
-        <span class="mt-2 block text-sm">
+        <span class="mt-2 block text-sm whitespace-pre-line">
           {requestURL}
         </span>
       </div>
