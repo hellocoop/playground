@@ -193,8 +193,14 @@
   </section>
 
   <section>
-    <button on:click={()=>states.cards.response=!states.cards.response} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-start items-center px-4">
-      Response
+    <button on:click={()=>states.cards.response=!states.cards.response} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-between items-center px-4"
+      >
+      <span>Response</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+        class:rotate-180={states.cards.response}
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
     </button>
     {#if states.cards.response}
       asdf
@@ -202,8 +208,13 @@
   </section>
 
   <section>
-    <button on:click={()=>states.cards.payload=!states.cards.payload} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-start items-center px-4">
-      Payload
+    <button on:click={()=>states.cards.payload=!states.cards.payload} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-between items-center px-4">
+     <span>Payload</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+        class:rotate-180={states.cards.payload}
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
     </button>
     {#if states.cards.payload}
       asdf
@@ -211,8 +222,14 @@
   </section>
 
   <section>
-    <button on:click={()=>states.cards.claims=!states.cards.claims} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-start items-center px-4">
-      Claims
+    <button on:click={()=>states.cards.claims=!states.cards.claims} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-between items-center px-4"
+    >
+      <span>Claims</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+        class:rotate-180={states.cards.claims}
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
     </button>
     {#if states.cards.claims}
       asdf
