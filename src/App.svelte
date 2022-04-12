@@ -45,6 +45,7 @@
   //default values, also binds to user input
   let states = {
     auth_server: 'https://consent.hello.coop/',
+    auth_servers: [],
     custom_auth_server: '',
     scopes: ['openid'],
     query_params: ['client_id', 'redirect_uri', 'nonce'],
@@ -137,6 +138,19 @@
             <span>(production)</span>
           </label>
         </li>
+        {#each states.auth_servers as server}
+          <li class="flex items-center">
+            <input
+              type="radio"
+              name="auth_servers"
+              value={server}
+              id={server}
+              class="text-charcoal"
+              bind:group={states.auth_server}
+            >
+            <label for={server} class="ml-2 w-full">{server}</label>
+          </li>
+        {/each}
         <li class="flex items-center">
           <input
             type="radio"
@@ -166,7 +180,18 @@
         </span>
       </div>
 
-      <button class="hello-btn-dark">ō Continue with Hellō</button>
+      <button on:click={()=>{
+        try{
+          const url = new URL(states.custom_auth_server)
+          if(!states.auth_servers.includes(url)){
+            states.auth_servers = [...states.auth_servers, url]
+          } 
+        } catch{
+          console.error('Custom auth server endpoint not saved locally: Invalid URL')
+        } finally{
+          window.location.href = requestURL
+        }
+      }} class="hello-btn-dark">ō Continue with Hellō</button>
     </div>
 
     <div class="w-1/5">
