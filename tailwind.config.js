@@ -7,9 +7,13 @@ module.exports = {
     extend: {
       colors: {
         charcoal: '#303030',
-        gray: '#D4D4D4'
+        gray: {
+          DEFAULT: '#D4D4D4'
+        }
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms')
+  ],
 }
