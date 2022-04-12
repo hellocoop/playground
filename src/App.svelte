@@ -194,7 +194,9 @@
                 <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
               </div>
               {#if Array.isArray(value)}
-                <div class="h-8 px-3 w-full border border-charcoal dark:border-gray-800 flex items-center">
+                <div class="h-8 px-3 w-full border border-charcoal dark:border-gray-800 flex items-center"
+                 class:opacity-60={!states.query_params.includes(scope)}
+                >
                   {#each value as ele}
                     <button
                       on:click={()=>states.query_param_values[scope]=ele} class="w-1/2"
