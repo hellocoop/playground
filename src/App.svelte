@@ -188,10 +188,10 @@
         <ul class="space-y-2 mt-2">
           {#each Object.entries(queryParams.params) as [scope, value]}
             {@const required = queryParams.required.includes(scope)}
-            <li class="flex items-center relative" class:text-red-500={required && !states.query_params.includes(scope)}>
+            <li class="flex items-center relative">
               <div class="w-2/5 inline-flex items-center">
                 <input type="checkbox" class="text-charcoal" name={scope} id={scope} value={scope} bind:group={states.query_params}>
-                <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
+                <label for={scope} class="ml-2" class:text-red-500={required && !states.query_params.includes(scope)}>{scope} {required ? '*' : ''}</label>
               </div>
               {#if Array.isArray(value)}
                 <div class="h-8 px-3 w-full border border-charcoal dark:border-gray-800 flex items-center"
