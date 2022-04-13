@@ -7,6 +7,7 @@
 
   onMount(()=>{
     getStatesFromLocalStorage()
+    processIDToken()
     onMountDone = true
   })
 
@@ -47,6 +48,7 @@
     query_param_values: {
       ...queryParams.params,
       nonce: makeNonce(),
+      redirect_uri: window.location.origin,
       response_mode: 'fragment',
       response_type: 'id_token',
       prompt: 'login'
@@ -55,11 +57,41 @@
       response: false,
       payload: false,
       claims: false
-    }
+    },
+    response: '',
+    payload: '',
+    claims: ''
   }
 
   //detect chanes in state -> save to local storage
   $: states, saveStatesToLocalStorage();
+
+  async function processIDToken(){
+    const queryParams = new URLSearchParams(window.location.hash.substring(1))
+    const id_token = queryParams.get('id_token')
+    if(!id_token) return
+    states.response = window.location.hash
+    const introspectEndpoint = states.auth_server + '/oauth/introspect';
+    const params = {
+      client_id: states.query_param_values.client_id,
+      nonce: states.query_param_values.nonce,
+      token: id_token
+    };
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: { 'Content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(params).toString()
+    };
+    try{
+      const res = await fetch(introspectEndpoint, options);
+      const json = await res.json();
+      states.payload = json
+    } catch(err){
+      console.error(err)
+    }
+  }
 
   function makeNonce(){
     const nonce = crypto
@@ -90,7 +122,7 @@
       const url = new URL(authServer)
       if(scopes.length){
         const _scopes = scopes.toString().replace(/,/g, ' ') //array of scopes to string separated by space
-        url.searchParams.set('scopes', _scopes)
+        url.searchParams.set('scope', _scopes)
       }
       if(queryParams.length){
         for(const param of queryParams){
@@ -189,9 +221,10 @@
       <button on:click={()=>{
         try{
           const url = new URL(states.custom_auth_server)
-          if(!states.auth_servers.includes(url)){
+          if(!['https://consent.hello.coop/', ...states.auth_servers].includes(url.href)){
             states.auth_servers = [...states.auth_servers, url]
-          } 
+            states.custom_auth_server = ''
+          }
         } catch{
           console.error('Custom auth server endpoint not saved locally: Invalid URL')
         } finally{
@@ -302,8 +335,8 @@
     </div>
   </section>
 
-  <section>
-    <button on:click={()=>states.cards.response=!states.cards.response} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-between items-center px-4"
+  <section class="border border-charcoal dark:border-gray-800">
+    <button on:click={()=>states.cards.response=!states.cards.response} class="h-12 w-full flex justify-between items-center px-4"
       >
       <div class="inline-flex items-center">
         <span>Response</span>
@@ -317,8 +350,11 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
       </svg>
     </button>
+
     {#if states.cards.response}
-      asdf
+      <p class="p-4 break-words">
+          {states.response}
+      </p>
     {/if}
   </section>
 
@@ -338,30 +374,7 @@
     </button>
     {#if states.cards.payload}
       <Prism language="javascript">
-        {`
-          {
-              "glossary": {
-                  "title": "example glossary",
-              "GlossDiv": {
-                      "title": "S",
-                "GlossList": {
-                          "GlossEntry": {
-                              "ID": "SGML",
-                    "SortAs": "SGML",
-                    "GlossTerm": "Standard Generalized Markup Language",
-                    "Acronym": "SGML",
-                    "Abbrev": "ISO 8879:1986",
-                    "GlossDef": {
-                                  "para": "A meta-markup language, used to create markup languages such as DocBook.",
-                      "GlossSeeAlso": ["GML", "XML"]
-                              },
-                    "GlossSee": "markup"
-                          }
-                      }
-                  }
-              }
-          }
-        `}
+        {JSON.stringify(states.payload,null,2)}
       </Prism>
     {/if}
   </section>
