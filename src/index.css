@@ -1,7 +1,7 @@
 @tailwind base;
 
-button, input {
-	@apply rounded-sm !important;
+button {
+	@apply rounded-sm;
 }
 
 input[type=checkbox] {
@@ -9,4 +9,9 @@ input[type=checkbox] {
 }
 
 @tailwind components;
+
+.form-input, .form-checkbox {
+	@apply rounded-sm;
+}
+
 @tailwind utilities;

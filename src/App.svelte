@@ -130,7 +130,7 @@
             name="auth_servers"
             value="https://consent.hello.coop/"
             id="consent.hello.coop"
-            class="text-charcoal"
+            class="text-charcoal form-radio"
             bind:group={states.auth_server}
           >
           <label for="consent.hello.coop" class="ml-2 w-full flex justify-between items-center">
@@ -145,7 +145,7 @@
               name="auth_servers"
               value={server}
               id={server}
-              class="text-charcoal"
+              class="text-charcoal form-radio"
               bind:group={states.auth_server}
             >
             <label for={server} class="ml-2 w-full">{server}</label>
@@ -156,7 +156,7 @@
             type="radio"
             name="auth_servers"
             value={states.custom_auth_server}
-            class="text-charcoal"
+            class="text-charcoal form-radio"
             id="consent.hello.coop"
             bind:group={states.auth_server}
           >
@@ -203,7 +203,7 @@
             {#each scopes.standard as scope}
               {@const required = scopes.required.includes(scope)}
               <li class="flex items-center" class:text-red-500={required && !states.scopes.includes(scope)}>
-                <input type="checkbox" class="text-charcoal" name={scope} id={scope} value={scope} bind:group={states.scopes}>
+                <input type="checkbox" class="text-charcoal form-checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
               </li>
             {/each}
@@ -218,7 +218,7 @@
                 class="flex items-center"
                 class:text-red-500={required && !states.scopes.includes(scope)}
               >
-                <input type="checkbox" class="text-charcoal" name={scope} id={scope} value={scope} bind:group={states.scopes}>
+                <input type="checkbox" class="text-charcoal form-checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope}</label>
               </li>
             {/each}
@@ -235,7 +235,7 @@
             {@const required = queryParams.required.includes(scope)}
             <li class="flex items-center relative">
               <div class="w-2/5 inline-flex items-center">
-                <input type="checkbox" class="text-charcoal" name={scope} id={scope} value={scope} bind:group={states.query_params}>
+                <input type="checkbox" class="text-charcoal form-checkbox" name={scope} id={scope} value={scope} bind:group={states.query_params}>
                 <label
                   for={scope}
                   class="ml-2"
@@ -245,7 +245,7 @@
                 </label>
               </div>
               {#if Array.isArray(value)}
-                <div class="h-8 w-full border border-charcoal dark:border-gray-800 flex items-center"
+                <div class="h-8 w-full border border-charcoal dark:border-gray-800 flex items-center rounded-sm"
                  class:opacity-60={!states.query_params.includes(scope)}
                 >
                   {#each value as ele}
@@ -266,7 +266,7 @@
                       <button on:click={()=>states.query_param_values.client_id=456} class="text-sm underline ml-2">GreenfieldFitness</button>
                     </div>
                   {/if}
-                  <input type="text" name={scope} class="h-8 w-full" bind:value={states.query_param_values[scope]}>
+                  <input type="text" name={scope} class="h-8 w-full form-input" bind:value={states.query_param_values[scope]}>
                   {#if scope === 'nonce'}
                     <button on:click={()=>states.query_param_values.nonce = makeNonce()} class="absolute right-1 bg-charcoal p-1 top-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 stroke-gray" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
