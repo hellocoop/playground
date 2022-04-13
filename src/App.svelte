@@ -54,15 +54,18 @@
       response_mode: 'fragment',
       response_type: 'id_token',
       prompt: 'login'
-    },
-    cards: {
-      response: false,
-      payload: false,
-      claims: false
-    },
-    response: '',
-    payload: '',
-    claims: ''
+    }
+  }
+
+  let cards = {
+    response: false,
+    payload: false,
+    claims: false
+  }
+
+  let results = {
+    response : '',
+    payload: ''
   }
 
   //detect chanes in state -> save to local storage
@@ -73,12 +76,12 @@
     let queryParams;
     if(window.location.hash){
       queryParams = new URLSearchParams(window.location.hash.substring(1))
-      states.response = window.location.hash
+      results.response = window.location.hash
     } else if(window.location.search){
       queryParams = new URLSearchParams(window.location.search)
-      states.response = window.location.search
+      results.response = window.location.search
     }
-    states.cards.response = true
+    cards.response = true
     let id_token = queryParams.get('id_token')
     const code = queryParams.get('code')
     if(code){
@@ -86,13 +89,21 @@
       id_token = res.id_token
     }
     const payload = await getIntrospect(id_token)
-    states.payload = payload
-    states.cards.payload = states.cards.claims = true
+    results.payload = payload
+    cards.payload = cards.claims = true
 
-    window.location.replace('#');
-    // slice off the remaining '#' in HTML5:
-    if (typeof window.history.replaceState == 'function') {
-      history.replaceState({}, '', window.location.href.slice(0, -1));
+    cleanURL()
+  }
+
+  function cleanURL(){
+    if (window.location.search) {
+      window.history.replaceState({}, document.title, '/');
+    } else {
+      window.location.replace('#');
+      // slice off the remaining '#' in HTML5:
+      if (typeof window.history.replaceState == 'function') {
+        history.replaceState({}, '', window.location.href.slice(0, -1));
+      }
     }
   }
 
@@ -403,7 +414,7 @@
   </section>
 
   <section class="border border-charcoal dark:border-gray-800">
-    <button on:click={()=>states.cards.response=!states.cards.response} class="h-12 w-full flex justify-between items-center px-4"
+    <button on:click={()=>cards.response=!cards.response} class="h-12 w-full flex justify-between items-center px-4"
       >
       <div class="inline-flex items-center">
         <span>Response</span>
@@ -412,16 +423,16 @@
         </svg>
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-        class:rotate-180={states.cards.response}
+        class:rotate-180={cards.response}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
       </svg>
     </button>
 
-    {#if states.cards.response}
+    {#if cards.response}
       <p class="p-4 break-words">
-        {#if states.response}
-          {states.response}
+        {#if results.response}
+          {results.response}
         {:else}
          <p>Nothing to see here</p>
         {/if}
@@ -430,7 +441,7 @@
   </section>
 
   <section class="border border-charcoal dark:border-gray-800">
-    <button on:click={()=>states.cards.payload=!states.cards.payload} class="h-12 w-full flex justify-between items-center px-4">
+    <button on:click={()=>cards.payload=!cards.payload} class="h-12 w-full flex justify-between items-center px-4">
       <div class="inline-flex items-center">
         <span>Payload</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -438,15 +449,15 @@
         </svg>
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-        class:rotate-180={states.cards.payload}
+        class:rotate-180={cards.payload}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
       </svg>
     </button>
-    {#if states.cards.payload}
-      {#if states.payload}
+    {#if cards.payload}
+      {#if results.payload}
         <Prism language="javascript">
-          {JSON.stringify(states.payload,null,2)}
+          {JSON.stringify(results.payload,null,2)}
         </Prism>
       {:else}
         <p class="p-4">Nothing to see here</p>
@@ -455,26 +466,26 @@
   </section>
 
   <section class="border border-charcoal dark:border-gray-800">
-    <button on:click={()=>states.cards.claims=!states.cards.claims} class="h-12 w-full flex justify-between items-center px-4"
+    <button on:click={()=>cards.claims=!cards.claims} class="h-12 w-full flex justify-between items-center px-4"
     >
       <span>Claims</span>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-        class:rotate-180={states.cards.claims}
+        class:rotate-180={cards.claims}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
       </svg>
     </button>
-    {#if states.cards.claims}
+    {#if cards.claims}
       <ul class="flex flex-col px-4 divide-y">
-        {#if states.payload}
+        {#if results.payload}
           {#each scopes.claims as claim}
             <li class="py-4 flex items-center w-full">
               <div class="w-1/3">{claim}</div>
               <div>
-                {#if claim === 'picture' && states.payload[claim]}
-                  <img src={states.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture"/>
+                {#if claim === 'picture' && results.payload[claim]}
+                  <img src={results.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture"/>
                 {:else}
-                  {states.payload[claim] || ''}
+                  {results.payload[claim] || ''}
                 {/if}
               </div>
             </li>
