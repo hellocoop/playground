@@ -20,6 +20,11 @@
     }
   }
 
+  const clientIds = {
+    playground: '???',
+    greenfield: '3574f001-0874-4b20-bffd-8f3e37634274'
+  }
+
   const scopes = {
     standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
     custom: ['profile_update'],
@@ -163,7 +168,7 @@
           <input
             bind:value={states.custom_auth_server}
             on:input={e=>states.auth_server=e.target.value} type="url" name="custom"
-            class="h-8 ml-2 w-full text-charcoal" placeholder="eg http:/example.com:9000/"
+            class="h-8 ml-2 w-full text-charcoal form-input" placeholder="eg http:/example.com:9000/"
           >
         </li>
       </ul>
@@ -259,15 +264,24 @@
                   {/each}
                 </div>
               {:else}
-                <div class="flex flex-col w-full items-start">
+                <div
+                  class="flex flex-col w-full items-start"
+                  class:opacity-60={!states.query_params.includes(scope)}
+                >
                   {#if scope === 'client_id'}
                     <div class="mb-0.5">
-                      <button on:click={()=>states.query_param_values.client_id=123} class="text-sm underline">Playground</button>
-                      <button on:click={()=>states.query_param_values.client_id=456} class="text-sm underline ml-2">GreenfieldFitness</button>
+                      <button on:click={()=>states.query_param_values.client_id=clientIds.playground} class="text-sm underline">Playground</button>
+                      <button on:click={()=>states.query_param_values.client_id=clientIds.greenfield} class="text-sm underline ml-2">GreenfieldFitness</button>
                     </div>
                   {/if}
                   <input type="text" name={scope} class="h-8 w-full form-input" bind:value={states.query_param_values[scope]}>
                   {#if scope === 'nonce'}
+                    <button on:click={()=>states.query_param_values.nonce = makeNonce()} class="absolute right-1 bg-charcoal p-1 top-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 stroke-gray" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
+                  {:else if scope === 'code_verifier'}
                     <button on:click={()=>states.query_param_values.nonce = makeNonce()} class="absolute right-1 bg-charcoal p-1 top-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 stroke-gray" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
