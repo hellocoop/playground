@@ -1,5 +1,9 @@
 @tailwind base;
 
+pre[class*="language-"]{
+	@apply m-0;
+}
+
 button {
 	@apply rounded-sm;
 }
