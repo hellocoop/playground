@@ -1,6 +1,7 @@
 <script>
   import {onMount} from 'svelte'
   import Prism from 'svelte-prism'
+  import makePKCE from './utils/pkce.js'
 
   let onMountDone = false
 
@@ -8,17 +9,6 @@
     getStatesFromLocalStorage()
     onMountDone = true
   })
-
-  function getStatesFromLocalStorage(){
-    if(!localStorage.states) return;
-    try{
-      const _states = JSON.parse(localStorage.getItem('states'))
-      states = _states
-    } catch(err){
-      console.error(err)
-      localStorage.clear()
-    }
-  }
 
   const clientIds = {
     playground: '???',
@@ -76,6 +66,17 @@
       .getRandomValues(new Uint32Array(2))
       .reduce((a, b) => b.toString() + a.toString())
     return nonce
+  }
+
+  function getStatesFromLocalStorage(){
+    if(!localStorage.states) return;
+    try{
+      const _states = JSON.parse(localStorage.getItem('states'))
+      states = _states
+    } catch(err){
+      console.error(err)
+      localStorage.clear()
+    }
   }
 
   function saveStatesToLocalStorage(){
@@ -282,7 +283,11 @@
                       </svg>
                     </button>
                   {:else if scope === 'code_verifier'}
-                    <button on:click={()=>states.query_param_values.nonce = makeNonce()} class="absolute right-1 bg-charcoal p-1 top-1">
+                    <button on:click={async()=>{
+                      const { code_verifier, code_challenge } = await makePKCE()
+                      states.query_param_values.code_verifier = code_verifier
+                      states.query_param_values.code_challenge = code_challenge
+                    }} class="absolute right-1 bg-charcoal p-1 top-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 stroke-gray" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                       </svg>
