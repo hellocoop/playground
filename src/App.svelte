@@ -231,7 +231,7 @@
 <main class="p-4 space-y-4 flex-1 overflow-y-auto">
   <section class="border border-charcoal dark:border-gray-800 w-full p-4 flex items-start space-x-12">
    
-    <div class="w-1/5">
+    <div class="w-1/4">
       <h1 class="font-semibold">Authorization Server</h1>
       
       <ul class="space-y-2 mt-2">
@@ -307,7 +307,7 @@
       }} class="hello-btn-dark">ō Continue with Hellō</button>
     </div>
 
-    <div class="w-1/5">
+    <div class="w-1/4">
       <h1 class="font-semibold">Scopes (* required)</h1>
       <div class="flex mt-2">
         <div class="w-1/2">
@@ -340,7 +340,7 @@
       </div>
     </div>
 
-    <div class="w-1/3">
+    <div class="flex-1">
       <h1 class="font-semibold">Query Params (* required)</h1>
       <div class="mt-2">
         <ul class="space-y-2 mt-2">
