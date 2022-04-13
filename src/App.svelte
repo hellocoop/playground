@@ -7,7 +7,7 @@
 
   onMount(()=>{
     getStatesFromLocalStorage()
-    processIDToken()
+    processFragmentOrQuery()
     onMountDone = true
   })
 
@@ -68,14 +68,61 @@
   //detect chanes in state -> save to local storage
   $: states, saveStatesToLocalStorage();
 
-  async function processIDToken(){
-    if(!window.location.hash) return
-    states.response = window.location.hash
+  async function processFragmentOrQuery(){
+    if(!window.location.hash && !window.location.search) return
+    let queryParams;
+    if(window.location.hash){
+      queryParams = new URLSearchParams(window.location.hash.substring(1))
+      states.response = window.location.hash
+    } else if(window.location.search){
+      queryParams = new URLSearchParams(window.location.search)
+      states.response = window.location.search
+    }
     states.cards.response = true
-    const queryParams = new URLSearchParams(window.location.hash.substring(1))
-    const id_token = queryParams.get('id_token')
-    if(!id_token) return
-    const introspectEndpoint = states.auth_server + '/oauth/introspect';
+    let id_token = queryParams.get('id_token')
+    const code = queryParams.get('code')
+    if(code){
+      const res = await getToken(code)
+      id_token = res.id_token
+    }
+    const payload = await getIntrospect(id_token)
+    states.payload = payload
+    states.cards.payload = states.cards.claims = true
+
+    window.location.replace('#');
+    // slice off the remaining '#' in HTML5:
+    if (typeof window.history.replaceState == 'function') {
+      history.replaceState({}, '', window.location.href.slice(0, -1));
+    }
+  }
+
+  async function getToken(code){
+    const params = {
+      code,
+      client_id: states.query_param_values.client_id,
+      redirect_uri: states.query_param_values.redirect_uri,
+      grant_type: 'authorization_code',
+      code_verifier: states.query_param_values.code_verifier
+    };
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams(params).toString()
+    }
+    const tokenEndpoint = new URL('/oauth/token', states.auth_server)
+    try{
+      const res = await fetch(tokenEndpoint, options)
+      const json = await res.json()
+      return json;
+    } catch(err){
+      console.error(err)
+    }
+  }
+
+  async function getIntrospect(id_token){
+    const introspectEndpoint = new URL('/oauth/introspect', states.auth_server)
     const params = {
       client_id: states.query_param_values.client_id,
       nonce: states.query_param_values.nonce,
@@ -91,8 +138,7 @@
     try{
       const res = await fetch(introspectEndpoint, options);
       const json = await res.json();
-      states.payload = json
-      states.cards.payload = states.cards.claims = true
+      return json;
     } catch(err){
       console.error(err)
     } finally{
@@ -291,7 +337,11 @@
             {@const required = queryParams.required.includes(scope)}
             <li class="flex items-center relative">
               <div class="w-2/5 inline-flex items-center">
-                <input type="checkbox" class="text-charcoal form-checkbox" name={scope} id={scope} value={scope} bind:group={states.query_params}>
+                {#if scope !== 'code_verifier'}
+                  <input type="checkbox" class="text-charcoal form-checkbox" name={scope} id={scope} value={scope} bind:group={states.query_params}>
+                {:else}
+                  <span class="w-4"></span>
+                {/if}
                 <label
                   for={scope}
                   class="ml-2"
@@ -317,7 +367,7 @@
               {:else}
                 <div
                   class="flex flex-col w-full items-start"
-                  class:opacity-60={!states.query_params.includes(scope)}
+                  class:opacity-60={!states.query_params.includes(scope) && scope !== 'code_verifier'}
                 >
                   {#if scope === 'client_id'}
                     <div class="mb-0.5">
