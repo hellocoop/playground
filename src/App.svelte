@@ -240,7 +240,7 @@
         } catch{
           console.error('Custom auth server endpoint not saved locally: Invalid URL')
         } finally{
-          // window.location.href = requestURL
+          window.location.href = requestURL
         }
       }} class="hello-btn-dark">ō Continue with Hellō</button>
     </div>
