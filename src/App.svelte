@@ -19,7 +19,8 @@
   const scopes = {
     standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
     custom: ['profile_update'],
-    required: ['openid']
+    required: ['openid'],
+    claims: ['name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture']
   }
 
   const queryParams = {
@@ -67,10 +68,12 @@
   $: states, saveStatesToLocalStorage();
 
   async function processIDToken(){
+    if(!window.location.hash) return
+    states.response = window.location.hash
+    states.cards.response = true
     const queryParams = new URLSearchParams(window.location.hash.substring(1))
     const id_token = queryParams.get('id_token')
     if(!id_token) return
-    states.response = window.location.hash
     const introspectEndpoint = states.auth_server + '/oauth/introspect';
     const params = {
       client_id: states.query_param_values.client_id,
@@ -88,8 +91,15 @@
       const res = await fetch(introspectEndpoint, options);
       const json = await res.json();
       states.payload = json
+      states.cards.payload = states.cards.claims = true
     } catch(err){
       console.error(err)
+    } finally{
+      window.location.replace('#');
+      // slice off the remaining '#' in HTML5:
+      if (typeof window.history.replaceState == 'function') {
+        history.replaceState({}, '', window.location.href.slice(0, -1));
+      }
     }
   }
 
@@ -379,15 +389,10 @@
     {/if}
   </section>
 
-  <section>
-    <button on:click={()=>states.cards.claims=!states.cards.claims} class="border border-charcoal dark:border-gray-800 h-12 w-full flex justify-between items-center px-4"
+  <section class="border border-charcoal dark:border-gray-800">
+    <button on:click={()=>states.cards.claims=!states.cards.claims} class="h-12 w-full flex justify-between items-center px-4"
     >
-      <div class="inline-flex items-center">
-        <span>Claims</span>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-        </svg>
-      </div>
+      <span>Claims</span>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
         class:rotate-180={states.cards.claims}
       >
@@ -395,7 +400,30 @@
       </svg>
     </button>
     {#if states.cards.claims}
-      asdf
+      <div class="flex flex-col">
+        <div class="overflow-x-auto">
+          <div class="inline-block min-w-full">
+            <div class="overflow-hidden">
+              <table class="min-w-full">
+                <tbody class="divide-y">
+                  {#each scopes.claims as claim}
+                    <tr class="bg-white transition duration-300 ease-in-out hover:bg-gray-100">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{claim}</td>
+                      <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                        {#if claim === 'picture'}
+                          <img src={states.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture"/>
+                        {:else}
+                          {states.payload[claim] || ''}
+                        {/if}
+                      </td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     {/if}
   </section>
 </main>
