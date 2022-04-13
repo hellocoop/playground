@@ -15,7 +15,11 @@ input[type=checkbox] {
 @tailwind components;
 
 .form-input, .form-checkbox {
-	@apply rounded-sm;
+	@apply rounded-sm bg-transparent;
+}
+
+.form-radio{
+	@apply bg-transparent;	
 }
 
 @tailwind utilities;

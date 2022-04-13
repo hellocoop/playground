@@ -279,7 +279,7 @@
         </li>
       </ul>
 
-      <div class="bg-gray-200 p-4 break-words my-6">
+      <div class="bg-gray-200 dark:bg-gray-800 p-4 break-words my-6">
         <h2 class="inline-flex items-center">
           <span>Request URL</span>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
