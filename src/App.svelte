@@ -36,7 +36,7 @@
       login_hint: '',
       state: ''
     },
-    required: ['client_id', 'redirect_uri', 'nonce']
+    required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
   }
 
   //default values, also binds to user input
