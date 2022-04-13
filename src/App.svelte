@@ -48,6 +48,7 @@
     query_params: ['client_id', 'redirect_uri', 'nonce'],
     query_param_values: {
       ...queryParams.params,
+      client_id: clientIds.playground,
       nonce: makeNonce(),
       redirect_uri: window.location.origin,
       response_mode: 'fragment',
@@ -400,30 +401,20 @@
       </svg>
     </button>
     {#if states.cards.claims}
-      <div class="flex flex-col">
-        <div class="overflow-x-auto">
-          <div class="inline-block min-w-full">
-            <div class="overflow-hidden">
-              <table class="min-w-full">
-                <tbody class="divide-y">
-                  {#each scopes.claims as claim}
-                    <tr class="bg-white transition duration-300 ease-in-out hover:bg-gray-100">
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{claim}</td>
-                      <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        {#if claim === 'picture'}
-                          <img src={states.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture"/>
-                        {:else}
-                          {states.payload[claim] || ''}
-                        {/if}
-                      </td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
+      <ul class="flex flex-col px-4 divide-y">
+        {#each scopes.claims as claim}
+          <li class="py-4 flex items-center w-full">
+            <div class="w-1/3">{claim}</div>
+            <div>
+              {#if claim === 'picture' && states.payload[claim]}
+                <img src={states.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture"/>
+              {:else}
+                {states.payload[claim] || ''}
+              {/if}
             </div>
-          </div>
-        </div>
-      </div>
+          </li>
+        {/each}
+      </ul>
     {/if}
   </section>
 </main>
