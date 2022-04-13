@@ -233,13 +233,14 @@
         try{
           const url = new URL(states.custom_auth_server)
           if(!['https://consent.hello.coop/', ...states.auth_servers].includes(url.href)){
-            states.auth_servers = [...states.auth_servers, url]
+            states.auth_servers = [...states.auth_servers, url.href]
+            states.auth_server = url.href
             states.custom_auth_server = ''
-          }
+          } 
         } catch{
           console.error('Custom auth server endpoint not saved locally: Invalid URL')
         } finally{
-          window.location.href = requestURL
+          // window.location.href = requestURL
         }
       }} class="hello-btn-dark">ō Continue with Hellō</button>
     </div>
