@@ -1,5 +1,9 @@
 @tailwind base;
 
+button, input {
+	@apply rounded-sm !important;
+}
+
 input[type=checkbox] {
 	@apply focus:ring-0;
 }

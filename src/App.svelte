@@ -245,12 +245,12 @@
                 </label>
               </div>
               {#if Array.isArray(value)}
-                <div class="h-8 px-3 w-full border border-charcoal dark:border-gray-800 flex items-center"
+                <div class="h-8 w-full border border-charcoal dark:border-gray-800 flex items-center"
                  class:opacity-60={!states.query_params.includes(scope)}
                 >
                   {#each value as ele}
                     <button
-                      on:click={()=>states.query_param_values[scope]=ele} class="w-1/2"
+                      on:click={()=>states.query_param_values[scope]=ele} class="w-1/2 h-7 mx-0.5"
                       class:bg-charcoal={states.query_param_values[scope] === ele}
                       class:text-gray={states.query_param_values[scope] === ele}
                     >
