@@ -364,7 +364,11 @@
 
     {#if states.cards.response}
       <p class="p-4 break-words">
+        {#if states.response}
           {states.response}
+        {:else}
+         <p>Nothing to see here</p>
+        {/if}
       </p>
     {/if}
   </section>
@@ -384,9 +388,13 @@
       </svg>
     </button>
     {#if states.cards.payload}
-      <Prism language="javascript">
-        {JSON.stringify(states.payload,null,2)}
-      </Prism>
+      {#if states.payload}
+        <Prism language="javascript">
+          {JSON.stringify(states.payload,null,2)}
+        </Prism>
+      {:else}
+        <p class="p-4">Nothing to see here</p>
+      {/if}
     {/if}
   </section>
 
@@ -402,18 +410,22 @@
     </button>
     {#if states.cards.claims}
       <ul class="flex flex-col px-4 divide-y">
-        {#each scopes.claims as claim}
-          <li class="py-4 flex items-center w-full">
-            <div class="w-1/3">{claim}</div>
-            <div>
-              {#if claim === 'picture' && states.payload[claim]}
-                <img src={states.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture"/>
-              {:else}
-                {states.payload[claim] || ''}
-              {/if}
-            </div>
-          </li>
-        {/each}
+        {#if states.payload}
+          {#each scopes.claims as claim}
+            <li class="py-4 flex items-center w-full">
+              <div class="w-1/3">{claim}</div>
+              <div>
+                {#if claim === 'picture' && states.payload[claim]}
+                  <img src={states.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture"/>
+                {:else}
+                  {states.payload[claim] || ''}
+                {/if}
+              </div>
+            </li>
+          {/each}
+        {:else}
+          <p class="py-4">Nothing to see here</p>
+        {/if}
       </ul>
     {/if}
   </section>
