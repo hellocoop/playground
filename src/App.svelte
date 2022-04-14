@@ -36,7 +36,7 @@
     standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
     custom: ['profile_update'],
     required: ['openid'],
-    claims: ['name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture']
+    claims: ['sub', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture']
   }
 
   const queryParams = {
