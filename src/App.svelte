@@ -8,6 +8,7 @@
   onMount(()=>{
     getStatesFromLocalStorage()
     processFragmentOrQuery()
+    updateFavicon()
     onMountDone = true
   })
 
@@ -70,6 +71,21 @@
 
   //detect chanes in state -> save to local storage
   $: states, saveStatesToLocalStorage();
+
+  function updateFavicon(){
+    console.log(123)
+    const ref = document.querySelector("link[rel='icon']");
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+      ref.href = 'dark-favicon.png';
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+      if (event.matches) {
+        ref.href = 'light-favicon.png';
+      } else {
+        ref.href = 'dark-favicon.png';
+      }
+    });
+  }
 
   async function processFragmentOrQuery(){
     if(!window.location.hash && !window.location.search) return
