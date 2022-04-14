@@ -88,7 +88,6 @@
   $: states, saveStatesToLocalStorage();
 
   function updateFavicon(){
-    console.log(123)
     const ref = document.querySelector("link[rel='icon']");
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
       ref.href = 'dark-favicon.png';
@@ -116,12 +115,20 @@
     let id_token = queryParams.get('id_token')
     const code = queryParams.get('code')
     if(code){
-      const res = await getToken(code)
-      id_token = res.id_token
+      try{
+        const res = await getToken(code)
+        id_token = res.id_token
+      } catch(err){
+        results.payload = err
+        cards.payload = true
+      }
     }
-    const payload = await getIntrospect(id_token)
-    results.payload = payload
-    cards.payload = cards.claims = true
+
+    if(id_token){
+      const payload = await getIntrospect(id_token)
+      results.payload = payload
+      cards.payload = cards.claims = true
+    }
 
     cleanURL()
   }
@@ -157,9 +164,10 @@
     try{
       const res = await fetch(tokenEndpoint, options)
       const json = await res.json()
+      if(res.status !== 200 || !res.ok) throw json
       return json;
     } catch(err){
-      console.error(err)
+      throw err;
     }
   }
 
@@ -535,7 +543,7 @@
     </button>
     {#if cards.claims}
       <ul class="flex flex-col px-4 divide-y">
-        {#if results.payload}
+        {#if results.payload && !results.payload.error}
           {#each scopes.claims as claim}
             <li class="py-4 flex items-center w-full">
               <div class="w-1/3">{claim}</div>
