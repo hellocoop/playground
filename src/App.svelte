@@ -73,6 +73,12 @@
     }
   }
 
+  let copyStates = {
+    requestURL: false,
+    response: false,
+    payload: false
+  }
+
   let cards = {
     response: false,
     payload: false,
@@ -245,6 +251,14 @@
     }
   }
 
+  async function copy(state, content){
+    copyStates[state] = true
+    await navigator.clipboard.writeText(content);
+    setTimeout(()=>{
+      copyStates[state] = false
+    }, 500)
+  }
+
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
 </script>
 
@@ -334,15 +348,13 @@
       <div class="bg-gray-200 dark:bg-gray-800 p-4 break-words my-6">
         <h2 class="inline-flex items-center">
           <span>Request URL</span>
-          <button on:click={async()=>{
-            await navigator.clipboard.writeText(requestURL);
-          }}>
+          <button on:click={()=>copy('requestURL', requestURL)}>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
           </button>
         </h2>
-        <span class="mt-2 block text-sm whitespace-pre-line">
+        <span class="mt-2 block text-sm whitespace-pre-line" class:flash={copyStates.requestURL}>
           {requestURL}
         </span>
       </div>
@@ -474,10 +486,11 @@
       >
       <div class="inline-flex items-center">
         <span class="font-semibold text-lg">Response</span>
-        <button on:click={async()=>{
-            cards.response = false
-            await navigator.clipboard.writeText(results.response);
-        }}>
+        <button on:click={()=>{
+          if(!results.response) return
+          cards.response = false;
+          copy('response', results.response)}
+        }>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
@@ -493,7 +506,7 @@
     {#if cards.response}
       <p class="p-4 break-words">
         {#if results.response}
-          {results.response}
+          <span class:flash={copyStates.response}>{results.response}</span>
         {:else}
          <p>Nothing to see here</p>
         {/if}
@@ -505,9 +518,10 @@
     <button on:click={()=>cards.payload=!cards.payload} class="h-12 w-full flex justify-between items-center px-4">
       <div class="inline-flex items-center">
         <span class="font-semibold text-lg">Payload</span>
-        <button on:click={async()=>{
-            cards.payload = false
-            await navigator.clipboard.writeText(results.payload);
+        <button on:click={()=>{
+          if(!results.payload) return
+          cards.payload = false;
+          copy('payload', results.payload)
         }}>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -522,9 +536,11 @@
     </button>
     {#if cards.payload}
       {#if results.payload}
-        <Prism language="javascript">
-          {JSON.stringify(results.payload,null,2)}
-        </Prism>
+        <span class:flash={copyStates.payload}>
+          <Prism language="javascript">
+            {JSON.stringify(results.payload,null,2)}
+          </Prism>
+        </span>
       {:else}
         <p class="p-4">Nothing to see here</p>
       {/if}
@@ -577,5 +593,21 @@
     position: absolute;
     bottom: -4px;
     left: 0;
+  }
+
+  .flash{
+    animation: flash-animation 0.5s ease-in-out;
+  }
+
+  @keyframes flash-animation {
+    0% {
+      opacity: 1;
+    }
+    50%{
+      opacity: 0.5;
+    }
+    100%{
+      opacity: 1;
+    }
   }
 </style>
