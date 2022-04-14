@@ -23,7 +23,7 @@
     required: ['openid'],
     claims: ['name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture']
   }
-  
+
   const queryParams = {
     params: {
       client_id: '',
@@ -513,7 +513,7 @@
               <div class="w-1/3">{claim}</div>
               <div>
                 {#if claim === 'picture' && results.payload[claim]}
-                  <img src={results.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture"/>
+                  <img src={results.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture claim"/>
                 {:else}
                   {results.payload[claim] || ''}
                 {/if}
