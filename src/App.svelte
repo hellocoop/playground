@@ -12,7 +12,7 @@
   })
 
   const clientIds = {
-    playground: '???',
+    playground: '46be57a7-d0f5-459e-9655-24799433637d',
     greenfield: '3574f001-0874-4b20-bffd-8f3e37634274'
   }
 
