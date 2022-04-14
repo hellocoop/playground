@@ -44,12 +44,12 @@
       client_id: '',
       nonce: '',
       redirect_uri: '',
-      response_mode: ['fragment', 'query'],
       response_type: ['code', 'id_token'],
       code_challenge: '',
       code_verifier: '',
       login_hint: '',
       prompt: ['login', 'profile_update'],
+      response_mode: ['fragment', 'query'],
       state: ''
     },
     required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
