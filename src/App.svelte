@@ -248,7 +248,7 @@
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
 </script>
 
-<header class="flex-shrink-0 bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-xl">
+<header class="flex-shrink-0 bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-lg">
   <span class="w-1/3">Hellō</span>
   <span class="block w-1/3 flex justify-center">
     <img src="logo.svg" alt="Hellō Playground">
@@ -284,7 +284,7 @@
   <section class="border border-charcoal dark:border-gray-800 w-full p-4 flex items-start space-x-12">
    
     <div class="w-1/4 max-w-sm">
-      <h1 class="font-semibold">Authorization Server</h1>
+      <h1 class="font-semibold text-lg">Authorization Server</h1>
       
       <ul class="space-y-2 mt-2">
         <li class="flex items-center">
@@ -364,7 +364,7 @@
     </div>
 
     <div class="w-1/4 max-w-xs">
-      <h1 class="font-semibold">Scopes (* required)</h1>
+      <h1 class="font-semibold text-lg">Scopes (* required)</h1>
       <div class="flex mt-2">
         <div class="w-1/2">
           <h2>Standard</h2>
@@ -397,7 +397,7 @@
     </div>
 
     <div class="flex-1 max-w-2xl">
-      <h1 class="font-semibold">Query Params (* required)</h1>
+      <h1 class="font-semibold text-lg">Query Params (* required)</h1>
       <div class="mt-2">
         <ul class="space-y-2 mt-2">
           {#each Object.entries(queryParams.params) as [scope, value]}
@@ -473,7 +473,7 @@
     <button on:click={()=>cards.response=!cards.response} class="h-12 w-full flex justify-between items-center px-4"
       >
       <div class="inline-flex items-center">
-        <span>Response</span>
+        <span class="font-semibold text-lg">Response</span>
         <button on:click={async()=>{
             cards.response = false
             await navigator.clipboard.writeText(results.response);
@@ -504,7 +504,7 @@
   <section class="border border-charcoal dark:border-gray-800">
     <button on:click={()=>cards.payload=!cards.payload} class="h-12 w-full flex justify-between items-center px-4">
       <div class="inline-flex items-center">
-        <span>Payload</span>
+        <span class="font-semibold text-lg">Payload</span>
         <button on:click={async()=>{
             cards.payload = false
             await navigator.clipboard.writeText(results.payload);
@@ -534,7 +534,7 @@
   <section class="border border-charcoal dark:border-gray-800">
     <button on:click={()=>cards.claims=!cards.claims} class="h-12 w-full flex justify-between items-center px-4"
     >
-      <span>Claims</span>
+      <span class="font-semibold text-lg">Claims</span>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
         class:rotate-180={cards.claims}
       >
