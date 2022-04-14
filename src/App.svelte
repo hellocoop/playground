@@ -563,7 +563,7 @@
     {#if cards.claims}
       <ul class="flex flex-col px-4 divide-y">
         {#if results.payload && !results.payload.error}
-          {#each scopes.claims as claim}
+          {#each scopes.claims.filter(i=>results.payload[i]) as claim}
             <li class="py-4 flex items-center w-full">
               <div class="w-1/3">{claim}</div>
               <div>
