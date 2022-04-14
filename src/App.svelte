@@ -277,6 +277,12 @@
         states.query_param_values.code_challenge = states.query_param_values.code_verifier = ''
       }
     }
+
+    if(param === 'response_mode'){
+      if(!e.target.checked){
+        states.query_param_values.response_mode = 'fragment'
+      }
+    }
   }
 
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
@@ -451,7 +457,7 @@
               </div>
               {#if Array.isArray(value)}
                 <div class="h-8 w-full border border-charcoal dark:border-gray-800 flex items-center rounded-sm"
-                 class:opacity-60={!states.query_params.includes(param)}
+                 class:opacity-60={!states.query_params.includes(param) && param !== 'response_mode'}
                 >
                   {#each value as ele}
                     <button
@@ -466,7 +472,7 @@
               {:else}
                 <div
                   class="flex flex-col w-full items-start"
-                  class:opacity-60={!states.query_params.includes(param) && param !== 'code_verifier'}
+                  class:opacity-60={!states.query_params.includes(param) && param !== 'code_challenge'}
                 >
                   {#if param === 'client_id'}
                     <div class="mb-0.5">
