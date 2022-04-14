@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [svelte()],
   build: {
     outDir: 'docs',
-    emptyOutDir: false //keey CNAME file
+    emptyOutDir: true
   }
 })
