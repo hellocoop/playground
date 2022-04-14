@@ -360,7 +360,7 @@
         } finally{
           window.location.href = requestURL
         }
-      }} class="hello-btn-dark">ō Continue with Hellō</button>
+      }} class="hello-btn-dark w-full">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
     </div>
 
     <div class="w-1/4 max-w-xs">
