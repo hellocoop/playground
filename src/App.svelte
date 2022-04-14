@@ -541,6 +541,7 @@
               <div class="w-1/3">{claim}</div>
               <div>
                 {#if claim === 'picture' && results.payload[claim]}
+                  <!-- svelte-ignore a11y-img-redundant-alt -->
                   <img src={results.payload[claim]} class="h-10 w-10 rounded-full object-fit" alt="Picture claim"/>
                 {:else}
                   {results.payload[claim] || ''}
