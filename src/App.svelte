@@ -259,6 +259,26 @@
     }, 500)
   }
 
+  async function handleCheckboxInput(e, param){
+    if(param === 'nonce'){
+      if(e.target.checked){
+        states.query_param_values.nonce = makeNonce()
+      } else{
+        states.query_param_values.nonce = ''
+      }
+    }
+
+    if(param === 'code_challenge'){
+      if(e.target.checked){
+        const { code_challenge, code_verifier } = await makePKCE()
+        states.query_param_values.code_challenge = code_challenge
+        states.query_param_values.code_verifier = code_verifier
+      } else{
+        states.query_param_values.code_challenge = states.query_param_values.code_verifier = ''
+      }
+    }
+  }
+
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
 </script>
 
@@ -412,32 +432,32 @@
       <h1 class="font-semibold text-lg">Query Params (* required)</h1>
       <div class="mt-2">
         <ul class="space-y-2 mt-2">
-          {#each Object.entries(queryParams.params) as [scope, value]}
-            {@const required = queryParams.required.includes(scope)}
+          {#each Object.entries(queryParams.params) as [param, value]}
+            {@const required = queryParams.required.includes(param)}
             <li class="flex items-center relative">
               <div class="w-2/5 inline-flex items-center">
-                {#if scope !== 'code_verifier'}
-                  <input type="checkbox" class="text-charcoal form-checkbox" name={scope} id={scope} value={scope} bind:group={states.query_params}>
+                {#if param !== 'code_verifier'}
+                  <input type="checkbox" bind:group={states.query_params} on:change={(e)=>handleCheckboxInput(e, param)} class="text-charcoal form-checkbox" name={param} id={param} value={param}>
                 {:else}
                   <span class="w-4"></span>
                 {/if}
                 <label
-                  for={scope}
+                  for={param}
                   class="ml-2"
-                  class:text-red-500={required && (!states.query_params.includes(scope) || !states.query_param_values[scope])}
+                  class:text-red-500={required && (!states.query_params.includes(param) || !states.query_param_values[param])}
                 >
-                  {scope} {required ? '*' : ''}
+                  {param} {required ? '*' : ''}
                 </label>
               </div>
               {#if Array.isArray(value)}
                 <div class="h-8 w-full border border-charcoal dark:border-gray-800 flex items-center rounded-sm"
-                 class:opacity-60={!states.query_params.includes(scope)}
+                 class:opacity-60={!states.query_params.includes(param)}
                 >
                   {#each value as ele}
                     <button
-                      on:click={()=>states.query_param_values[scope]=ele} class="w-1/2 h-7 mx-0.5"
-                      class:bg-charcoal={states.query_param_values[scope] === ele}
-                      class:text-gray={states.query_param_values[scope] === ele}
+                      on:click={()=>states.query_param_values[param]=ele} class="w-1/2 h-7 mx-0.5"
+                      class:bg-charcoal={states.query_param_values[param] === ele}
+                      class:text-gray={states.query_param_values[param] === ele}
                     >
                         {ele}
                     </button>
@@ -446,32 +466,15 @@
               {:else}
                 <div
                   class="flex flex-col w-full items-start"
-                  class:opacity-60={!states.query_params.includes(scope) && scope !== 'code_verifier'}
+                  class:opacity-60={!states.query_params.includes(param) && param !== 'code_verifier'}
                 >
-                  {#if scope === 'client_id'}
+                  {#if param === 'client_id'}
                     <div class="mb-0.5">
                       <button on:click={()=>states.query_param_values.client_id=clientIds.playground} class="text-sm underline">Playground</button>
                       <button on:click={()=>states.query_param_values.client_id=clientIds.greenfield} class="text-sm underline ml-2">GreenfieldFitness</button>
                     </div>
                   {/if}
-                  <input type="text" name={scope} class="h-8 w-full form-input" bind:value={states.query_param_values[scope]}>
-                  {#if scope === 'nonce'}
-                    <button on:click={()=>states.query_param_values.nonce = makeNonce()} class="absolute right-1 bg-charcoal p-1 top-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 stroke-gray" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                    </button>
-                  {:else if scope === 'code_verifier'}
-                    <button on:click={async()=>{
-                      const { code_verifier, code_challenge } = await makePKCE()
-                      states.query_param_values.code_verifier = code_verifier
-                      states.query_param_values.code_challenge = code_challenge
-                    }} class="absolute right-1 bg-charcoal p-1 top-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 stroke-gray" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                    </button>
-                  {/if}
+                  <input type="text" name={param} class="h-8 w-full form-input" bind:value={states.query_param_values[param]}>
                 </div>
               {/if}
             </li>
