@@ -22,6 +22,10 @@
       link: 'https://hello.dev/faqs/'
     },
     {
+      text: 'Pricing',
+      link: 'https://hello.dev/pricing/'
+    },
+    {
       text: 'Console',
       link: 'https://console.hello.dev/'
     }
@@ -244,8 +248,9 @@
           url.searchParams.set(param, query_param_value)
         }
       }
-      const lineBreakedURL = url.toString().replace(/&/g, '\n&').replace(/\?/g, '\n?')
-      return lineBreakedURL
+      //url
+      console.log(Object.keys(queryParams.params))
+      return url
     } catch(err){
       return 'Invalid URL'
     }
@@ -321,9 +326,8 @@
 </header>
 
 <main class="p-4 space-y-4 flex-1 overflow-y-auto">
-  <section class="border border-charcoal dark:border-gray-800 w-full p-4 flex items-start space-x-12">
-   
-    <div class="w-1/4 max-w-sm">
+  <section class="border border-charcoal dark:border-gray-800 w-full p-4 flex items-start flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-12">
+    <div class="w-full md:w-1/4 md:max-w-sm md:min-w-[23rem]">
       <h1 class="font-semibold text-lg">Authorization Server</h1>
       
       <ul class="space-y-2 mt-2">
@@ -381,7 +385,7 @@
           </button>
         </h2>
         <span class="mt-2 block text-sm whitespace-pre-line" class:flash={copyStates.requestURL}>
-          {requestURL}
+          {@html requestURL}
         </span>
       </div>
 
@@ -398,10 +402,10 @@
         } finally{
           window.location.href = requestURL
         }
-      }} class="hello-btn-dark w-full">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+      }} class="hello-btn-dark w-full hidden md:block">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
     </div>
 
-    <div class="w-1/4 max-w-xs">
+    <div class="w-full md:w-1/4 md:max-w-xs">
       <h1 class="font-semibold text-lg">Scopes (* required)</h1>
       <div class="flex mt-2">
         <div class="w-1/2">
@@ -434,7 +438,7 @@
       </div>
     </div>
 
-    <div class="flex-1 max-w-2xl">
+    <div class="flex-1 max-w-[50rem]">
       <h1 class="font-semibold text-lg">Query Params (* required)</h1>
       <div class="mt-2">
         <ul class="space-y-2 mt-2">
@@ -488,6 +492,21 @@
         </ul>
       </div>
     </div>
+
+    <button on:click={()=>{
+      try{
+        const url = new URL(states.custom_auth_server)
+        if(!['https://consent.hello.coop/', ...states.auth_servers].includes(url.href)){
+          states.auth_servers = [...states.auth_servers, url.href]
+          states.auth_server = url.href
+          states.custom_auth_server = ''
+        } 
+      } catch{
+        console.error('Custom auth server endpoint not saved locally: Invalid URL')
+      } finally{
+        window.location.href = requestURL
+      }
+    }} class="hello-btn-dark w-full md:hidden">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
   <section class="border border-charcoal dark:border-gray-800">
