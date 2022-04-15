@@ -251,9 +251,8 @@
           url.searchParams.set(param, query_param_value)
         }
       }
-      //url
-      console.log(Object.keys(queryParams.params))
-      return url
+      const lineBreakedURL = url.toString().replace(/&/g, '\n&').replace(/\?/g, '\n?')
+      return lineBreakedURL
     } catch(err){
       return 'Invalid URL'
     }
@@ -450,7 +449,7 @@
           </button>
         </h2>
         <span class="mt-2 block text-sm whitespace-pre-line" class:flash={copyStates.requestURL}>
-          {@html requestURL}
+          {requestURL}
         </span>
       </div>
 
