@@ -1,5 +1,6 @@
 <script>
   import {onMount} from 'svelte'
+  import {slide,fade} from 'svelte/transition'
   import Prism from 'svelte-prism'
   import makePKCE from './utils/pkce.js'
 
@@ -76,6 +77,8 @@
       prompt: 'login'
     }
   }
+
+  let mobileMenu = false;
 
   let copyStates = {
     requestURL: false,
@@ -299,13 +302,30 @@
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
 </script>
 
-<header class="flex-shrink-0 bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-lg">
-  <span class="w-1/3">Hellō</span>
+<header class="text-white flex-shrink-0 bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-lg">
+  <button
+    on:click={() => (mobileMenu = !mobileMenu)}
+    class="lg:hidden mr-2 mt-0.5"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  </button>
+  <span class="w-1/3">hello.dev</span>
   <span class="block w-1/3 flex justify-center">
     <img src="logo.svg" alt="Hellō Playground">
   </span>
   <div class="w-1/3 flex justify-end space-x-4">
-    <ul class="flex space-x-4">
+    <ul class="hidden lg:flex space-x-4">
       {#each navLinks as { text, link }}
         <li class="nav-link text-sm font-medium relative">
           <a href={link} target="_blank" class="inline-flex items-center">
@@ -329,6 +349,43 @@
       {/each}
     </ul>
   </div>
+
+  {#if !mobileMenu}
+    <div
+      class="bg-charcoal lg:hidden absolute left-0 top-12 w-full p-4 z-50 min-w-[320px]"
+      transition:slide
+    >
+      <ul class="flex flex-col space-y-4 pb-4">
+        {#each navLinks as { text, link }}
+          <li class="nav-link relative">
+            <a href={link} target="_blank" class="inline-flex items-center font-medium">
+              {text}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 ml-1 mt-0.5 opacity-80"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+            </a>
+          </li>
+        {/each}
+      </ul>
+    </div>
+
+    <div
+      on:click={() => (mobileMenu = false)}
+      transition:fade
+      class="1.5xl:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
+    />
+  {/if}
 </header>
 
 <main class="p-4 space-y-4 flex-1 overflow-y-auto">
