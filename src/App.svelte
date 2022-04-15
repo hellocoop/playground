@@ -486,7 +486,7 @@
                   {#each value as ele}
                     <button
                       on:click={()=>states.query_param_values[param]=ele} class="w-1/2 h-7 mx-0.5"
-                      disabled={true}
+                      disabled={(param === 'response_mode' && !states.query_params.includes('response_mode')) || (param === 'prompt' && !states.query_params.includes('prompt'))}
                       class:bg-charcoal={states.query_param_values[param] === ele}
                       class:text-gray={states.query_param_values[param] === ele}
                     >
