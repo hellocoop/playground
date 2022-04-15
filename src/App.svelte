@@ -390,7 +390,7 @@
 </header>
 
 <main class="p-4 space-y-4 flex-1 overflow-y-auto">
-  <section class="border border-charcoal dark:border-gray-800 w-full p-4 flex items-start flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-12">
+  <section class="border border-charcoal dark:border-gray-800 w-full p-4 flex items-start flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-12">
     <div class="w-full md:w-1/4 md:max-w-sm md:min-w-[23rem]">
       <h1 class="font-semibold text-lg">Authorization Server</h1>
       
