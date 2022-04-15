@@ -302,26 +302,28 @@
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
 </script>
 
-<header class="text-white flex-shrink-0 bg-charcoal text-gray h-12 flex items-center justify-between px-4 font-bold text-lg">
-  <button
-    on:click={() => (mobileMenu = !mobileMenu)}
-    class="lg:hidden mr-2 mt-0.5"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-6"
-      viewBox="0 0 20 20"
-      fill="currentColor"
+<header class="text-white flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-bold text-lg">
+  <div class="w-1/3 inline-flex items-center">
+    <button
+      on:click={() => (mobileMenu = !mobileMenu)}
+      class="lg:hidden mr-2"
     >
-      <path
-        fill-rule="evenodd"
-        d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-        clip-rule="evenodd"
-      />
-    </svg>
-  </button>
-  <span class="w-1/3">hello.dev</span>
-  <span class="block w-1/3 flex justify-center">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </button>
+    <span class="w-1/3">hello.dev</span>
+  </div>
+  <span class="md:w-1/3 flex justify-center flex-shrink-0">
     <img src="logo.svg" alt="Hellō Playground">
   </span>
   <div class="w-1/3 flex justify-end space-x-4">

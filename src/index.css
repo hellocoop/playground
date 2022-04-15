@@ -1,5 +1,10 @@
 @tailwind base;
 
+html, body{
+	min-width: 470px;
+	overflow-x: auto;
+}
+
 pre[class*="language-"]{
 	@apply m-0;
 }
