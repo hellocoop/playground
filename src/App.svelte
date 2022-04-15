@@ -462,11 +462,23 @@
                 <label
                   for={param}
                   class="ml-2"
-                  class:text-red-500={required && (!states.query_params.includes(param) || !states.query_param_values[param]) || (param === 'code_challenge' && states.query_param_values.response_type === 'code' && !states.query_params.includes('code_challenge'))}
+                  class:text-red-500={
+                    //required
+                    required && (!states.query_params.includes(param) || 
+
+                    //if checked and empty field
+                    !states.query_param_values[param]) || 
+
+                    //response_type: code but not code_challenge unchecked
+                    (param === 'code_challenge' && states.query_param_values.response_type === 'code' && !states.query_params.includes('code_challenge')) ||
+
+                    //response_type: id_token and response_mode: query
+                    (param === 'response_mode' && states.query_params.includes('response_mode') && states.query_param_values.response_mode === 'query' && states.query_params.includes('response_type') && states.query_param_values.response_type === 'id_token')}
                 >
                   {param} {required ? '*' : ''}
                 </label>
               </div>
+
               {#if Array.isArray(value)}
                 <div class="h-8 w-full border border-charcoal dark:border-gray-800 flex items-center rounded-sm"
                  class:opacity-60={!states.query_params.includes(param) && param !== 'response_mode' && param !== 'prompt'}
@@ -474,6 +486,7 @@
                   {#each value as ele}
                     <button
                       on:click={()=>states.query_param_values[param]=ele} class="w-1/2 h-7 mx-0.5"
+                      disabled={true}
                       class:bg-charcoal={states.query_param_values[param] === ele}
                       class:text-gray={states.query_param_values[param] === ele}
                     >
