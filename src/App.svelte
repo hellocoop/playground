@@ -462,7 +462,7 @@
                 <label
                   for={param}
                   class="ml-2"
-                  class:text-red-500={required && (!states.query_params.includes(param) || !states.query_param_values[param])}
+                  class:text-red-500={required && (!states.query_params.includes(param) || !states.query_param_values[param]) || (param === 'code_challenge' && states.query_param_values.response_type === 'code' && !states.query_params.includes('code_challenge'))}
                 >
                   {param} {required ? '*' : ''}
                 </label>
