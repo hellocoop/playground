@@ -445,7 +445,9 @@
           {#each Object.entries(queryParams.params) as [param, value]}
             {@const required = queryParams.required.includes(param)}
             <li class="flex items-center relative">
-              <div class="w-2/5 inline-flex items-center">
+              <div class="w-2/5 inline-flex items-center"
+                class:mt-6={param === 'client_id'}
+              >
                 {#if param !== 'code_verifier'}
                   <input type="checkbox" bind:group={states.query_params} on:change={(e)=>handleCheckboxInput(e, param)} class="text-charcoal form-checkbox" name={param} id={param} value={param}>
                 {:else}
