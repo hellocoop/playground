@@ -350,7 +350,7 @@
     </ul>
   </div>
 
-  {#if !mobileMenu}
+  {#if mobileMenu}
     <div
       class="bg-charcoal lg:hidden absolute left-0 top-12 w-full p-4 z-50 min-w-[320px]"
       transition:slide
@@ -383,7 +383,7 @@
     <div
       on:click={() => (mobileMenu = false)}
       transition:fade
-      class="1.5xl:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
+      class="lg:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
     />
   {/if}
 </header>
