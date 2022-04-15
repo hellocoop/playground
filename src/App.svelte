@@ -288,6 +288,12 @@
         states.query_param_values.response_mode = 'fragment'
       }
     }
+
+    if(param === 'prompt'){
+      if(!e.target.checked){
+        states.query_param_values.prompt = 'login'
+      }
+    }
   }
 
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
@@ -463,7 +469,7 @@
               </div>
               {#if Array.isArray(value)}
                 <div class="h-8 w-full border border-charcoal dark:border-gray-800 flex items-center rounded-sm"
-                 class:opacity-60={!states.query_params.includes(param) && param !== 'response_mode'}
+                 class:opacity-60={!states.query_params.includes(param) && param !== 'response_mode' && param !== 'prompt'}
                 >
                   {#each value as ele}
                     <button
