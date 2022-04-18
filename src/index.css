@@ -1,0 +1,30 @@
+@tailwind base;
+
+html, body{
+	min-width: 470px;
+	overflow-x: auto;
+}
+
+pre[class*="language-"]{
+	@apply m-0;
+}
+
+button {
+	@apply rounded-sm;
+}
+
+input[type=checkbox] {
+	@apply focus:ring-0;
+}
+
+@tailwind components;
+
+.form-input, .form-checkbox {
+	@apply rounded-sm bg-transparent;
+}
+
+.form-radio{
+	@apply bg-transparent;	
+}
+
+@tailwind utilities;
