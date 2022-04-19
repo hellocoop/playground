@@ -460,7 +460,7 @@
         } finally{
           window.location.href = requestURL
         }
-      }} class="hello-btn-dark w-full hidden lg:block">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+      }} class="hello-btn-black-on-light w-full hidden lg:block">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
     </div>
 
     <div class="w-full lg:w-1/4 lg:max-w-[18rem]">
@@ -581,7 +581,7 @@
       } finally{
         window.location.href = requestURL
       }
-    }} class="hello-btn-dark w-full lg:hidden">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+    }} class="hello-btn-black-on-light w-full lg:hidden">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
   <section class="border border-charcoal dark:border-gray-800">
