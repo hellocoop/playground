@@ -13,8 +13,12 @@ button {
 	@apply rounded-sm;
 }
 
-input[type=checkbox] {
-	@apply focus:ring-0;
+input[type=url]{
+	@apply text-white dark:text-gray;
+}
+
+input[type=radio], input[type=checkbox] {
+	@apply focus:ring-0 focus:ring-offset-0;
 }
 
 @tailwind components;
