@@ -433,7 +433,7 @@
         </li>
       </ul>
 
-      <div class="bg-gray-200 dark:bg-gray-800 p-4 break-words my-6">
+      <div class="bg-gray-200 dark:bg-gray-800 dark:bg-opacity-30 p-4 break-words my-6">
         <h2 class="inline-flex items-center">
           <span>Request URL</span>
           <button on:click={()=>copy('requestURL', requestURL)}>
