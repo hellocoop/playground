@@ -460,7 +460,7 @@
         } finally{
           window.location.href = requestURL
         }
-      }} class="hello-btn-black-and-invert w-full hidden lg:block">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+      }} class="hello-btn-black-and-static w-full hidden lg:block">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
     </div>
 
     <div class="w-full lg:w-1/4 lg:max-w-[18rem]">
@@ -533,7 +533,7 @@
 
               <div class="w-1/2 md:w-3/4">
                 {#if Array.isArray(value)}
-                  <div class="xl:h-8 p-0.5 w-full border border-charcoal dark:border-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+                  <div class="xl:h-8 p-0.5 space-x-0.5 w-full border border-charcoal dark:border-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
                    class:opacity-60={!states.query_params.includes(param) && param !== 'response_mode' && param !== 'prompt'}
                   >
                     {#each value as ele}
@@ -541,8 +541,8 @@
                         on:click={()=>states.query_param_values[param]=ele}
                         disabled={(param === 'response_mode' && !states.query_params.includes('response_mode')) || (param === 'prompt' && !states.query_params.includes('prompt'))}
                         class="{
-                          states.query_param_values[param] === ele ? "bg-charcoal dark:bg-gray-800 text-white dark:text-gray" :
-                          ""} w-full xl:w-1/2 h-full
+                          states.query_param_values[param] === ele ? "bg-charcoal dark:bg-charcoal text-white dark:text-gray border border-charcoal dark:border-[#808080]" :
+                          "hover:border hover:border-charcoal dark:hover:border-[#808080]"} disabled:cursor-not-allowed disabled:hover:border-none w-full xl:w-1/2 h-full
                         "
                       >
                           {ele}

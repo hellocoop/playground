@@ -18,7 +18,7 @@ input[type=url]{
 }
 
 input[type=radio], input[type=checkbox] {
-	@apply focus:ring-0 focus:ring-offset-0;
+	@apply focus:ring-0 focus:ring-offset-0 hover:border-2 border-charcoal dark:border-[#808080];
 }
 
 @tailwind components;
