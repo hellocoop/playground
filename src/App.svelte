@@ -611,7 +611,7 @@
         {#if results.response}
           <span class:flash={copyStates.response}>{results.response}</span>
         {:else}
-         <p>Nothing to see here</p>
+         <p>Nothing to see here yet</p>
         {/if}
       </p>
     {/if}
@@ -645,7 +645,7 @@
           </Prism>
         </span>
       {:else}
-        <p class="p-4">Nothing to see here</p>
+        <p class="p-4">Nothing to see here yet</p>
       {/if}
     {/if}
   </section>
@@ -677,7 +677,7 @@
             </li>
           {/each}
         {:else}
-          <p class="py-4">Nothing to see here</p>
+          <p class="py-4">Nothing to see here yet</p>
         {/if}
       </ul>
     {/if}
