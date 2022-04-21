@@ -384,7 +384,7 @@
 </header>
 
 <main class="p-4 space-y-4 flex-1 overflow-y-auto">
-  <section class="border border-charcoal dark:border-gray-800 w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-10">
+  <section class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-10">
     <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[20rem]">
       <h1 class="font-semibold text-lg">Authorization Server</h1>
       
@@ -433,7 +433,7 @@
         </li>
       </ul>
 
-      <div class="bg-gray-200 dark:bg-gray-800 p-4 break-words my-6">
+      <div class="bg-gray-200 dark:bg-gray-800 rounded-sm p-4 break-words my-6">
         <h2 class="inline-flex items-center">
           <span>Request URL</span>
           <button on:click={()=>copy('requestURL', requestURL)}>
@@ -584,7 +584,7 @@
     }} class="hello-btn-black-on-light w-full lg:hidden">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800">
+  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
     <button on:click={()=>cards.response=!cards.response} class="h-12 w-full flex justify-between items-center px-4"
       >
       <div class="inline-flex items-center">
@@ -617,7 +617,7 @@
     {/if}
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800">
+  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
     <button on:click={()=>cards.payload=!cards.payload} class="h-12 w-full flex justify-between items-center px-4">
       <div class="inline-flex items-center">
         <span class="font-semibold text-lg">Payload</span>
@@ -650,7 +650,7 @@
     {/if}
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800">
+  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
     <button on:click={()=>cards.claims=!cards.claims} class="h-12 w-full flex justify-between items-center px-4"
     >
       <span class="font-semibold text-lg">Claims</span>
