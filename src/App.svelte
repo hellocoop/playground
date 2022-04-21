@@ -542,7 +542,7 @@
                         disabled={(param === 'response_mode' && !states.query_params.includes('response_mode')) || (param === 'prompt' && !states.query_params.includes('prompt'))}
                         class="{
                           states.query_param_values[param] === ele ? "bg-charcoal dark:bg-charcoal text-white dark:text-gray border border-charcoal dark:border-[#808080]" :
-                          "hover:border hover:border-charcoal dark:hover:border-[#808080]"} disabled:cursor-not-allowed disabled:hover:border-none w-full xl:w-1/2 h-full
+                          "hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none"} w-full xl:w-1/2 h-full
                         "
                       >
                           {ele}
