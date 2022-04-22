@@ -5,11 +5,29 @@
   import makePKCE from './utils/pkce.js'
 
   let onMountDone = false
+  let darkMode = false
 
   onMount(()=>{
     getStatesFromLocalStorage()
     processFragmentOrQuery()
     updateFavicon()
+
+    if (
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+      darkMode = true
+    }
+    window
+      .matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('change', (event) => {
+        if (event.matches) {
+          darkMode = true
+        } else {
+          darkMode = false
+        }
+    })
+
     onMountDone = true
   })
 
@@ -460,7 +478,7 @@
         } finally{
           window.location.href = requestURL
         }
-      }} class="hello-btn-black-and-static w-full hidden lg:block">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+      }} class="hello-btn-black-and-static w-full hidden lg:block" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
     </div>
 
     <div class="w-full lg:w-1/4 lg:max-w-[18rem]">
@@ -583,7 +601,7 @@
       } finally{
         window.location.href = requestURL
       }
-    }} class="hello-btn-black-and-static w-full lg:hidden">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+    }} class="hello-btn-black-and-static w-full lg:hidden" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
   <section class="border border-charcoal dark:border-gray-800 rounded-sm">
