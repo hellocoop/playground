@@ -45,7 +45,7 @@
       code_challenge: '',
       code_verifier: '',
       login_hint: '',
-      prompt: ['login', 'profile_update'],
+      // prompt: ['login', 'profile_update'],
       response_mode: ['fragment', 'query'],
       state: ''
     },
