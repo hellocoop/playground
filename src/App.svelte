@@ -5,11 +5,29 @@
   import makePKCE from './utils/pkce.js'
 
   let onMountDone = false
+  let darkMode = false
 
   onMount(()=>{
     getStatesFromLocalStorage()
     processFragmentOrQuery()
     updateFavicon()
+
+    if (
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+      darkMode = true
+    }
+    window
+      .matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('change', (event) => {
+        if (event.matches) {
+          darkMode = true
+        } else {
+          darkMode = false
+        }
+    })
+
     onMountDone = true
   })
 
@@ -293,7 +311,7 @@
   $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
 </script>
 
-<header class="text-white flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg">
+<header class="text-white dark:text-gray flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg">
   <div class="w-1/3 inline-flex items-center">
     <button
       on:click={() => (mobileMenu = !mobileMenu)}
@@ -395,7 +413,7 @@
             name="auth_servers"
             value="https://consent.hello.coop/"
             id="consent.hello.coop"
-            class="text-charcoal form-radio"
+            class="text-charcoal form-radio dark:text-gray-800"
             bind:group={states.auth_server}
           >
           <label for="consent.hello.coop" class="ml-2 w-full flex justify-between items-center">
@@ -410,7 +428,7 @@
               name="auth_servers"
               value={server}
               id={server}
-              class="text-charcoal form-radio"
+              class="text-charcoal form-radio dark:text-gray-800"
               bind:group={states.auth_server}
             >
             <label for={server} class="ml-2 w-full">{server}</label>
@@ -421,7 +439,7 @@
             type="radio"
             name="auth_servers"
             value={states.custom_auth_server}
-            class="text-charcoal form-radio"
+            class="text-charcoal form-radio dark:text-gray-800"
             id="consent.hello.coop"
             bind:group={states.auth_server}
           >
@@ -433,7 +451,7 @@
         </li>
       </ul>
 
-      <div class="bg-gray-200 dark:bg-gray-800 rounded-sm p-4 break-words my-6">
+      <div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words my-6">
         <h2 class="inline-flex items-center">
           <span>Request URL</span>
           <button on:click={()=>copy('requestURL', requestURL)}>
@@ -460,7 +478,7 @@
         } finally{
           window.location.href = requestURL
         }
-      }} class="hello-btn-black-on-light w-full hidden lg:block">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+      }} class="hello-btn-black-and-static w-full hidden lg:block" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
     </div>
 
     <div class="w-full lg:w-1/4 lg:max-w-[18rem]">
@@ -472,7 +490,7 @@
             {#each scopes.standard as scope}
               {@const required = scopes.required.includes(scope)}
               <li class="flex items-center" class:text-red-500={required && !states.scopes.includes(scope)}>
-                <input type="checkbox" class="text-charcoal form-checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
+                <input type="checkbox" class="text-charcoal form-checkbox dark:text-gray-800" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
               </li>
             {/each}
@@ -487,7 +505,7 @@
                 class="flex items-center"
                 class:text-red-500={required && !states.scopes.includes(scope)}
               >
-                <input type="checkbox" class="text-charcoal form-checkbox" name={scope} id={scope} value={scope} bind:group={states.scopes}>
+                <input type="checkbox" class="text-charcoal form-checkbox dark:text-gray-800" name={scope} id={scope} value={scope} bind:group={states.scopes}>
                 <label for={scope} class="ml-2">{scope}</label>
               </li>
             {/each}
@@ -507,7 +525,7 @@
                 class:mt-6={param === 'client_id'}
               >
                 {#if param !== 'code_verifier'}
-                  <input type="checkbox" bind:group={states.query_params} on:change={(e)=>handleCheckboxInput(e, param)} class="text-charcoal form-checkbox" name={param} id={param} value={param}>
+                  <input type="checkbox" bind:group={states.query_params} on:change={(e)=>handleCheckboxInput(e, param)} class="text-charcoal form-checkbox dark:text-gray-800" name={param} id={param} value={param}>
                 {:else}
                   <span class="w-4"></span>
                 {/if}
@@ -533,15 +551,17 @@
 
               <div class="w-1/2 md:w-3/4">
                 {#if Array.isArray(value)}
-                  <div class="xl:h-8 p-0.5 w-full border border-charcoal dark:border-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+                  <div class="xl:h-8 p-0.5 space-x-0.5 w-full border border-charcoal dark:border-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
                    class:opacity-60={!states.query_params.includes(param) && param !== 'response_mode' && param !== 'prompt'}
                   >
                     {#each value as ele}
                       <button
-                        on:click={()=>states.query_param_values[param]=ele} class="w-full xl:w-1/2 h-full"
+                        on:click={()=>states.query_param_values[param]=ele}
                         disabled={(param === 'response_mode' && !states.query_params.includes('response_mode')) || (param === 'prompt' && !states.query_params.includes('prompt'))}
-                        class:bg-charcoal={states.query_param_values[param] === ele}
-                        class:text-gray={states.query_param_values[param] === ele}
+                        class="{
+                          states.query_param_values[param] === ele ? "bg-charcoal dark:bg-charcoal text-white dark:text-gray border border-charcoal dark:border-[#808080]" :
+                          "hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none"} w-full xl:w-1/2 h-full
+                        "
                       >
                           {ele}
                       </button>
@@ -581,7 +601,7 @@
       } finally{
         window.location.href = requestURL
       }
-    }} class="hello-btn-black-on-light w-full lg:hidden">ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+    }} class="hello-btn-black-and-static w-full lg:hidden" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
   <section class="border border-charcoal dark:border-gray-800 rounded-sm">
