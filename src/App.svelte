@@ -574,8 +574,8 @@
                   >
                     {#if param === 'client_id'}
                       <div class="mb-0.5">
-                        <button on:click={()=>states.query_param_values.client_id=clientIds.playground} class="text-xs xl:text-sm underline">Playground</button>
-                        <button on:click={()=>states.query_param_values.client_id=clientIds.greenfield} class="text-xs xl:text-sm underline xl:ml-2">GreenfieldFitness</button>
+                        <button on:click={()=>states.query_param_values.client_id=clientIds.playground} class="text-xs xl:text-sm hover:underline">Playground</button>
+                        <button on:click={()=>states.query_param_values.client_id=clientIds.greenfield} class="text-xs xl:text-sm hover:underline xl:ml-2">GreenfieldFitness</button>
                       </div>
                     {/if}
                     <input type="text" name={param} class="h-8 w-full form-input" bind:value={states.query_param_values[param]}>
