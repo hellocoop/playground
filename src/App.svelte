@@ -315,18 +315,20 @@
   <div class="w-1/3 inline-flex items-center">
     <button
       on:click={() => (mobileMenu = !mobileMenu)}
-      class="lg:hidden mr-2"
+      class="lg:hidden mr-2 group"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-6"
-        viewBox="0 0 20 20"
-        fill="currentColor"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
       >
         <path
-          fill-rule="evenodd"
-          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-          clip-rule="evenodd"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="stroke-2 group-hover:stroke-3"
+          d="M4 6h16M4 12h16M4 18h16"
         />
       </svg>
     </button>
@@ -334,7 +336,7 @@
       <span>hello.dev</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-4 ml-1 mt-0.5 opacity-80"
+        class="h-4 ml-1 mt-0.5 opacity-80 flex-shrink-0"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
