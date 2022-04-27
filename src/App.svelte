@@ -604,7 +604,7 @@
     }} class="hello-btn-black-and-static w-full lg:hidden" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
-  <section class="btn rounded-sm">
+  <section class="btn group">
     <button on:click={()=>cards.response=!cards.response} class="h-12 w-full flex justify-between items-center px-4"
       >
       <div class="inline-flex items-center">
@@ -619,7 +619,7 @@
           </svg>
         </button>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-2 group-hover:stroke-3 h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         class:rotate-180={cards.response}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -637,7 +637,7 @@
     {/if}
   </section>
 
-  <section class="btn">
+  <section class="btn group">
     <button on:click={()=>cards.payload=!cards.payload} class="h-12 w-full flex justify-between items-center px-4">
       <div class="inline-flex items-center">
         <span class="font-semibold text-lg">Payload</span>
@@ -651,7 +651,7 @@
           </svg>
         </button>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-2 group-hover:stroke-3 h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         class:rotate-180={cards.payload}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -670,11 +670,11 @@
     {/if}
   </section>
 
-  <section class="btn">
+  <section class="btn group">
     <button on:click={()=>cards.claims=!cards.claims} class="h-12 w-full flex justify-between items-center px-4"
     >
       <span class="font-semibold text-lg">Claims</span>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-2 group-hover:stroke-3 h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         class:rotate-180={cards.claims}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
