@@ -31,4 +31,9 @@ input[type=radio], input[type=checkbox] {
 	@apply bg-transparent;	
 }
 
+.btn{
+	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-[#808080] rounded-sm;
+	@apply hover:ring-2;
+}
+
 @tailwind utilities;

@@ -604,7 +604,7 @@
     }} class="hello-btn-black-and-static w-full lg:hidden" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
+  <section class="btn rounded-sm">
     <button on:click={()=>cards.response=!cards.response} class="h-12 w-full flex justify-between items-center px-4"
       >
       <div class="inline-flex items-center">
@@ -637,7 +637,7 @@
     {/if}
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
+  <section class="btn">
     <button on:click={()=>cards.payload=!cards.payload} class="h-12 w-full flex justify-between items-center px-4">
       <div class="inline-flex items-center">
         <span class="font-semibold text-lg">Payload</span>
@@ -670,7 +670,7 @@
     {/if}
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
+  <section class="btn">
     <button on:click={()=>cards.claims=!cards.claims} class="h-12 w-full flex justify-between items-center px-4"
     >
       <span class="font-semibold text-lg">Claims</span>
