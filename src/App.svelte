@@ -332,7 +332,7 @@
         />
       </svg>
     </button>
-    <a href="https://hello.dev" target="_blank" class="inline-flex items-center w-1/3">
+    <a href="https://hello.dev" target="_blank" class="inline-flex items-center w-1/3 hover:underlind">
       <span>hello.dev</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
