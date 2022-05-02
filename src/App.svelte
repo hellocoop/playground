@@ -315,23 +315,39 @@
   <div class="w-1/3 inline-flex items-center">
     <button
       on:click={() => (mobileMenu = !mobileMenu)}
-      class="lg:hidden mr-2"
+      class="lg:hidden mr-2 group"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-6"
-        viewBox="0 0 20 20"
-        fill="currentColor"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
       >
         <path
-          fill-rule="evenodd"
-          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-          clip-rule="evenodd"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="stroke-2 group-hover:stroke-3"
+          d="M4 6h16M4 12h16M4 18h16"
         />
       </svg>
     </button>
-    <a href="https://hello.dev" target="_blank" class="w-1/3">
-      hello.dev
+    <a href="https://hello.dev" target="_blank" class="inline-flex items-center relative nav-link">
+      <span>hello.dev</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 ml-1 mt-0.5 opacity-80 flex-shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+        />
+      </svg>
     </a>  
   </div>
   <span class="md:w-1/3 flex justify-center flex-shrink-0">
@@ -455,7 +471,7 @@
         <h2 class="inline-flex items-center">
           <span>Request URL</span>
           <button on:click={()=>copy('requestURL', requestURL)}>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1 stroke-2 hover:stroke-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
           </button>
@@ -574,8 +590,8 @@
                   >
                     {#if param === 'client_id'}
                       <div class="mb-0.5">
-                        <button on:click={()=>states.query_param_values.client_id=clientIds.playground} class="text-xs xl:text-sm underline">Playground</button>
-                        <button on:click={()=>states.query_param_values.client_id=clientIds.greenfield} class="text-xs xl:text-sm underline xl:ml-2">GreenfieldFitness</button>
+                        <button on:click={()=>states.query_param_values.client_id=clientIds.playground} class="text-xs xl:text-sm hover:underline">Playground</button>
+                        <button on:click={()=>states.query_param_values.client_id=clientIds.greenfield} class="text-xs xl:text-sm hover:underline xl:ml-2">GreenfieldFitness</button>
                       </div>
                     {/if}
                     <input type="text" name={param} class="h-8 w-full form-input" bind:value={states.query_param_values[param]}>
@@ -604,7 +620,7 @@
     }} class="hello-btn-black-and-static w-full lg:hidden" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
+  <section class="btn group">
     <button on:click={()=>cards.response=!cards.response} class="h-12 w-full flex justify-between items-center px-4"
       >
       <div class="inline-flex items-center">
@@ -614,12 +630,12 @@
           cards.response = false;
           copy('response', results.response)}
         }>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1 stroke-2 hover:stroke-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
         </button>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-2 group-hover:stroke-3 h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         class:rotate-180={cards.response}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -637,7 +653,7 @@
     {/if}
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
+  <section class="btn group">
     <button on:click={()=>cards.payload=!cards.payload} class="h-12 w-full flex justify-between items-center px-4">
       <div class="inline-flex items-center">
         <span class="font-semibold text-lg">Payload</span>
@@ -646,12 +662,12 @@
           cards.payload = false;
           copy('payload', results.payload)
         }}>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 ml-1 stroke-2 hover:stroke-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
         </button>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-2 group-hover:stroke-3 h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         class:rotate-180={cards.payload}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -670,11 +686,11 @@
     {/if}
   </section>
 
-  <section class="border border-charcoal dark:border-gray-800 rounded-sm">
+  <section class="btn group">
     <button on:click={()=>cards.claims=!cards.claims} class="h-12 w-full flex justify-between items-center px-4"
     >
       <span class="font-semibold text-lg">Claims</span>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-2 group-hover:stroke-3 h-5 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         class:rotate-180={cards.claims}
       >
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
