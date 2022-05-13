@@ -70,11 +70,12 @@
     required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
   }
 
+  let custom_authorization_server = ''
+
   //default values, also binds to user input
   let states = {
-    auth_server: 'https://consent.hello.coop/',
-    auth_servers: [],
-    custom_auth_server: '',
+    selected_authorization_server: 'https://consent.hello.coop/',
+    custom_authorization_servers: [],
     scopes: ['openid'],
     query_params: ['client_id', 'redirect_uri', 'nonce', 'response_type'],
     query_param_values: {
@@ -183,7 +184,7 @@
       },
       body: new URLSearchParams(params).toString()
     }
-    const tokenEndpoint = new URL('/oauth/token', states.auth_server)
+    const tokenEndpoint = new URL('/oauth/token', states.selected_authorization_server)
     try{
       const res = await fetch(tokenEndpoint, options)
       const json = await res.json()
@@ -195,7 +196,7 @@
   }
 
   async function getIntrospect(id_token){
-    const introspectEndpoint = new URL('/oauth/introspect', states.auth_server)
+    const introspectEndpoint = new URL('/oauth/introspect', states.selected_authorization_server)
     const params = {
       client_id: states.query_param_values.client_id,
       nonce: states.query_param_values.nonce,
@@ -308,7 +309,7 @@
     }
   }
 
-  $: requestURL = makeRequestURL(states.auth_server, states.scopes, states.query_params)
+  $: requestURL = makeRequestURL(states.selected_authorization_server, states.scopes, states.query_params)
 </script>
 
 <header class="text-white dark:text-gray flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg">
@@ -430,14 +431,14 @@
             value="https://consent.hello.coop/"
             id="consent.hello.coop"
             class="text-charcoal form-radio dark:text-gray-800"
-            bind:group={states.auth_server}
+            bind:group={states.selected_authorization_server}
           >
           <label for="consent.hello.coop" class="ml-2 w-full flex justify-between items-center">
             <span>https://consent.hello.coop/</span>
             <span>(production)</span>
           </label>
         </li>
-        {#each states.auth_servers as server}
+        {#each states.custom_authorization_servers as server}
           <li class="flex items-center">
             <input
               type="radio"
@@ -445,7 +446,7 @@
               value={server}
               id={server}
               class="text-charcoal form-radio dark:text-gray-800"
-              bind:group={states.auth_server}
+              bind:group={states.selected_authorization_server}
             >
             <label for={server} class="ml-2 w-full">{server}</label>
           </li>
@@ -454,14 +455,14 @@
           <input
             type="radio"
             name="auth_servers"
-            value={states.custom_auth_server}
+            value={custom_authorization_server}
             class="text-charcoal form-radio dark:text-gray-800"
             id="consent.hello.coop"
-            bind:group={states.auth_server}
+            bind:group={states.selected_authorization_server}
           >
           <input
-            bind:value={states.custom_auth_server}
-            on:input={e=>states.auth_server=e.target.value} type="url" name="custom"
+            bind:value={custom_authorization_server}
+            on:input={e=>states.selected_authorization_server=e.target.value} type="url" name="custom"
             class="h-8 ml-2 w-full text-charcoal form-input" placeholder="eg http:/example.com:9000/"
           >
         </li>
@@ -483,11 +484,11 @@
 
       <button on:click={()=>{
         try{
-          const url = new URL(states.custom_auth_server)
-          if(!['https://consent.hello.coop/', ...states.auth_servers].includes(url.href)){
-            states.auth_servers = [...states.auth_servers, url.href]
-            states.auth_server = url.href
-            states.custom_auth_server = ''
+          const url = new URL(custom_authorization_server)
+          if(!['https://consent.hello.coop/', ...states.custom_authorization_servers].includes(url.href)){
+            states.custom_authorization_servers = [...states.custom_authorization_servers, url.href]
+            states.selected_authorization_server = url.href
+            custom_authorization_server = ''
           } 
         } catch{
           console.error('Custom auth server endpoint not saved locally: Invalid URL')
@@ -606,11 +607,12 @@
 
     <button on:click={()=>{
       try{
-        const url = new URL(states.custom_auth_server)
-        if(!['https://consent.hello.coop/', ...states.auth_servers].includes(url.href)){
-          states.auth_servers = [...states.auth_servers, url.href]
-          states.auth_server = url.href
-          states.custom_auth_server = ''
+        if(!custom_authorization_server) return
+        const url = new URL(custom_authorization_server)
+        if(!['https://consent.hello.coop/', ...states.custom_authorization_servers].includes(url.href)){
+          states.custom_authorization_servers = [...states.custom_authorization_servers, url.href]
+          states.selected_authorization_server = url.href
+          custom_authorization_server = ''
         } 
       } catch{
         console.error('Custom auth server endpoint not saved locally: Invalid URL')
