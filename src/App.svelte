@@ -568,7 +568,7 @@
 
               <div class="w-1/2 md:w-3/4">
                 {#if Array.isArray(value)}
-                  <div class="xl:h-8 p-0.5 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full border border-charcoal dark:border-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+                  <div class="xl:h-8 p-0.5 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
                    class:opacity-60={!states.query_params.includes(param) && param !== 'response_mode' && param !== 'prompt'}
                   >
                     {#each value as ele}

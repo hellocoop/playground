@@ -36,4 +36,10 @@ input[type=radio], input[type=checkbox] {
 	@apply hover:ring-2;
 }
 
+.form-input{
+	@apply ring-1 border-none hover:ring-2 focus:ring-2;
+	@apply ring-charcoal !important;
+	@apply dark:ring-[#808080] !important;
+}
+
 @tailwind utilities;
