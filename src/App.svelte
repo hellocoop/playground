@@ -231,10 +231,21 @@
     return nonce
   }
 
+  function compareKeys(a, b) {
+    var aKeys = Object.keys(a).sort();
+    var bKeys = Object.keys(b).sort();
+    return JSON.stringify(aKeys) === JSON.stringify(bKeys);
+  }
+
   function getStatesFromLocalStorage(){
     if(!localStorage.states) return;
     try{
       const _states = JSON.parse(localStorage.getItem('states'))
+      if(!compareKeys(states, _states)){
+        console.info('State keys do not match, clearing localStorage')
+        localStorage.clear();
+        return;
+      }
       states = _states
     } catch(err){
       console.error(err)
