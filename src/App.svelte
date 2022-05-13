@@ -427,7 +427,7 @@
         <li class="flex items-center">
           <input
             type="radio"
-            name="auth_servers"
+            name="authorization_server"
             value="https://consent.hello.coop/"
             id="consent.hello.coop"
             class="text-charcoal form-radio dark:text-gray-800"
@@ -442,7 +442,7 @@
           <li class="flex items-center">
             <input
               type="radio"
-              name="auth_servers"
+              name="authorization_server"
               value={server}
               id={server}
               class="text-charcoal form-radio dark:text-gray-800"
@@ -454,7 +454,7 @@
         <li class="flex items-center">
           <input
             type="radio"
-            name="auth_servers"
+            name="authorization_server"
             value={custom_authorization_server}
             class="text-charcoal form-radio dark:text-gray-800"
             id="consent.hello.coop"
