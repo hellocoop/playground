@@ -14,7 +14,7 @@ button {
 }
 
 input[type=url]{
-	@apply text-white dark:text-gray;
+	@apply text-charcoal dark:text-[#d4d4d4];
 }
 
 input[type=radio], input[type=checkbox] {
@@ -34,6 +34,12 @@ input[type=radio], input[type=checkbox] {
 .btn{
 	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-[#808080] rounded-sm;
 	@apply hover:ring-2;
+}
+
+.form-input{
+	@apply ring-1 border-none hover:ring-2 focus:ring-2;
+	@apply ring-charcoal !important;
+	@apply dark:ring-[#808080] !important;
 }
 
 @tailwind utilities;
