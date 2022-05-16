@@ -42,4 +42,8 @@ input[type=radio], input[type=checkbox] {
 	@apply dark:ring-[#808080] !important;
 }
 
+.form-input::placeholder, .form-textarea::placeholder{
+	@apply text-charcoal dark:text-gray opacity-50;
+}
+
 @tailwind utilities;
