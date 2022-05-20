@@ -291,7 +291,6 @@
           custom_authorization_server = ''
         } 
       } catch{
-        continueWithHelloAjax = false;
         console.error('Custom auth server endpoint not saved locally: Invalid URL')
       } finally{
         window.location.href = requestURL
