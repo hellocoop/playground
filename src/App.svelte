@@ -280,6 +280,24 @@
     }
   }
 
+  let continueWithHelloAjax = false;
+  async function continueWithHello(){
+    try{
+      continueWithHelloAjax = true;
+      const url = new URL(custom_authorization_server)
+        if(!['https://consent.hello.coop/', ...states.custom_authorization_servers].includes(url.href)){
+          states.custom_authorization_servers = [...states.custom_authorization_servers, url.href]
+          states.selected_authorization_server = url.href
+          custom_authorization_server = ''
+        } 
+      } catch{
+        continueWithHelloAjax = false;
+        console.error('Custom auth server endpoint not saved locally: Invalid URL')
+      } finally{
+        window.location.href = requestURL
+    }
+  }
+
   async function copy(state, content){
     copyStates[state] = true
     await navigator.clipboard.writeText(content);
@@ -493,20 +511,7 @@
         </span>
       </div>
 
-      <button on:click={()=>{
-        try{
-          const url = new URL(custom_authorization_server)
-          if(!['https://consent.hello.coop/', ...states.custom_authorization_servers].includes(url.href)){
-            states.custom_authorization_servers = [...states.custom_authorization_servers, url.href]
-            states.selected_authorization_server = url.href
-            custom_authorization_server = ''
-          } 
-        } catch{
-          console.error('Custom auth server endpoint not saved locally: Invalid URL')
-        } finally{
-          window.location.href = requestURL
-        }
-      }} class="hello-btn-black-and-static w-full hidden lg:block" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+      <button on:click={continueWithHello} class="hello-btn-black-and-static w-full hidden lg:block" class:hello-btn-loader={continueWithHelloAjax} disabled={continueWithHelloAjax} class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
     </div>
 
     <div class="w-full lg:w-1/4 lg:max-w-[18rem]">
@@ -616,21 +621,7 @@
       </div>
     </div>
 
-    <button on:click={()=>{
-      try{
-        if(!custom_authorization_server) return
-        const url = new URL(custom_authorization_server)
-        if(!['https://consent.hello.coop/', ...states.custom_authorization_servers].includes(url.href)){
-          states.custom_authorization_servers = [...states.custom_authorization_servers, url.href]
-          states.selected_authorization_server = url.href
-          custom_authorization_server = ''
-        } 
-      } catch{
-        console.error('Custom auth server endpoint not saved locally: Invalid URL')
-      } finally{
-        window.location.href = requestURL
-      }
-    }} class="hello-btn-black-and-static w-full lg:hidden" class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
+    <button on:click={continueWithHello} class="hello-btn-black-and-static w-full lg:hidden" class:hello-btn-loader={continueWithHelloAjax} disabled={continueWithHelloAjax} class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
   </section>
 
   <section class="btn group">
