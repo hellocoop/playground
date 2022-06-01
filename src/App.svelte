@@ -82,7 +82,7 @@
       ...queryParams.params,
       client_id: clientIds.playground,
       nonce: makeNonce(),
-      redirect_uri: window.location.origin,
+      redirect_uri: window.location.origin + '/',
       response_mode: 'fragment',
       response_type: 'id_token',
       prompt: 'login'
