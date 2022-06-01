@@ -284,15 +284,18 @@
   async function continueWithHello(){
     try{
       continueWithHelloAjax = true;
-      const url = new URL(custom_authorization_server)
-        if(!['https://consent.hello.coop/', ...states.custom_authorization_servers].includes(url.href)){
-          states.custom_authorization_servers = [...states.custom_authorization_servers, url.href]
-          states.selected_authorization_server = url.href
-          custom_authorization_server = ''
-        } 
-      } catch{
-        console.error('Custom auth server endpoint not saved locally: Invalid URL')
-      } finally{
+      let url;
+      if(custom_authorization_server.length){
+        url = new URL(custom_authorization_server)
+      }
+      if(!['https://consent.hello.coop/', ...states.custom_authorization_servers].includes(url.href)){
+        states.custom_authorization_servers = [...states.custom_authorization_servers, url.href]
+        states.selected_authorization_server = url.href
+        custom_authorization_server = ''
+      } 
+    } catch{
+        // console.error('Custom auth server endpoint not saved locally: Invalid URL')
+    } finally{
         window.location.href = requestURL
     }
   }
