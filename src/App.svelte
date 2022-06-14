@@ -649,7 +649,7 @@
     </button>
 
     {#if cards.response}
-      <p class="p-4 break-words">
+      <p class="p-4 break-words" transition:slide>
         {#if results.response}
           <span class:flash={copyStates.response}>{results.response}</span>
         {:else}
@@ -681,13 +681,13 @@
     </button>
     {#if cards.payload}
       {#if results.payload}
-        <span class:flash={copyStates.payload}>
+        <span class:flash={copyStates.payload} transition:slide>
           <Prism language="javascript">
             {JSON.stringify(results.payload,null,2)}
           </Prism>
         </span>
       {:else}
-        <p class="p-4">Nothing to see here yet</p>
+        <p class="p-4" transition:slide>Nothing to see here yet</p>
       {/if}
     {/if}
   </section>
@@ -703,7 +703,7 @@
       </svg>
     </button>
     {#if cards.claims}
-      <ul class="flex flex-col px-4 divide-y">
+      <ul class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50" transition:slide>
         {#if results.payload && !results.payload.error}
           {#each scopes.claims.filter(i=>results.payload[i]) as claim}
             <li class="py-4 flex items-center w-full">
