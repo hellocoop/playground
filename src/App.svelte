@@ -51,7 +51,7 @@
     standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
     custom: ['profile_update', 'ethereum'],
     required: ['openid'],
-    claims: ['sub', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture']
+    claims: ['sub', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture', 'ethereum']
   }
 
   const queryParams = {
