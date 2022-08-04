@@ -74,7 +74,7 @@
 
   //default values, also binds to user input
   let states = {
-    selected_authorization_server: 'https://consent.hello.coop/',
+    selected_authorization_server: 'https://wallet.hello.coop/authorize',
     custom_authorization_servers: [],
     scopes: ['openid'],
     query_params: ['client_id', 'redirect_uri', 'nonce', 'response_type'],
@@ -288,7 +288,7 @@
       if(custom_authorization_server.length){
         url = new URL(custom_authorization_server)
       }
-      if(!['https://consent.hello.coop/', ...states.custom_authorization_servers].includes(url.href)){
+      if(!['https://wallet.hello.coop/authorize', ...states.custom_authorization_servers].includes(url.href)){
         states.custom_authorization_servers = [...states.custom_authorization_servers, url.href]
         states.selected_authorization_server = url.href
         custom_authorization_server = ''
@@ -459,13 +459,13 @@
           <input
             type="radio"
             name="authorization_server"
-            value="https://consent.hello.coop/"
-            id="consent.hello.coop"
+            value="https://wallet.hello.coop/authorize"
+            id="wallet/authorize"
             class="text-charcoal form-radio dark:text-gray-800"
             bind:group={states.selected_authorization_server}
           >
-          <label for="consent.hello.coop" class="ml-2 w-full flex justify-between items-center">
-            <span>https://consent.hello.coop/</span>
+          <label for="wallet/authorize" class="ml-2 w-full flex justify-between items-center">
+            <span>https://wallet.hello.coop/authorize</span>
             <span>(production)</span>
           </label>
         </li>
@@ -488,7 +488,7 @@
             name="authorization_server"
             value={custom_authorization_server}
             class="text-charcoal form-radio dark:text-gray-800"
-            id="consent.hello.coop"
+            id="custom-authorization-server"
             bind:group={states.selected_authorization_server}
           >
           <input
