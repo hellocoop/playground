@@ -9,7 +9,7 @@ This repo contains the source code powering [https://playground.hello.dev/](http
 1. Git
 1. Node (>=16.0.0), npm (>=7.0.0)
 1. A fork of the repo (for any contributions)
-1. A clone of the [playgroundrepo](https://github.com/hellocoop/playground) on your local machine
+1. A clone of the [playground repo](https://github.com/hellocoop/playground) on your local machine
 
 ### Installation
 
