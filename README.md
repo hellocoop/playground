@@ -54,4 +54,4 @@ If possible, test any visual changes in all latest versions of common browsers, 
 
 ## License
 
-[MIT][LICENSE]
+[MIT](LICENSE)
