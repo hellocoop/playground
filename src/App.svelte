@@ -150,11 +150,13 @@
       } catch(err){
         result.token = err
       }
-      try{
-        const res = await getUserInfo(result.token.access_token)
-        result.userinfo = res
-      } catch(err){
-        result.userinfo = err
+      if(result.token.access_token) {
+        try{
+          const res = await getUserInfo(result.token.access_token)
+          result.userinfo = res
+        } catch(err){
+          result.userinfo = err
+        }
       }
     }
     if(id_token || result.token?.id_token){
