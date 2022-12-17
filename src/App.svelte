@@ -48,6 +48,7 @@
         "instagram",
         "bio",
         "banner",
+        "existing_name"
       ]
       scopes.standard = [...scopes.standard, ..._standard_scopes]
       scopes.custom = [...scopes.custom, ..._custom_scopes]
