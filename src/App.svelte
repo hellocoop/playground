@@ -7,10 +7,25 @@
   let onMountDone = false
   let darkMode = false
 
+  const scopes = {
+    standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
+    custom: ['profile_update', 'ethereum'],
+    required: ['openid'],
+    claims: ['sub', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture', 'ethereum']
+  }
+
   onMount(()=>{
     getStatesFromLocalStorage()
     processFragmentOrQuery()
     updateFavicon()
+
+    if(localStorage.plausible_ignore == "true") {
+      const _standard_scopes = ["preferred_username"]
+      const _custom_scopes = ["twitter", "github", "gitlab", "mastodon", "instagram", "bio", "banner"]
+      scopes.standard = [...scopes.standard, ..._standard_scopes]
+      scopes.custom = [...scopes.custom, ..._custom_scopes]
+      scopes.claims = [...scopes.claims, ..._standard_scopes, ..._custom_scopes]
+    }
 
     if (
       window.matchMedia &&
@@ -45,13 +60,6 @@
   const clientIds = {
     playground: '46be57a7-d0f5-459e-9655-24799433637d',
     greenfield: '3574f001-0874-4b20-bffd-8f3e37634274'
-  }
-
-  const scopes = {
-    standard: ['openid', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture'],
-    custom: ['profile_update', 'ethereum'],
-    required: ['openid'],
-    claims: ['sub', 'name', 'nickname', 'given_name', 'family_name', 'email', 'phone', 'picture', 'ethereum']
   }
 
   const queryParams = {
@@ -485,7 +493,7 @@
 </header>
 
 <main class="p-4 space-y-4 flex-1 overflow-y-auto">
-  <section class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-10">
+  <section class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5">
     <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[20rem]">
       <h1 class="font-semibold text-lg">Authorization Server</h1>
       
@@ -550,10 +558,10 @@
       <button on:click={continueWithHello} class="hello-btn-black-and-static w-full hidden lg:flex" class:hello-btn-loader={continueWithHelloAjax} disabled={continueWithHelloAjax} class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button>
     </div>
 
-    <div class="w-full lg:w-1/4 lg:max-w-[18rem]">
+    <div class="w-full lg:w-2/5 lg:max-w-[20rem]">
       <h1 class="font-semibold text-lg">Scopes (* required)</h1>
       <div class="flex mt-2">
-        <div class="w-1/2">
+        <div class="w-1/2 lg:w-3/5">
           <h2>Standard</h2>
           <ul class="space-y-2 mt-2">
             {#each scopes.standard as scope}
@@ -565,7 +573,7 @@
             {/each}
           </ul>
         </div>
-        <div class="w-1/2">
+        <div class="w-1/2 lg:w-2/5">
           <h2>Custom</h2>
           <ul class="space-y-2 mt-2">
             {#each scopes.custom as scope}
