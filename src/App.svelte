@@ -48,6 +48,7 @@
         "instagram",
         "bio",
         "banner",
+        "recovery",
         "existing_name",
         "existing_username",
       ]
