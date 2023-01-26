@@ -41,13 +41,14 @@
     if (localStorage.plausible_ignore == "true") {
       const _standard_scopes = ["preferred_username"]
       const _custom_scopes = [
-        "twitter",
-        "github",
-        "gitlab",
-        "mastodon",
-        "instagram",
-        "bio",
-        "banner",
+        // "twitter",
+        // "github",
+        // "gitlab",
+        // "mastodon",
+        // "instagram",
+        // "bio",
+        // "banner",
+        "verified_name",
         "recovery",
         "existing_name",
         "existing_username",
@@ -567,7 +568,7 @@
   <section
     class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5"
   >
-    <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[20rem]">
+    <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
       <h1 class="font-semibold text-lg">Authorization Server</h1>
 
       <ul class="space-y-2 mt-2">
@@ -655,10 +656,10 @@
       >
     </div>
 
-    <div class="w-full lg:w-2/5 lg:max-w-[20rem]">
+    <div>
       <h1 class="font-semibold text-lg">Scopes (* required)</h1>
-      <div class="flex mt-2">
-        <div class="w-1/2 lg:w-3/5">
+      <div class="flex mt-2 gap-x-4">
+        <div>
           <h2>Standard</h2>
           <ul class="space-y-2 mt-2">
             {#each scopes.standard as scope}
@@ -682,7 +683,7 @@
             {/each}
           </ul>
         </div>
-        <div class="w-1/2 lg:w-2/5">
+        <div>
           <h2>Custom</h2>
           <ul class="space-y-2 mt-2">
             {#each scopes.custom as scope}
@@ -707,7 +708,7 @@
       </div>
     </div>
 
-    <div class="flex-1 w-full lg:max-w-[42rem]">
+    <div class="flex-1">
       <h1 class="font-semibold text-lg">Query Params (* required)</h1>
       <div class="mt-2">
         <ul class="space-y-2 mt-2">
