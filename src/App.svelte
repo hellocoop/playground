@@ -455,7 +455,7 @@
           u: new URL("https://playground.hello.dev/"),
       };
       try {
-          await fetch("https://plausible.io/api/event", {
+          await fetch("/api/event", {
               method: "POST",
               body: JSON.stringify(_body),
           });
