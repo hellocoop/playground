@@ -785,13 +785,15 @@
         <ul class="space-y-2 mt-2">
           {#each Object.entries(queryParams.params) as [param, value]}
             {@const required = queryParams.required.includes(param)}
-            <li class="flex items-center relative">
+            <li
+              class="flex {param === 'provider_hint'
+                ? 'items-start'
+                : 'items-center'} relative"
+            >
               <div
                 class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
                 class:mt-6={param === "client_id"}
-                class:-mt-18={param === "provider_hint"}
-                class:-mt-24={param === "provider_hint" &&
-                  invalidProviderHintSlug}
+                class:mt-1={param === "provider_hint"}
               >
                 {#if param !== "code_verifier"}
                   <input
@@ -895,54 +897,25 @@
                       transition:slide|local
                     >
                       {#if invalidProviderHintSlug.length > 1}
-                        {invalidProviderHintSlug.join(", ")} are unsupported slugs
+                        {invalidProviderHintSlug.join(", ")} are unsupported values
                       {:else}
-                        {invalidProviderHintSlug} is an unsupported slug
+                        {invalidProviderHintSlug} is an unsupported value
                       {/if}
                     </p>
                   {/if}
                   <p class="text-xs mt-1.5">
                     <span class="opacity-80"
-                      >Possible values: {possibleSlugs.join(", ")}</span
+                      >apple discord facebook github gitlab twitch twitter
+                      mastodon microsoft line yahoo phone ethereum</span
                     ><br />
-                    <span class="opacity-50"
-                      >If you want certain providers to be above the fold on the
-                      login page, you can add one or more slugs separated by
-                      space (eg. discord github) <br />
-                      You can also send providers below the fold by suffixing the
-                      slugs with `--` (eg. google-- email--)<br />
-                      Default: google email, apple google email (devices running
-                      macos/ios), microsoft google email (devices running windows)
-                    </span>
+                    <span class="opacity-80"
+                      >apple-- microsoft-- google-- email--</span
+                    >
                   </p>
                 {/if}
               </div>
             </li>
           {/each}
-
-          <li class="flex items-center relative">
-            <div
-              class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
-            >
-              <input
-                type="checkbox"
-                bind:group={states.query_params}
-                class="text-charcoal form-checkbox dark:text-gray-800"
-                name="test"
-                id="test"
-                value="test"
-              />
-              <label for="test" class="ml-2"> provider_hint </label>
-            </div>
-
-            <div class="w-1/2 md:w-3/4">
-              <select multiple class="w-full h-32">
-                {#each possibleSlugs as slug}
-                  <option>{slug}</option>
-                {/each}
-              </select>
-            </div>
-          </li>
         </ul>
       </div>
     </div>
