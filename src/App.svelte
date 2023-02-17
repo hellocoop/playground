@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
+  import { fade, slide } from "svelte/transition";
   import Prism from "svelte-prism";
   import makePKCE from "./utils/pkce.js";
 
@@ -33,6 +33,46 @@
     ],
   };
 
+  const possibleSlugs = [
+    "apple",
+    "google",
+    "discord",
+    "facebook",
+    "github",
+    "gitlab",
+    "twitch",
+    "twitter",
+    "mastodon",
+    "microsoft",
+    "line",
+    "yahoo",
+    "email",
+    "phone",
+  ];
+
+  let invalidProviderHintSlug = null;
+  let debounceTimer;
+
+  $: {
+    //show error if invalid provider_hint
+    if ("provider_hint" in states.query_param_values) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const providerHintsArr =
+          states.query_param_values?.provider_hint?.split(" ");
+        const invalidSlugs = providerHintsArr
+          .map((i) => i.replace("--", ""))
+          .filter((i) => !possibleSlugs.includes(i) && i);
+
+        if (invalidSlugs?.length) {
+          invalidProviderHintSlug = Array.from(invalidSlugs);
+        } else {
+          invalidProviderHintSlug = null;
+        }
+      }, 250);
+    }
+  }
+
   onMount(() => {
     getStatesFromLocalStorage();
     processFragmentOrQuery();
@@ -62,6 +102,7 @@
         ..._standard_scopes,
         ..._custom_scopes,
       ];
+      queryParams.params.provider_hint = "";
     }
 
     if (
@@ -747,6 +788,9 @@
               <div
                 class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
                 class:mt-6={param === "client_id"}
+                class:-mt-18={param === "provider_hint"}
+                class:-mt-24={param === "provider_hint" &&
+                  invalidProviderHintSlug}
               >
                 {#if param !== "code_verifier"}
                   <input
@@ -841,6 +885,35 @@
                       bind:value={states.query_param_values[param]}
                     />
                   </div>
+                {/if}
+
+                {#if param === "provider_hint"}
+                  {#if Array.isArray(invalidProviderHintSlug)}
+                    <p
+                      class="text-xs mt-1.5 text-red-500"
+                      transition:slide|local
+                    >
+                      {#if invalidProviderHintSlug.length > 1}
+                        {invalidProviderHintSlug.join(", ")} are unsupported slugs
+                      {:else}
+                        {invalidProviderHintSlug} is an unsupported slug
+                      {/if}
+                    </p>
+                  {/if}
+                  <p class="text-xs mt-1.5">
+                    <span class="opacity-80"
+                      >Possible values: {possibleSlugs.join(", ")}</span
+                    ><br />
+                    <span class="opacity-50"
+                      >If you want certain providers to be above the fold on the
+                      login page, you can add one or more slugs separated by
+                      space (eg. discord github) <br />
+                      You can also send providers below the fold by suffixing the
+                      slugs with `--` (eg. google-- email--)<br />
+                      Default: google email, apple google email (devices running
+                      macos/ios), microsoft google email (devices running windows)
+                    </span>
+                  </p>
                 {/if}
               </div>
             </li>
