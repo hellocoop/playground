@@ -15,12 +15,12 @@ button {
 }
 
 input[type=url] {
-	@apply text-charcoal dark: text-[#d4d4d4];
+	@apply text-charcoal dark:text-[#d4d4d4];
 }
 
 input[type=radio],
 input[type=checkbox] {
-	@apply hover: border-2 border-charcoal dark:border-[#808080];
+	@apply hover:border-2 border-charcoal dark:border-[#808080];
 }
 
 @tailwind components;
@@ -35,19 +35,19 @@ input[type=checkbox] {
 }
 
 .btn {
-	@apply ring-1 border-none bg-transparent ring-charcoal dark: ring-[#808080] rounded-sm;
-	@apply hover: ring-2;
+	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-[#808080] rounded-sm;
+	@apply hover:ring-2;
 }
 
 .form-input {
-	@apply ring-1 border-none hover: ring-2;
+	@apply ring-1 border-none hover:ring-2;
 	@apply ring-charcoal !important;
-	@apply dark: ring-[#808080] !important;
+	@apply dark:ring-[#808080] !important;
 }
 
 .form-input::placeholder,
 .form-textarea::placeholder {
-	@apply text-charcoal dark: text-gray opacity-50;
+	@apply text-charcoal dark:text-gray opacity-50;
 }
 
 @tailwind utilities;
