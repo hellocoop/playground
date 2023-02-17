@@ -38,6 +38,8 @@
     processFragmentOrQuery()
     updateFavicon()
 
+    sendEvent()
+
     if (localStorage.plausible_ignore == "true") {
       const _standard_scopes = ["preferred_username"]
       const _custom_scopes = [
@@ -439,6 +441,29 @@
     states.scopes,
     states.query_params
   )
+
+  async function sendEvent() {
+      if (
+          localStorage.getItem("plausible_ignore") == "true" ||
+          window.location.origin !== "https://playground.hello.dev"
+      ) return;
+      const _body = {
+          w: window.innerWidth,
+          d: "playground.hello.dev",
+          n: "pageview",
+          r: document.referrer || null,
+          u: new URL("https://playground.hello.dev/"),
+      };
+      try {
+          await fetch("https://plausible.io/api/event", {
+              method: "POST",
+              body: JSON.stringify(_body),
+          });
+          console.info(`Event sent: ${_body.u} (${_body.n})`);
+      } catch (err) {
+          console.error(err);
+      }
+  }
 </script>
 
 <svelte:window
