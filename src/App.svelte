@@ -184,6 +184,7 @@
       queryParams = new URLSearchParams(window.location.search)
       result.authorize = window.location.search
     }
+    cleanURL()
     const id_token = queryParams.get("id_token")
     const code = queryParams.get("code")
     if (code) {
@@ -210,7 +211,6 @@
         result.introspect = err
       }
     }
-    cleanURL()
   }
 
   function cleanURL() {
