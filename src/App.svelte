@@ -48,6 +48,7 @@
     "yahoo",
     "email",
     "phone",
+    "ethereum",
   ];
 
   let invalidProviderHintSlug = null;
@@ -918,6 +919,30 @@
               </div>
             </li>
           {/each}
+
+          <li class="flex items-center relative">
+            <div
+              class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
+            >
+              <input
+                type="checkbox"
+                bind:group={states.query_params}
+                class="text-charcoal form-checkbox dark:text-gray-800"
+                name="test"
+                id="test"
+                value="test"
+              />
+              <label for="test" class="ml-2"> provider_hint </label>
+            </div>
+
+            <div class="w-1/2 md:w-3/4">
+              <select multiple class="w-full h-32">
+                {#each possibleSlugs as slug}
+                  <option>{slug}</option>
+                {/each}
+              </select>
+            </div>
+          </li>
         </ul>
       </div>
     </div>
