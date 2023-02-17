@@ -1,11 +1,11 @@
 <script>
-  import { onMount } from "svelte"
-  import { fade } from "svelte/transition"
-  import Prism from "svelte-prism"
-  import makePKCE from "./utils/pkce.js"
+  import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
+  import Prism from "svelte-prism";
+  import makePKCE from "./utils/pkce.js";
 
-  let onMountDone = false
-  let darkMode = false
+  let onMountDone = false;
+  let darkMode = false;
 
   const scopes = {
     standard: [
@@ -31,17 +31,17 @@
       "picture",
       "ethereum",
     ],
-  }
+  };
 
   onMount(() => {
-    getStatesFromLocalStorage()
-    processFragmentOrQuery()
-    updateFavicon()
+    getStatesFromLocalStorage();
+    processFragmentOrQuery();
+    updateFavicon();
 
-    sendEvent()
+    sendEvent();
 
     if (localStorage.plausible_ignore == "true") {
-      const _standard_scopes = ["preferred_username"]
+      const _standard_scopes = ["preferred_username"];
       const _custom_scopes = [
         // "twitter",
         // "github",
@@ -54,30 +54,34 @@
         "recovery",
         "existing_name",
         "existing_username",
-      ]
-      scopes.standard = [...scopes.standard, ..._standard_scopes]
-      scopes.custom = [...scopes.custom, ..._custom_scopes]
-      scopes.claims = [...scopes.claims, ..._standard_scopes, ..._custom_scopes]
+      ];
+      scopes.standard = [...scopes.standard, ..._standard_scopes];
+      scopes.custom = [...scopes.custom, ..._custom_scopes];
+      scopes.claims = [
+        ...scopes.claims,
+        ..._standard_scopes,
+        ..._custom_scopes,
+      ];
     }
 
     if (
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
     ) {
-      darkMode = true
+      darkMode = true;
     }
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", (event) => {
         if (event.matches) {
-          darkMode = true
+          darkMode = true;
         } else {
-          darkMode = false
+          darkMode = false;
         }
-      })
+      });
 
-    onMountDone = true
-  })
+    onMountDone = true;
+  });
 
   const navLinks = [
     {
@@ -88,12 +92,12 @@
       text: "Console",
       link: "https://console.hello.coop/",
     },
-  ]
+  ];
 
   const clientIds = {
     playground: "46be57a7-d0f5-459e-9655-24799433637d",
     greenfield: "3574f001-0874-4b20-bffd-8f3e37634274",
-  }
+  };
 
   const queryParams = {
     params: {
@@ -109,9 +113,9 @@
       state: "",
     },
     required: ["client_id", "redirect_uri", "nonce", "response_type"],
-  }
+  };
 
-  let custom_authorization_server = ""
+  let custom_authorization_server = "";
 
   //default values, also binds to user input
   let states = {
@@ -128,23 +132,23 @@
       response_type: "id_token",
       prompt: "login",
     },
-  }
+  };
 
-  let mobileMenu = false
+  let mobileMenu = false;
 
   const copyTooltip = {
     authorize: false,
     introspect: false,
     userinfo: false,
     token: false,
-  }
+  };
 
   const result = {
     authorize: null,
     introspect: null,
     userinfo: null,
     token: null,
-  }
+  };
 
   $: dropdown = {
     authorize: result.authorize !== null ? true : false,
@@ -152,77 +156,77 @@
     userinfo: result.userinfo !== null ? true : false,
     introspect: result.introspect !== null ? true : false,
     claims: result.introspect !== null ? true : false,
-  }
+  };
 
   //detect chanes in state -> save to local storage
-  $: states, saveStatesToLocalStorage()
+  $: states, saveStatesToLocalStorage();
 
   function updateFavicon() {
-    const ref = document.querySelector("link[rel='icon']")
+    const ref = document.querySelector("link[rel='icon']");
     if (
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: light)").matches
     ) {
-      ref.href = "dark-favicon.png"
+      ref.href = "dark-favicon.png";
     }
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", (event) => {
         if (event.matches) {
-          ref.href = "light-favicon.png"
+          ref.href = "light-favicon.png";
         } else {
-          ref.href = "dark-favicon.png"
+          ref.href = "dark-favicon.png";
         }
-      })
+      });
   }
 
   async function processFragmentOrQuery() {
-    if (!window.location.hash && !window.location.search) return
-    let queryParams
+    if (!window.location.hash && !window.location.search) return;
+    let queryParams;
     if (window.location.hash) {
-      queryParams = new URLSearchParams(window.location.hash.substring(1))
-      result.authorize = window.location.hash
+      queryParams = new URLSearchParams(window.location.hash.substring(1));
+      result.authorize = window.location.hash;
     } else if (window.location.search) {
-      queryParams = new URLSearchParams(window.location.search)
-      result.authorize = window.location.search
+      queryParams = new URLSearchParams(window.location.search);
+      result.authorize = window.location.search;
     }
-    cleanURL()
-    const id_token = queryParams.get("id_token")
-    const code = queryParams.get("code")
+    cleanURL();
+    const id_token = queryParams.get("id_token");
+    const code = queryParams.get("code");
     if (code) {
       try {
-        const res = await getToken(code)
-        result.token = res
+        const res = await getToken(code);
+        result.token = res;
       } catch (err) {
-        result.token = err
+        result.token = err;
       }
       if (result.token.access_token) {
         try {
-          const res = await getUserInfo(result.token.access_token)
-          result.userinfo = res
+          const res = await getUserInfo(result.token.access_token);
+          result.userinfo = res;
         } catch (err) {
-          result.userinfo = err
+          result.userinfo = err;
         }
       }
     }
     if (id_token || result.token?.id_token) {
       try {
-        const payload = await getIntrospect(id_token || result.token.id_token)
-        result.introspect = payload
+        const payload = await getIntrospect(id_token || result.token.id_token);
+        result.introspect = payload;
       } catch (err) {
-        result.introspect = err
+        result.introspect = err;
       }
     }
   }
 
   function cleanURL() {
     if (window.location.search) {
-      window.history.replaceState({}, document.title, "/")
+      window.history.replaceState({}, document.title, "/");
     } else {
-      window.location.replace("#")
+      window.location.replace("#");
       // slice off the remaining '#' in HTML5:
       if (typeof window.history.replaceState == "function") {
-        history.replaceState({}, "", window.location.href.slice(0, -1))
+        history.replaceState({}, "", window.location.href.slice(0, -1));
       }
     }
   }
@@ -231,19 +235,19 @@
     const userInfoEndpoint = new URL(
       "/oauth/userinfo",
       states.selected_authorization_server
-    )
+    );
     const options = {
       headers: { Authorization: `Bearer ${token}` },
       method: "POST",
       mode: "cors",
       cache: "no-cache",
-    }
+    };
     try {
-      const res = await fetch(userInfoEndpoint, options)
-      const json = await res.json()
-      return json
+      const res = await fetch(userInfoEndpoint, options);
+      const json = await res.json();
+      return json;
     } catch (err) {
-      return err
+      return err;
     }
   }
 
@@ -254,25 +258,25 @@
       redirect_uri: states.query_param_values.redirect_uri,
       grant_type: "authorization_code",
       code_verifier: states.query_param_values.code_verifier,
-    }
+    };
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams(params).toString(),
-    }
+    };
     const tokenEndpoint = new URL(
       "/oauth/token",
       states.selected_authorization_server
-    )
+    );
     try {
-      const res = await fetch(tokenEndpoint, options)
-      const json = await res.json()
-      if (res.status !== 200 || !res.ok) throw json
-      return json
+      const res = await fetch(tokenEndpoint, options);
+      const json = await res.json();
+      if (res.status !== 200 || !res.ok) throw json;
+      return json;
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 
@@ -280,30 +284,30 @@
     const introspectEndpoint = new URL(
       "/oauth/introspect",
       states.selected_authorization_server
-    )
+    );
     const params = {
       client_id: states.query_param_values.client_id,
       nonce: states.query_param_values.nonce,
       token: id_token,
-    }
+    };
     const options = {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(params).toString(),
-    }
+    };
     try {
-      const res = await fetch(introspectEndpoint, options)
-      const json = await res.json()
-      return json
+      const res = await fetch(introspectEndpoint, options);
+      const json = await res.json();
+      return json;
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      window.location.replace("#")
+      window.location.replace("#");
       // slice off the remaining '#' in HTML5:
       if (typeof window.history.replaceState == "function") {
-        history.replaceState({}, "", window.location.href.slice(0, -1))
+        history.replaceState({}, "", window.location.href.slice(0, -1));
       }
     }
   }
@@ -311,69 +315,69 @@
   function makeNonce() {
     const nonce = crypto
       .getRandomValues(new Uint32Array(2))
-      .reduce((a, b) => b.toString() + a.toString())
-    return nonce
+      .reduce((a, b) => b.toString() + a.toString());
+    return nonce;
   }
 
   function compareKeys(a, b) {
-    var aKeys = Object.keys(a).sort()
-    var bKeys = Object.keys(b).sort()
-    return JSON.stringify(aKeys) === JSON.stringify(bKeys)
+    var aKeys = Object.keys(a).sort();
+    var bKeys = Object.keys(b).sort();
+    return JSON.stringify(aKeys) === JSON.stringify(bKeys);
   }
 
   function getStatesFromLocalStorage() {
-    if (!localStorage.states) return
+    if (!localStorage.states) return;
     try {
-      const _states = JSON.parse(localStorage.getItem("states"))
+      const _states = JSON.parse(localStorage.getItem("states"));
       if (!compareKeys(states, _states)) {
-        console.info("State keys do not match, clearing localStorage")
-        localStorage.clear()
-        return
+        console.info("State keys do not match, clearing localStorage");
+        localStorage.clear();
+        return;
       }
-      states = _states
+      states = _states;
     } catch (err) {
-      console.error(err)
-      localStorage.clear()
+      console.error(err);
+      localStorage.clear();
     }
   }
 
   function saveStatesToLocalStorage() {
-    if (!onMountDone) return
-    const _states = JSON.stringify(states)
-    localStorage.setItem("states", _states)
+    if (!onMountDone) return;
+    const _states = JSON.stringify(states);
+    localStorage.setItem("states", _states);
   }
 
   function makeRequestURL(authServer, scopes, queryParams) {
     try {
-      const url = new URL(authServer)
+      const url = new URL(authServer);
       if (scopes.length) {
-        const _scopes = scopes.join(" ") //array of scopes to string separated by space
-        url.searchParams.set("scope", _scopes)
+        const _scopes = scopes.join(" "); //array of scopes to string separated by space
+        url.searchParams.set("scope", _scopes);
       }
       if (queryParams.length) {
         for (const param of queryParams) {
-          const query_param_value = states.query_param_values[param]
-          if (!query_param_value) continue
-          url.searchParams.set(param, query_param_value)
+          const query_param_value = states.query_param_values[param];
+          if (!query_param_value) continue;
+          url.searchParams.set(param, query_param_value);
         }
       }
       const lineBreakedURL = url
         .toString()
         .replace(/&/g, "\n&")
-        .replace(/\?/g, "\n?")
-      return lineBreakedURL
+        .replace(/\?/g, "\n?");
+      return lineBreakedURL;
     } catch (err) {
-      return "Invalid URL"
+      return "Invalid URL";
     }
   }
 
-  let continueWithHelloAjax = false
+  let continueWithHelloAjax = false;
   async function continueWithHello() {
     try {
-      continueWithHelloAjax = true
-      let url
+      continueWithHelloAjax = true;
+      let url;
       if (custom_authorization_server.length) {
-        url = new URL(custom_authorization_server)
+        url = new URL(custom_authorization_server);
       }
       if (
         ![
@@ -384,54 +388,54 @@
         states.custom_authorization_servers = [
           ...states.custom_authorization_servers,
           url.href,
-        ]
-        states.selected_authorization_server = url.href
-        custom_authorization_server = ""
+        ];
+        states.selected_authorization_server = url.href;
+        custom_authorization_server = "";
       }
     } catch {
       // console.error('Custom auth server endpoint not saved locally: Invalid URL')
     } finally {
-      window.location.href = requestURL
+      window.location.href = requestURL;
     }
   }
 
   async function copy(state, content) {
-    copyTooltip[state] = true
-    await navigator.clipboard.writeText(content)
+    copyTooltip[state] = true;
+    await navigator.clipboard.writeText(content);
     setTimeout(() => {
-      copyTooltip[state] = false
-    }, 500)
+      copyTooltip[state] = false;
+    }, 500);
   }
 
   async function handleCheckboxInput(e, param) {
     if (param === "nonce") {
       if (e.target.checked) {
-        states.query_param_values.nonce = makeNonce()
+        states.query_param_values.nonce = makeNonce();
       } else {
-        states.query_param_values.nonce = ""
+        states.query_param_values.nonce = "";
       }
     }
 
     if (param === "code_challenge") {
       if (e.target.checked) {
-        const { code_challenge, code_verifier } = await makePKCE()
-        states.query_param_values.code_challenge = code_challenge
-        states.query_param_values.code_verifier = code_verifier
+        const { code_challenge, code_verifier } = await makePKCE();
+        states.query_param_values.code_challenge = code_challenge;
+        states.query_param_values.code_verifier = code_verifier;
       } else {
         states.query_param_values.code_challenge =
-          states.query_param_values.code_verifier = ""
+          states.query_param_values.code_verifier = "";
       }
     }
 
     if (param === "response_mode") {
       if (!e.target.checked) {
-        states.query_param_values.response_mode = "fragment"
+        states.query_param_values.response_mode = "fragment";
       }
     }
 
     if (param === "prompt") {
       if (!e.target.checked) {
-        states.query_param_values.prompt = "login"
+        states.query_param_values.prompt = "login";
       }
     }
   }
@@ -440,36 +444,36 @@
     states.selected_authorization_server,
     states.scopes,
     states.query_params
-  )
+  );
 
   async function sendEvent() {
-      if (
-          localStorage.getItem("plausible_ignore") == "true" ||
-          window.location.origin !== "https://playground.hello.dev"
-      ) return;
-      const _body = {
-          w: window.innerWidth,
-          d: "playground.hello.dev",
-          n: "pageview",
-          r: document.referrer || null,
-          u: new URL("https://playground.hello.dev/"),
-      };
-      try {
-          await fetch("/api/event", {
-              method: "POST",
-              body: JSON.stringify(_body),
-          });
-          console.info(`Event sent: ${_body.u} (${_body.n})`);
-      } catch (err) {
-          console.error(err);
-      }
+    if (localStorage.getItem("plausible_ignore") == "true") {
+      console.info("Ignoring Event: localStorage flag");
+      return;
+    }
+    const _body = {
+      w: window.innerWidth,
+      d: "playground.hello.dev",
+      n: "pageview",
+      r: document.referrer || null,
+      u: new URL("https://playground.hello.dev/"),
+    };
+    try {
+      await fetch("/api/event", {
+        method: "POST",
+        body: JSON.stringify(_body),
+      });
+      console.info(`Event sent: ${_body.u} (${_body.n})`);
+    } catch (err) {
+      console.error(err);
+    }
   }
 </script>
 
 <svelte:window
   on:keypress={(e) => {
     if (e.key === "Enter") {
-      continueWithHello()
+      continueWithHello();
     }
   }}
 />
@@ -869,9 +873,9 @@
             <span>Response</span>
             <button
               on:click={() => {
-                if (!result.authorize) return
-                dropdown.authorize = false
-                copy("authorize", JSON.stringify(result.authorize))
+                if (!result.authorize) return;
+                dropdown.authorize = false;
+                copy("authorize", JSON.stringify(result.authorize));
               }}
             >
               <svg
@@ -930,9 +934,9 @@
               <span>Response</span>
               <button
                 on:click={() => {
-                  if (!result.token) return
-                  dropdown.token = false
-                  copy("token", JSON.stringify(result.token))
+                  if (!result.token) return;
+                  dropdown.token = false;
+                  copy("token", JSON.stringify(result.token));
                 }}
               >
                 <svg
@@ -993,9 +997,9 @@
               <span>Response</span>
               <button
                 on:click={() => {
-                  if (!result.token) return
-                  dropdown.userinfo = false
-                  copy("userinfo", JSON.stringify(result.userinfo))
+                  if (!result.token) return;
+                  dropdown.userinfo = false;
+                  copy("userinfo", JSON.stringify(result.userinfo));
                 }}
               >
                 <svg
@@ -1056,9 +1060,9 @@
               <span>Response</span>
               <button
                 on:click={() => {
-                  if (!result.introspect) return
-                  dropdown.introspect = false
-                  copy("introspect", JSON.stringify(result.introspect))
+                  if (!result.introspect) return;
+                  dropdown.introspect = false;
+                  copy("introspect", JSON.stringify(result.introspect));
                 }}
               >
                 <svg

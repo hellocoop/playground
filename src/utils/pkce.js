@@ -1,4 +1,4 @@
-const makePKCE = async() => {
+const makePKCE = async () => {
 	const code_verifier = generateRandomString()
 	const code_challenge = await pkceChallengeFromVerifier(code_verifier)
 	return {
@@ -7,15 +7,15 @@ const makePKCE = async() => {
 	}
 }
 
-const pkceChallengeFromVerifier = async(v) => {
+const pkceChallengeFromVerifier = async (v) => {
 	let hashed = await sha256(v);
 	return base64urlencode(hashed);
 }
 
 const generateRandomString = () => {
-  const array = new Uint32Array(28)
-  window.crypto.getRandomValues(array)
-  return Array.from(array, (dec) => ('0' + dec.toString(16)).substr(-2)).join('')
+	const array = new Uint32Array(28)
+	window.crypto.getRandomValues(array)
+	return Array.from(array, (dec) => ('0' + dec.toString(16)).substr(-2)).join('')
 }
 
 const makeNonce = () => {
