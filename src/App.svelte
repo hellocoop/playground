@@ -103,7 +103,6 @@
         ..._standard_scopes,
         ..._custom_scopes,
       ];
-      queryParams.params.provider_hint = "";
     }
 
     if (
@@ -153,6 +152,7 @@
       // prompt: ['login', 'profile_update'],
       response_mode: ["fragment", "query"],
       state: "",
+      provider_hint: ""
     },
     required: ["client_id", "redirect_uri", "nonce", "response_type"],
   };
