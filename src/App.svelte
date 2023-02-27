@@ -152,7 +152,7 @@
       // prompt: ['login', 'profile_update'],
       response_mode: ["fragment", "query"],
       state: "",
-      provider_hint: ""
+      provider_hint: "",
     },
     required: ["client_id", "redirect_uri", "nonce", "response_type"],
   };
