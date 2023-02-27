@@ -885,6 +885,10 @@
                       type="text"
                       name={param}
                       class="h-8 w-full form-input"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
                       bind:value={states.query_param_values[param]}
                     />
                   </div>
