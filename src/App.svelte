@@ -91,8 +91,8 @@
         // "instagram",
         // "bio",
         // "banner",
-        "verified_name",
         "recovery",
+        "verified_name",
         "existing_name",
         "existing_username",
       ];
@@ -755,7 +755,7 @@
           </ul>
         </div>
         <div>
-          <h2>Custom</h2>
+          <h2>Hellō Extended</h2>
           <ul class="space-y-2 mt-2">
             {#each scopes.custom as scope}
               {@const required = scopes.required.includes(scope)}
@@ -784,11 +784,16 @@
       <div class="mt-2">
         <ul class="space-y-2 mt-2">
           {#each Object.entries(queryParams.params) as [param, value]}
+            {#if param === "provider_hint"}
+              <hr class="border-charcoal/50 dark:border-[#d4d4d4]/50" />
+            {/if}
             {@const required = queryParams.required.includes(param)}
             <li
               class="flex {param === 'provider_hint'
                 ? 'items-start'
                 : 'items-center'} relative"
+              class:pb-2={param === "state"}
+              class:pt-2={param === "provider_hint"}
             >
               <div
                 class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
