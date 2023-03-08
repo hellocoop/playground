@@ -42,9 +42,11 @@
     "gitlab",
     "twitch",
     "twitter",
+    "tumblr",
     "mastodon",
     "microsoft",
     "line",
+    "wordpress",
     "yahoo",
     "email",
     "phone",
@@ -914,8 +916,9 @@
                   {/if}
                   <p class="text-xs mt-1.5">
                     <span class="opacity-80"
-                      >apple discord facebook github gitlab twitch twitter
-                      mastodon microsoft line yahoo phone ethereum</span
+                      >{possibleSlugs
+                        .filter((i) => !["google", "email"].includes(i))
+                        .join(" ")}</span
                     ><br />
                     <span class="opacity-80"
                       >apple-- microsoft-- google-- email--</span
