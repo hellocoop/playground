@@ -51,6 +51,7 @@
     "email",
     "phone",
     "ethereum",
+    "qrcode"
   ];
 
   let invalidProviderHintSlug = null;
