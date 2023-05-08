@@ -51,7 +51,7 @@
     "email",
     "phone",
     "ethereum",
-    "qrcode"
+    "qrcode",
   ];
 
   let invalidProviderHintSlug = null;
@@ -106,6 +106,8 @@
         ..._standard_scopes,
         ..._custom_scopes,
       ];
+      queryParams.params.passkeys = states.query_param_values.passkeys =
+        "global";
     }
 
     if (
