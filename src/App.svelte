@@ -656,7 +656,7 @@
             bind:group={states.selected_authorization_server}
           />
           <label for="wallet/authorize" class="ml-2 w-full">
-            https://wallet.hello.coop/authorize (prod)
+            https://wallet.hello.coop/authorize
           </label>
         </li>
         {#each states.custom_authorization_servers as server}
