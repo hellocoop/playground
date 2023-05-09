@@ -551,7 +551,7 @@
     <a
       href="https://hello.dev"
       target="_blank"
-      class="inline-flex items-center relative nav-link"
+      class="hidden sm:inline-flex items-center relative nav-link"
     >
       <span>hello.dev</span>
       <svg
@@ -601,9 +601,32 @@
 
   {#if mobileMenu}
     <div
-      class="bg-charcoal lg:hidden absolute left-0 top-12 w-full p-4 z-50 min-w-[320px]"
+      class="bg-charcoal lg:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]"
     >
-      <ul class="flex flex-col space-y-4 pb-4">
+      <ul class="flex flex-col gap-y-3 pb-4 text-base">
+        <li class="nav-link relative sm:hidden">
+          <a
+            href="https://hello.dev"
+            target="_blank"
+            class="inline-flex items-center font-medium"
+          >
+            hello.dev
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 ml-1 mt-0.5 opacity-80"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+          </a>
+        </li>
         {#each navLinks as { text, link }}
           <li class="nav-link relative">
             <a
@@ -634,336 +657,73 @@
 
     <div
       on:click={() => (mobileMenu = false)}
-      transition:fade
       class="lg:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
     />
   {/if}
 </header>
 
-<main class="p-4 space-y-4 flex-1 overflow-y-auto">
-  <section
-    class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5"
-  >
-    <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
-      <h1 class="font-semibold text-lg">Authorization Server</h1>
+<main class="flex-1 overflow-y-auto">
+  <div class="p-4 space-y-4">
+    <section
+      class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5"
+    >
+      <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
+        <h1 class="font-semibold text-lg">Authorization Server</h1>
 
-      <ul class="space-y-2 mt-2">
-        <li class="flex items-center">
-          <input
-            type="radio"
-            name="authorization_server"
-            value="https://wallet.hello.coop/authorize"
-            id="wallet/authorize"
-            class="text-charcoal form-radio dark:text-gray-800"
-            bind:group={states.selected_authorization_server}
-          />
-          <label for="wallet/authorize" class="ml-2 w-full">
-            https://wallet.hello.coop/authorize
-          </label>
-        </li>
-        {#each states.custom_authorization_servers as server}
+        <ul class="space-y-2 mt-2">
           <li class="flex items-center">
             <input
               type="radio"
               name="authorization_server"
-              value={server}
-              id={server}
+              value="https://wallet.hello.coop/authorize"
+              id="wallet/authorize"
               class="text-charcoal form-radio dark:text-gray-800"
               bind:group={states.selected_authorization_server}
             />
-            <label for={server} class="ml-2 w-full">{server}</label>
+            <label for="wallet/authorize" class="ml-2 w-full">
+              https://wallet.hello.coop/authorize
+            </label>
           </li>
-        {/each}
-        <li class="flex items-center">
-          <input
-            type="radio"
-            name="authorization_server"
-            value={custom_authorization_server}
-            class="text-charcoal form-radio dark:text-gray-800"
-            id="custom-authorization-server"
-            bind:group={states.selected_authorization_server}
-          />
-          <input
-            bind:value={custom_authorization_server}
-            on:input={(e) =>
-              (states.selected_authorization_server = e.target.value)}
-            type="url"
-            name="custom"
-            class="h-8 ml-2 w-full text-charcoal form-input"
-            placeholder="eg http://example.com:9000/"
-          />
-        </li>
-      </ul>
-
-      <div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words my-6">
-        <h2 class="inline-flex items-center">
-          <span>Request URL</span>
-          <button on:click={() => copy("requestURL", requestURL)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 ml-1 stroke-2 hover:stroke-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+          {#each states.custom_authorization_servers as server}
+            <li class="flex items-center">
+              <input
+                type="radio"
+                name="authorization_server"
+                value={server}
+                id={server}
+                class="text-charcoal form-radio dark:text-gray-800"
+                bind:group={states.selected_authorization_server}
               />
-            </svg>
-          </button>
-        </h2>
-        <span
-          class="mt-2 block text-sm whitespace-pre-line"
-          class:flash={copyTooltip.requestURL}
-        >
-          {requestURL}
-        </span>
-      </div>
-
-      <button
-        on:click={continueWithHello}
-        class="hello-btn-black-and-static w-full hidden lg:flex"
-        class:hello-btn-loader={continueWithHelloAjax}
-        disabled={continueWithHelloAjax}
-        class:hello-btn-hover-flare={darkMode}
-        >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
-      >
-    </div>
-
-    <div>
-      <h1 class="font-semibold text-lg">Scopes (* required)</h1>
-      <div class="flex mt-2 gap-x-4">
-        <div>
-          <h2>Standard</h2>
-          <ul class="space-y-2 mt-2">
-            {#each scopes.standard as scope}
-              {@const required = scopes.required.includes(scope)}
-              <li
-                class="flex items-center"
-                class:text-red-500={required && !states.scopes.includes(scope)}
-              >
-                <input
-                  type="checkbox"
-                  class="text-charcoal form-checkbox dark:text-gray-800"
-                  name={scope}
-                  id={scope}
-                  value={scope}
-                  bind:group={states.scopes}
-                />
-                <label for={scope} class="ml-2"
-                  >{scope} {required ? "*" : ""}</label
-                >
-              </li>
-            {/each}
-          </ul>
-        </div>
-        <div>
-          <h2>Hellō Extended</h2>
-          <ul class="space-y-2 mt-2">
-            {#each scopes.custom as scope}
-              {@const required = scopes.required.includes(scope)}
-              <li
-                class="flex items-center"
-                class:text-red-500={required && !states.scopes.includes(scope)}
-              >
-                <input
-                  type="checkbox"
-                  class="text-charcoal form-checkbox dark:text-gray-800"
-                  name={scope}
-                  id={scope}
-                  value={scope}
-                  bind:group={states.scopes}
-                />
-                <label for={scope} class="ml-2">{scope}</label>
-              </li>
-            {/each}
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex-1">
-      <h1 class="font-semibold text-lg">Query Params (* required)</h1>
-      <div class="mt-2">
-        <ul class="space-y-2 mt-2">
-          {#each Object.entries(queryParams.params) as [param, value]}
-            {#if param === "provider_hint"}
-              <hr class="border-charcoal/50 dark:border-[#d4d4d4]/50" />
-            {/if}
-            {@const required = queryParams.required.includes(param)}
-            <li
-              class="flex {param === 'provider_hint'
-                ? 'items-start'
-                : 'items-center'} relative"
-              class:pb-2={param === "state"}
-              class:pt-2={param === "provider_hint"}
-            >
-              <div
-                class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
-                class:mt-6={param === "client_id"}
-                class:mt-1={param === "provider_hint"}
-              >
-                {#if param !== "code_verifier"}
-                  <input
-                    type="checkbox"
-                    bind:group={states.query_params}
-                    on:change={(e) => handleCheckboxInput(e, param)}
-                    class="text-charcoal form-checkbox dark:text-gray-800"
-                    name={param}
-                    id={param}
-                    value={param}
-                  />
-                {:else}
-                  <span class="w-4" />
-                {/if}
-                <label
-                  for={param}
-                  class="ml-2"
-                  class:text-red-500={//required
-                  (required &&
-                    (!states.query_params.includes(param) ||
-                      //if checked and empty field
-                      !states.query_param_values[param])) ||
-                    //response_type: code but not code_challenge unchecked
-                    (param === "code_challenge" &&
-                      states.query_param_values.response_type === "code" &&
-                      !states.query_params.includes("code_challenge")) ||
-                    //response_type: id_token and response_mode: query
-                    (param === "response_mode" &&
-                      states.query_params.includes("response_mode") &&
-                      states.query_param_values.response_mode === "query" &&
-                      states.query_params.includes("response_type") &&
-                      states.query_param_values.response_type === "id_token")}
-                >
-                  {param}
-                  {required ? "*" : ""}
-                </label>
-              </div>
-
-              <div class="w-1/2 md:w-3/4">
-                {#if Array.isArray(value)}
-                  <div
-                    class="xl:h-8 p-0.5 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
-                    class:opacity-60={!states.query_params.includes(param) &&
-                      param !== "response_mode" &&
-                      param !== "prompt"}
-                  >
-                    {#each value as ele}
-                      <button
-                        on:click={() =>
-                          (states.query_param_values[param] = ele)}
-                        disabled={(param === "response_mode" &&
-                          !states.query_params.includes("response_mode")) ||
-                          (param === "prompt" &&
-                            !states.query_params.includes("prompt"))}
-                        class="{states.query_param_values[param] === ele
-                          ? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
-                          : 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
-                        "
-                      >
-                        {ele}
-                      </button>
-                    {/each}
-                  </div>
-                {:else}
-                  <div
-                    class="flex flex-col w-full items-start"
-                    class:opacity-60={!states.query_params.includes(param) &&
-                      param !== "code_challenge"}
-                  >
-                    {#if param === "client_id"}
-                      <div class="mb-0.5">
-                        <button
-                          on:click={() =>
-                            (states.query_param_values.client_id =
-                              clientIds.playground)}
-                          class="text-xs xl:text-sm hover:underline"
-                          >Playground</button
-                        >
-                        <button
-                          on:click={() =>
-                            (states.query_param_values.client_id =
-                              clientIds.greenfield)}
-                          class="text-xs xl:text-sm hover:underline xl:ml-2"
-                          >GreenfieldFitness</button
-                        >
-                      </div>
-                    {/if}
-                    <input
-                      type="text"
-                      name={param}
-                      class="h-8 w-full form-input"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                      bind:value={states.query_param_values[param]}
-                    />
-                  </div>
-                {/if}
-
-                {#if param === "provider_hint"}
-                  {#if Array.isArray(invalidProviderHintSlug)}
-                    <p
-                      class="text-xs mt-1.5 text-red-500"
-                      transition:slide|local
-                    >
-                      {#if invalidProviderHintSlug.length > 1}
-                        {invalidProviderHintSlug.join(", ")} are unsupported values
-                      {:else}
-                        {invalidProviderHintSlug} is an unsupported value
-                      {/if}
-                    </p>
-                  {/if}
-                  <p class="text-xs mt-1.5">
-                    <span class="opacity-80"
-                      >{possibleSlugs
-                        .filter((i) => !["google", "email"].includes(i))
-                        .join(" ")}</span
-                    ><br />
-                    <span class="opacity-80"
-                      >apple-- microsoft-- google-- email--</span
-                    >
-                  </p>
-                {/if}
-              </div>
+              <label for={server} class="ml-2 w-full">{server}</label>
             </li>
           {/each}
+          <li class="flex items-center">
+            <input
+              type="radio"
+              name="authorization_server"
+              value={custom_authorization_server}
+              class="text-charcoal form-radio dark:text-gray-800"
+              id="custom-authorization-server"
+              bind:group={states.selected_authorization_server}
+            />
+            <input
+              bind:value={custom_authorization_server}
+              on:input={(e) =>
+                (states.selected_authorization_server = e.target.value)}
+              type="url"
+              name="custom"
+              class="h-8 ml-2 w-full text-charcoal form-input"
+              placeholder="eg http://example.com:9000/"
+            />
+          </li>
         </ul>
-      </div>
-    </div>
 
-    <button
-      on:click={continueWithHello}
-      class="hello-btn-black-and-static w-full lg:hidden"
-      class:hello-btn-loader={continueWithHelloAjax}
-      disabled={continueWithHelloAjax}
-      class:hello-btn-hover-flare={darkMode}
-      >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
-    >
-  </section>
-
-  {#if result.authorize}
-    <section class="btn group">
-      <button
-        on:click={() => (dropdown.authorize = !dropdown.authorize)}
-        class="py-2 w-full flex justify-between items-center px-4"
-      >
-        <div class="flex flex-col items-start">
-          <span class="font-semibold text-lg"
-            >{new URL("/authorize", states.selected_authorization_server)}</span
-          >
-          <div class="inline-flex items-center">
-            <span>Response</span>
-            <button
-              on:click={() => {
-                if (!result.authorize) return;
-                dropdown.authorize = false;
-                copy("authorize", JSON.stringify(result.authorize));
-              }}
-            >
+        <div
+          class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words my-6"
+        >
+          <h2 class="inline-flex items-center">
+            <span>Request URL</span>
+            <button on:click={() => copy("requestURL", requestURL)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 ml-1 stroke-2 hover:stroke-3"
@@ -978,301 +738,571 @@
                 />
               </svg>
             </button>
+          </h2>
+          <span
+            class="mt-2 block text-sm whitespace-pre-line"
+            class:flash={copyTooltip.requestURL}
+          >
+            {requestURL}
+          </span>
+        </div>
+
+        <button
+          on:click={continueWithHello}
+          class="hello-btn-black-and-static w-full hidden lg:flex"
+          class:hello-btn-loader={continueWithHelloAjax}
+          disabled={continueWithHelloAjax}
+          class:hello-btn-hover-flare={darkMode}
+          >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
+        >
+      </div>
+
+      <div class="truncate w-full sm:w-auto">
+        <h1 class="font-semibold text-lg">Scopes (* required)</h1>
+        <div class="flex mt-2 gap-x-4 truncate">
+          <div>
+            <h2>Standard</h2>
+            <ul class="space-y-2 mt-2">
+              {#each scopes.standard as scope}
+                {@const required = scopes.required.includes(scope)}
+                <li
+                  class="flex items-center"
+                  class:text-red-500={required &&
+                    !states.scopes.includes(scope)}
+                >
+                  <input
+                    type="checkbox"
+                    class="text-charcoal form-checkbox dark:text-gray-800"
+                    name={scope}
+                    id={scope}
+                    value={scope}
+                    bind:group={states.scopes}
+                  />
+                  <label for={scope} class="ml-2"
+                    >{scope} {required ? "*" : ""}</label
+                  >
+                </li>
+              {/each}
+            </ul>
+          </div>
+          <div class="truncate">
+            <h2>Hellō Extended</h2>
+            <ul class="space-y-2 mt-2 truncate">
+              {#each scopes.custom as scope}
+                {@const required = scopes.required.includes(scope)}
+                <li
+                  class="flex items-center truncate"
+                  class:text-red-500={required &&
+                    !states.scopes.includes(scope)}
+                >
+                  <input
+                    type="checkbox"
+                    class="text-charcoal form-checkbox dark:text-gray-800"
+                    name={scope}
+                    id={scope}
+                    value={scope}
+                    bind:group={states.scopes}
+                  />
+                  <label for={scope} class="ml-2 truncate">{scope}</label>
+                </li>
+              {/each}
+            </ul>
           </div>
         </div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="stroke-2 group-hover:stroke-3 h-5 transform"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          class:rotate-180={dropdown.authorize}
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
+      </div>
 
-      {#if dropdown.authorize}
-        <p class="p-4 break-words">
-          <span class:flash={copyTooltip.authorize}>{result.authorize}</span>
-        </p>
-      {/if}
-    </section>
-
-    {#if result.token !== null}
-      <section class="btn group">
-        <button
-          on:click={() => (dropdown.token = !dropdown.token)}
-          class="py-2 w-full flex justify-between items-center px-4"
-        >
-          <div class="flex flex-col items-start">
-            <span class="font-semibold text-lg"
-              >{new URL(
-                "/oauth/token",
-                states.selected_authorization_server
-              )}</span
-            >
-            <div class="inline-flex items-center">
-              <span>Response</span>
-              <button
-                on:click={() => {
-                  if (!result.token) return;
-                  dropdown.token = false;
-                  copy("token", JSON.stringify(result.token));
-                }}
+      <div class="flex-1">
+        <h1 class="font-semibold text-lg">Query Params (* required)</h1>
+        <div class="mt-2">
+          <ul class="space-y-2 mt-2">
+            {#each Object.entries(queryParams.params) as [param, value]}
+              {#if param === "provider_hint"}
+                <hr class="border-charcoal/50 dark:border-[#d4d4d4]/50" />
+              {/if}
+              {@const required = queryParams.required.includes(param)}
+              <li
+                class="flex {param === 'provider_hint'
+                  ? 'items-start'
+                  : 'items-center'} relative"
+                class:pb-2={param === "state"}
+                class:pt-2={param === "provider_hint"}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 ml-1 stroke-2 hover:stroke-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                <div
+                  class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
+                  class:mt-6={param === "client_id"}
+                  class:mt-1={param === "provider_hint"}
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="stroke-2 group-hover:stroke-3 h-5 transform"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class:rotate-180={dropdown.token}
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-        {#if dropdown.token}
-          <span class:flash={copyTooltip.token}>
-            <Prism language="javascript">
-              {JSON.stringify(result.token, null, 2)}
-            </Prism>
-          </span>
-        {/if}
-      </section>
-    {/if}
-
-    {#if result.userinfo !== null}
-      <section class="btn group">
-        <button
-          on:click={() => (dropdown.userinfo = !dropdown.userinfo)}
-          class="py-2 w-full flex justify-between items-center px-4"
-        >
-          <div class="flex flex-col items-start">
-            <span class="font-semibold text-lg"
-              >{new URL(
-                "/oauth/userinfo",
-                states.selected_authorization_server
-              )}</span
-            >
-            <div class="inline-flex items-center">
-              <span>Response</span>
-              <button
-                on:click={() => {
-                  if (!result.token) return;
-                  dropdown.userinfo = false;
-                  copy("userinfo", JSON.stringify(result.userinfo));
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 ml-1 stroke-2 hover:stroke-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="stroke-2 group-hover:stroke-3 h-5 transform"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class:rotate-180={dropdown.userinfo}
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-        {#if dropdown.userinfo}
-          <span class:flash={copyTooltip.userinfo}>
-            <Prism language="javascript">
-              {JSON.stringify(result.userinfo, null, 2)}
-            </Prism>
-          </span>
-        {/if}
-      </section>
-    {/if}
-
-    {#if result.introspect !== null}
-      <section class="btn group">
-        <button
-          on:click={() => (dropdown.introspect = !dropdown.introspect)}
-          class="py-2 w-full flex justify-between items-center px-4"
-        >
-          <div class="flex flex-col items-start">
-            <span class="font-semibold text-lg"
-              >{new URL(
-                "/oauth/introspect",
-                states.selected_authorization_server
-              )}</span
-            >
-            <div class="inline-flex items-center">
-              <span>Response</span>
-              <button
-                on:click={() => {
-                  if (!result.introspect) return;
-                  dropdown.introspect = false;
-                  copy("introspect", JSON.stringify(result.introspect));
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 ml-1 stroke-2 hover:stroke-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="stroke-2 group-hover:stroke-3 h-5 transform"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class:rotate-180={dropdown.introspect}
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-        {#if dropdown.introspect}
-          <span class:flash={copyTooltip.introspect}>
-            <Prism language="javascript">
-              {JSON.stringify(result.introspect, null, 2)}
-            </Prism>
-          </span>
-        {/if}
-      </section>
-    {/if}
-
-    {#if result.introspect}
-      <section class="btn group">
-        <button
-          on:click={() => (dropdown.claims = !dropdown.claims)}
-          class="h-12 w-full flex justify-between items-center px-4"
-        >
-          <span class="font-semibold text-lg">Claims</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="stroke-2 group-hover:stroke-3 h-5 transform"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class:rotate-180={dropdown.claims}
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-        {#if dropdown.claims}
-          <ul
-            class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50"
-          >
-            {#each scopes.claims.filter((i) => result.introspect[i]) as claim}
-              <li class="py-4 flex items-center w-full">
-                <div class="w-1/3">{claim}</div>
-                <div>
-                  {#if claim === "picture" && result.introspect[claim]}
-                    <!-- svelte-ignore a11y-img-redundant-alt -->
-                    <img
-                      src={result.introspect[claim]}
-                      class="h-10 w-10 rounded-full object-fit"
-                      alt="Picture claim"
+                  {#if param !== "code_verifier"}
+                    <input
+                      type="checkbox"
+                      bind:group={states.query_params}
+                      on:change={(e) => handleCheckboxInput(e, param)}
+                      class="text-charcoal form-checkbox dark:text-gray-800"
+                      name={param}
+                      id={param}
+                      value={param}
                     />
                   {:else}
-                    {result.introspect[claim] || ""}
+                    <span class="w-4" />
+                  {/if}
+                  <label
+                    for={param}
+                    class="ml-2"
+                    class:text-red-500={//required
+                    (required &&
+                      (!states.query_params.includes(param) ||
+                        //if checked and empty field
+                        !states.query_param_values[param])) ||
+                      //response_type: code but not code_challenge unchecked
+                      (param === "code_challenge" &&
+                        states.query_param_values.response_type === "code" &&
+                        !states.query_params.includes("code_challenge")) ||
+                      //response_type: id_token and response_mode: query
+                      (param === "response_mode" &&
+                        states.query_params.includes("response_mode") &&
+                        states.query_param_values.response_mode === "query" &&
+                        states.query_params.includes("response_type") &&
+                        states.query_param_values.response_type === "id_token")}
+                  >
+                    {param}
+                    {required ? "*" : ""}
+                  </label>
+                </div>
+
+                <div class="w-1/2 md:w-3/4">
+                  {#if Array.isArray(value)}
+                    <div
+                      class="xl:h-8 p-0.5 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+                      class:opacity-60={!states.query_params.includes(param) &&
+                        param !== "response_mode" &&
+                        param !== "prompt"}
+                    >
+                      {#each value as ele}
+                        <button
+                          on:click={() =>
+                            (states.query_param_values[param] = ele)}
+                          disabled={(param === "response_mode" &&
+                            !states.query_params.includes("response_mode")) ||
+                            (param === "prompt" &&
+                              !states.query_params.includes("prompt"))}
+                          class="{states.query_param_values[param] === ele
+                            ? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
+                            : 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
+                        "
+                        >
+                          {ele}
+                        </button>
+                      {/each}
+                    </div>
+                  {:else}
+                    <div
+                      class="flex flex-col w-full items-start"
+                      class:opacity-60={!states.query_params.includes(param) &&
+                        param !== "code_challenge"}
+                    >
+                      {#if param === "client_id"}
+                        <div class="mb-0.5">
+                          <button
+                            on:click={() =>
+                              (states.query_param_values.client_id =
+                                clientIds.playground)}
+                            class="text-xs xl:text-sm hover:underline"
+                            >Playground</button
+                          >
+                          <button
+                            on:click={() =>
+                              (states.query_param_values.client_id =
+                                clientIds.greenfield)}
+                            class="text-xs xl:text-sm hover:underline xl:ml-2"
+                            >GreenfieldFitness</button
+                          >
+                        </div>
+                      {/if}
+                      <input
+                        type="text"
+                        name={param}
+                        class="h-8 w-full form-input"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        bind:value={states.query_param_values[param]}
+                      />
+                    </div>
+                  {/if}
+
+                  {#if param === "provider_hint"}
+                    {#if Array.isArray(invalidProviderHintSlug)}
+                      <p
+                        class="text-xs mt-1.5 text-red-500"
+                        transition:slide|local
+                      >
+                        {#if invalidProviderHintSlug.length > 1}
+                          {invalidProviderHintSlug.join(", ")} are unsupported values
+                        {:else}
+                          {invalidProviderHintSlug} is an unsupported value
+                        {/if}
+                      </p>
+                    {/if}
+                    <p class="text-xs mt-1.5">
+                      <span class="opacity-80"
+                        >{possibleSlugs
+                          .filter((i) => !["google", "email"].includes(i))
+                          .join(" ")}</span
+                      ><br />
+                      <span class="opacity-80"
+                        >apple-- microsoft-- google-- email--</span
+                      >
+                    </p>
                   {/if}
                 </div>
               </li>
             {/each}
           </ul>
+        </div>
+      </div>
+
+      <button
+        on:click={continueWithHello}
+        class="hello-btn-black-and-static w-full lg:hidden"
+        class:hello-btn-loader={continueWithHelloAjax}
+        disabled={continueWithHelloAjax}
+        class:hello-btn-hover-flare={darkMode}
+        >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
+      >
+    </section>
+
+    {#if result.authorize}
+      <section class="btn group">
+        <button
+          on:click={() => (dropdown.authorize = !dropdown.authorize)}
+          class="py-2 w-full flex justify-between items-center px-4"
+        >
+          <div class="flex flex-col items-start">
+            <span class="font-semibold text-lg"
+              >{new URL(
+                "/authorize",
+                states.selected_authorization_server
+              )}</span
+            >
+            <div class="inline-flex items-center">
+              <span>Response</span>
+              <button
+                on:click={() => {
+                  if (!result.authorize) return;
+                  dropdown.authorize = false;
+                  copy("authorize", JSON.stringify(result.authorize));
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 ml-1 stroke-2 hover:stroke-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-2 group-hover:stroke-3 h-5 transform"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            class:rotate-180={dropdown.authorize}
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+
+        {#if dropdown.authorize}
+          <p class="p-4 break-words">
+            <span class:flash={copyTooltip.authorize}>{result.authorize}</span>
+          </p>
         {/if}
       </section>
-    {/if}
-  {:else}
-    <section
-      class="w-auto border border-charcoal dark:border-gray-800 opacity-80 h-72 flex items-center justify-center"
-    >
-      <span>Nothing to see here yet</span>
-    </section>
-  {/if}
 
-  <section class="py-6">
-    <a
-      href="https://github.com/hellocoop/playground/issues/new"
-      target="_blank"
-      class="inline-flex items-center hover:underline"
-    >
-      <span>File an issue on GitHub</span>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-3 ml-1"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+      {#if result.token !== null}
+        <section class="btn group">
+          <button
+            on:click={() => (dropdown.token = !dropdown.token)}
+            class="py-2 w-full flex justify-between items-center px-4"
+          >
+            <div class="flex flex-col items-start">
+              <span class="font-semibold text-lg"
+                >{new URL(
+                  "/oauth/token",
+                  states.selected_authorization_server
+                )}</span
+              >
+              <div class="inline-flex items-center">
+                <span>Response</span>
+                <button
+                  on:click={() => {
+                    if (!result.token) return;
+                    dropdown.token = false;
+                    copy("token", JSON.stringify(result.token));
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 ml-1 stroke-2 hover:stroke-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="stroke-2 group-hover:stroke-3 h-5 transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class:rotate-180={dropdown.token}
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          {#if dropdown.token}
+            <span class:flash={copyTooltip.token}>
+              <Prism language="javascript">
+                {JSON.stringify(result.token, null, 2)}
+              </Prism>
+            </span>
+          {/if}
+        </section>
+      {/if}
+
+      {#if result.userinfo !== null}
+        <section class="btn group">
+          <button
+            on:click={() => (dropdown.userinfo = !dropdown.userinfo)}
+            class="py-2 w-full flex justify-between items-center px-4"
+          >
+            <div class="flex flex-col items-start">
+              <span class="font-semibold text-lg"
+                >{new URL(
+                  "/oauth/userinfo",
+                  states.selected_authorization_server
+                )}</span
+              >
+              <div class="inline-flex items-center">
+                <span>Response</span>
+                <button
+                  on:click={() => {
+                    if (!result.token) return;
+                    dropdown.userinfo = false;
+                    copy("userinfo", JSON.stringify(result.userinfo));
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 ml-1 stroke-2 hover:stroke-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="stroke-2 group-hover:stroke-3 h-5 transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class:rotate-180={dropdown.userinfo}
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          {#if dropdown.userinfo}
+            <span class:flash={copyTooltip.userinfo}>
+              <Prism language="javascript">
+                {JSON.stringify(result.userinfo, null, 2)}
+              </Prism>
+            </span>
+          {/if}
+        </section>
+      {/if}
+
+      {#if result.introspect !== null}
+        <section class="btn group">
+          <button
+            on:click={() => (dropdown.introspect = !dropdown.introspect)}
+            class="py-2 w-full flex justify-between items-center px-4"
+          >
+            <div class="flex flex-col items-start">
+              <span class="font-semibold text-lg"
+                >{new URL(
+                  "/oauth/introspect",
+                  states.selected_authorization_server
+                )}</span
+              >
+              <div class="inline-flex items-center">
+                <span>Response</span>
+                <button
+                  on:click={() => {
+                    if (!result.introspect) return;
+                    dropdown.introspect = false;
+                    copy("introspect", JSON.stringify(result.introspect));
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 ml-1 stroke-2 hover:stroke-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="stroke-2 group-hover:stroke-3 h-5 transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class:rotate-180={dropdown.introspect}
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          {#if dropdown.introspect}
+            <span class:flash={copyTooltip.introspect}>
+              <Prism language="javascript">
+                {JSON.stringify(result.introspect, null, 2)}
+              </Prism>
+            </span>
+          {/if}
+        </section>
+      {/if}
+
+      {#if result.introspect}
+        <section class="btn group">
+          <button
+            on:click={() => (dropdown.claims = !dropdown.claims)}
+            class="h-12 w-full flex justify-between items-center px-4"
+          >
+            <span class="font-semibold text-lg">Claims</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="stroke-2 group-hover:stroke-3 h-5 transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class:rotate-180={dropdown.claims}
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          {#if dropdown.claims}
+            <ul
+              class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50"
+            >
+              {#each scopes.claims.filter((i) => result.introspect[i]) as claim}
+                <li class="py-4 flex items-center w-full">
+                  <div class="w-1/3">{claim}</div>
+                  <div>
+                    {#if claim === "picture" && result.introspect[claim]}
+                      <!-- svelte-ignore a11y-img-redundant-alt -->
+                      <img
+                        src={result.introspect[claim]}
+                        class="h-10 w-10 rounded-full object-fit"
+                        alt="Picture claim"
+                      />
+                    {:else}
+                      {result.introspect[claim] || ""}
+                    {/if}
+                  </div>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </section>
+      {/if}
+    {:else}
+      <section
+        class="w-auto border border-charcoal dark:border-gray-800 opacity-80 h-72 flex items-center justify-center"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-        />
-      </svg>
-    </a>
-  </section>
-</main>
+        <span>Nothing to see here yet</span>
+      </section>
+    {/if}
 
-<wc-footer />
+    <section class="py-6">
+      <a
+        href="https://github.com/hellocoop/playground/issues/new"
+        target="_blank"
+        class="inline-flex items-center hover:underline"
+      >
+        <span>File an issue on GitHub</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-3 ml-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+          />
+        </svg>
+      </a>
+    </section>
+  </div>
+  <wc-footer />
+</main>
 
 <style>
   .nav-link:hover::after {
