@@ -758,8 +758,8 @@
       </div>
 
       <div class="truncate w-full sm:w-auto">
-        <h1 class="font-semibold text-lg">Scopes (* required)</h1>
-        <div class="flex mt-2 gap-x-4 truncate">
+        <h1 class="font-semibold text-lg pl-1">Scopes (* required)</h1>
+        <div class="flex mt-2 gap-x-4 truncate pl-1">
           <div>
             <h2>Standard</h2>
             <ul class="space-y-2 mt-2">
@@ -786,12 +786,12 @@
             </ul>
           </div>
           <div class="truncate">
-            <h2>Hellō Extended</h2>
-            <ul class="space-y-2 mt-2 truncate">
+            <h2 class="pl-1">Hellō Extended</h2>
+            <ul class="space-y-2 mt-2">
               {#each scopes.custom as scope}
                 {@const required = scopes.required.includes(scope)}
                 <li
-                  class="flex items-center truncate"
+                  class="flex items-center truncate pl-1"
                   class:text-red-500={required &&
                     !states.scopes.includes(scope)}
                 >
