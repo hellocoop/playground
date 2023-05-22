@@ -757,7 +757,7 @@
         >
       </div>
 
-      <div class="truncate w-full sm:w-auto">
+      <div class="truncate w-full sm:w-auto -ml-1">
         <h1 class="font-semibold text-lg pl-1">Scopes (* required)</h1>
         <div class="flex mt-2 gap-x-4 truncate pl-1">
           <div>
