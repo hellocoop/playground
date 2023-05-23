@@ -118,14 +118,6 @@
     ) {
       custom_authorization_server = states.selected_authorization_server;
     }
-    if (
-      ![
-        "https://wallet.hello.coop/invite",
-        ...states.custom_invite_servers,
-      ].includes(states.selected_invite_server)
-    ) {
-      custom_invite_server = states.selected_invite_server;
-    }
 
     if (
       window.matchMedia &&
@@ -202,7 +194,6 @@
   };
 
   let custom_authorization_server = "";
-  let custom_invite_server = "";
 
   const result = {
     authorize: null,
@@ -214,9 +205,7 @@
   //default values, also binds to user input
   let states = {
     selected_authorization_server: "https://wallet.hello.coop/authorize",
-    selected_invite_server: "https://wallet.hello.coop/invite",
     custom_authorization_servers: [],
-    custom_invite_servers: [],
     scopes: ["openid"],
     query_params: ["client_id", "redirect_uri", "nonce", "response_type"],
     invite_query_params: ["inviter", "client_id"],
@@ -450,6 +439,9 @@
   function makeRequestURL(server, scopes, queryParams, type) {
     try {
       const url = new URL(server);
+      if(type === "invite") {
+        url.pathname = "invite"
+      }
       if (scopes.length) {
         const _scopes = scopes.join(" "); //array of scopes to string separated by space
         url.searchParams.set("scope", _scopes);
@@ -507,21 +499,21 @@
     try {
       inviteWithHelloAjax = true;
       let url;
-      if (custom_invite_server.length) {
-        url = new URL(custom_invite_server);
+      if (custom_authorization_server.length) {
+        url = new URL(custom_authorization_server);
       }
       if (
         ![
-          "https://wallet.hello.coop/invite",
-          ...states.custom_invite_servers,
+          "https://wallet.hello.coop/authorize",
+          ...states.custom_authorization_servers,
         ].includes(url.href)
       ) {
-        states.custom_invite_servers = [
-          ...states.custom_invite_servers,
+        states.custom_authorization_servers = [
+          ...states.custom_authorization_servers,
           url.href,
         ];
-        states.selected_invite_server = url.href;
-        custom_invite_server = "";
+        states.selected_authorization_server = url.href;
+        custom_authorization_server = "";
       }
     } catch {
       // console.error('Custom auth server endpoint not saved locally: Invalid URL')
@@ -573,7 +565,7 @@
   );
 
   $: inviteURL = makeRequestURL(
-    states.selected_invite_server,
+    states.selected_authorization_server,
     [],
     states.invite_query_params,
     "invite"
@@ -1063,57 +1055,8 @@
           class="flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 mt-2"
         >
           <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
-            <h2>Invite Server</h2>
-            <ul class="space-y-2 mt-2">
-              <li class="flex items-center">
-                <input
-                  type="radio"
-                  name="invite_server"
-                  value="https://wallet.hello.coop/invite"
-                  id="wallet/invite"
-                  class="text-charcoal form-radio dark:text-gray-800"
-                  bind:group={states.selected_invite_server}
-                />
-                <label for="wallet/invite" class="ml-2 w-full">
-                  https://wallet.hello.coop/invite
-                </label>
-              </li>
-              {#each states.custom_invite_servers as server}
-                <li class="flex items-center">
-                  <input
-                    type="radio"
-                    name="invite_server"
-                    value={server}
-                    id={server}
-                    class="text-charcoal form-radio dark:text-gray-800"
-                    bind:group={states.selected_invite_server}
-                  />
-                  <label for={server} class="ml-2 w-full">{server}</label>
-                </li>
-              {/each}
-              <li class="flex items-center">
-                <input
-                  type="radio"
-                  name="invite_server"
-                  value={custom_invite_server}
-                  class="text-charcoal form-radio dark:text-gray-800"
-                  id="custom-invite-server"
-                  bind:group={states.selected_invite_server}
-                />
-                <input
-                  bind:value={custom_invite_server}
-                  on:input={(e) =>
-                    (states.selected_invite_server = e.target.value)}
-                  type="url"
-                  name="custom"
-                  class="h-8 ml-2 w-full text-charcoal form-input"
-                  placeholder="eg http://example.com:9000/"
-                />
-              </li>
-            </ul>
-
             <div
-              class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words my-6"
+              class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mt-2 mb-6"
             >
               <h2 class="inline-flex items-center">
                 <span>Invite URL</span>
