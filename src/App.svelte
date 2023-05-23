@@ -154,7 +154,6 @@
       code_challenge: "",
       code_verifier: "",
       login_hint: "",
-      // prompt: ['login', 'profile_update'],
       response_mode: ["fragment", "query"],
       state: "",
       provider_hint: "",
@@ -162,14 +161,48 @@
     required: ["client_id", "redirect_uri", "nonce", "response_type"],
   };
 
+  const inviteQueryParams = {
+    params: {
+      inviter: "",
+      client_id: "",
+      prompt: "",
+      initiated_login_uri: "",
+      event_uri: "",
+      return_uri: "",
+      manage: "",
+      state: "",
+      tenant: "",
+      role: "",
+    },
+    required: [
+      "inviter",
+      "client_id",
+      "initiated_login_uri",
+      "event_uri",
+      "prompt",
+      "return_uri",
+    ],
+  };
+
   let custom_authorization_server = "";
+  let custom_invite_server = "";
+
+  const result = {
+    authorize: null,
+    introspect: null,
+    userinfo: null,
+    token: null,
+  };
 
   //default values, also binds to user input
   let states = {
     selected_authorization_server: "https://wallet.hello.coop/authorize",
+    selected_invite_server: "https://wallet.hello.coop/invite",
     custom_authorization_servers: [],
+    custom_invite_servers: [],
     scopes: ["openid"],
     query_params: ["client_id", "redirect_uri", "nonce", "response_type"],
+    invite_query_params: ["inviter", "client_id"],
     query_param_values: {
       ...queryParams.params,
       client_id: clientIds.playground,
@@ -177,24 +210,22 @@
       redirect_uri: window.location.origin + "/",
       response_mode: "fragment",
       response_type: "id_token",
-      prompt: "login",
+    },
+    invite_query_param_values: {
+      ...inviteQueryParams.params,
+      client_id: clientIds.playground,
     },
   };
 
   let mobileMenu = false;
 
   const copyTooltip = {
+    requestURL: false,
+    inviteURL: false,
     authorize: false,
     introspect: false,
     userinfo: false,
     token: false,
-  };
-
-  const result = {
-    authorize: null,
-    introspect: null,
-    userinfo: null,
-    token: null,
   };
 
   $: dropdown = {
@@ -260,6 +291,11 @@
       try {
         const payload = await getIntrospect(id_token || result.token.id_token);
         result.introspect = payload;
+
+        //set inviter to sub
+        if (result.introspect.sub) {
+          states.invite_query_param_values.inviter = result.introspect.sub;
+        }
       } catch (err) {
         result.introspect = err;
       }
@@ -394,16 +430,19 @@
     localStorage.setItem("states", _states);
   }
 
-  function makeRequestURL(authServer, scopes, queryParams) {
+  function makeRequestURL(server, scopes, queryParams, type) {
     try {
-      const url = new URL(authServer);
+      const url = new URL(server);
       if (scopes.length) {
         const _scopes = scopes.join(" "); //array of scopes to string separated by space
         url.searchParams.set("scope", _scopes);
       }
       if (queryParams.length) {
         for (const param of queryParams) {
-          const query_param_value = states.query_param_values[param];
+          const query_param_value =
+            type === "request"
+              ? states.query_param_values[param]
+              : states.invite_query_param_values[param];
           if (!query_param_value) continue;
           url.searchParams.set(param, query_param_value);
         }
@@ -446,6 +485,34 @@
     }
   }
 
+  let inviteWithHelloAjax = false;
+  async function inviteWithHello() {
+    try {
+      inviteWithHelloAjax = true;
+      let url;
+      if (custom_invite_server.length) {
+        url = new URL(custom_invite_server);
+      }
+      if (
+        ![
+          "https://wallet.hello.coop/invite",
+          ...states.custom_invite_servers,
+        ].includes(url.href)
+      ) {
+        states.custom_invite_servers = [
+          ...states.custom_invite_servers,
+          url.href,
+        ];
+        states.selected_invite_server = url.href;
+        custom_invite_server = "";
+      }
+    } catch {
+      // console.error('Custom auth server endpoint not saved locally: Invalid URL')
+    } finally {
+      window.location.href = inviteURL;
+    }
+  }
+
   async function copy(state, content) {
     copyTooltip[state] = true;
     await navigator.clipboard.writeText(content);
@@ -479,18 +546,20 @@
         states.query_param_values.response_mode = "fragment";
       }
     }
-
-    if (param === "prompt") {
-      if (!e.target.checked) {
-        states.query_param_values.prompt = "login";
-      }
-    }
   }
 
   $: requestURL = makeRequestURL(
     states.selected_authorization_server,
     states.scopes,
-    states.query_params
+    states.query_params,
+    "request"
+  );
+
+  $: inviteURL = makeRequestURL(
+    states.selected_invite_server,
+    [],
+    states.invite_query_params,
+    "invite"
   );
 
   async function sendEvent() {
@@ -811,7 +880,7 @@
         </div>
       </div>
 
-      <div class="flex-1">
+      <div class="flex-1 w-full">
         <h1 class="font-semibold text-lg">Query Params (* required)</h1>
         <div class="mt-2">
           <ul class="space-y-2 mt-2">
@@ -874,17 +943,14 @@
                     <div
                       class="xl:h-8 p-0.5 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
                       class:opacity-60={!states.query_params.includes(param) &&
-                        param !== "response_mode" &&
-                        param !== "prompt"}
+                        param !== "response_mode"}
                     >
                       {#each value as ele}
                         <button
                           on:click={() =>
                             (states.query_param_values[param] = ele)}
-                          disabled={(param === "response_mode" &&
-                            !states.query_params.includes("response_mode")) ||
-                            (param === "prompt" &&
-                              !states.query_params.includes("prompt"))}
+                          disabled={param === "response_mode" &&
+                            !states.query_params.includes("response_mode")}
                           class="{states.query_param_values[param] === ele
                             ? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
                             : 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
@@ -961,7 +1027,6 @@
           </ul>
         </div>
       </div>
-
       <button
         on:click={continueWithHello}
         class="hello-btn-black-and-static w-full lg:hidden"
@@ -971,6 +1036,192 @@
         >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
       >
     </section>
+
+    {#if (result.introspect?.sub || states.invite_query_param_values.inviter) && localStorage.plausible_ignore == "true"}
+      <section
+        class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4"
+      >
+        <h1 class="font-semibold text-lg">Invite</h1>
+        <div
+          class="flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 mt-2"
+        >
+          <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
+            <h2>Invite Server</h2>
+            <ul class="space-y-2 mt-2">
+              <li class="flex items-center">
+                <input
+                  type="radio"
+                  name="invite_server"
+                  value="https://wallet.hello.coop/invite"
+                  id="wallet/invite"
+                  class="text-charcoal form-radio dark:text-gray-800"
+                  bind:group={states.selected_invite_server}
+                />
+                <label for="wallet/invite" class="ml-2 w-full">
+                  https://wallet.hello.coop/invite
+                </label>
+              </li>
+              {#each states.custom_invite_servers as server}
+                <li class="flex items-center">
+                  <input
+                    type="radio"
+                    name="invite_server"
+                    value={server}
+                    id={server}
+                    class="text-charcoal form-radio dark:text-gray-800"
+                    bind:group={states.selected_invite_server}
+                  />
+                  <label for={server} class="ml-2 w-full">{server}</label>
+                </li>
+              {/each}
+              <li class="flex items-center">
+                <input
+                  type="radio"
+                  name="invite_server"
+                  value={custom_invite_server}
+                  class="text-charcoal form-radio dark:text-gray-800"
+                  id="custom-invite-server"
+                  bind:group={states.selected_invite_server}
+                />
+                <input
+                  bind:value={custom_invite_server}
+                  on:input={(e) =>
+                    (states.selected_invite_server = e.target.value)}
+                  type="url"
+                  name="custom"
+                  class="h-8 ml-2 w-full text-charcoal form-input"
+                  placeholder="eg http://example.com:9000/"
+                />
+              </li>
+            </ul>
+
+            <div
+              class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words my-6"
+            >
+              <h2 class="inline-flex items-center">
+                <span>Invite URL</span>
+                <button on:click={() => copy("inviteURL", inviteURL)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 ml-1 stroke-2 hover:stroke-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                </button>
+              </h2>
+              <span
+                class="mt-2 block text-sm whitespace-pre-line"
+                class:flash={copyTooltip.inviteURL}
+              >
+                {inviteURL}
+              </span>
+            </div>
+
+            <button
+              on:click={inviteWithHello}
+              class="hello-btn-black-and-static w-full hidden lg:flex"
+              class:hello-btn-loader={inviteWithHelloAjax}
+              disabled={inviteWithHelloAjax}
+              class:hello-btn-hover-flare={darkMode}
+              >ō&nbsp;&nbsp;&nbsp;Invite with Hellō</button
+            >
+          </div>
+          <div class="w-full lg:w-1/2 lg:max-w-xl lg:min-w-[18rem] mt-4 pl-1">
+            <h2>Query Params (* required)</h2>
+            <div class="mt-2">
+              <ul class="space-y-2 mt-2">
+                {#each Object.entries(inviteQueryParams.params) as [param, value]}
+                  {@const required = inviteQueryParams.required.includes(param)}
+                  <li class="flex items-center relative">
+                    <div
+                      class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
+                      class:mt-6={param === "client_id"}
+                    >
+                      <input
+                        type="checkbox"
+                        bind:group={states.invite_query_params}
+                        class="text-charcoal form-checkbox dark:text-gray-800"
+                        name={param}
+                        id={"invite/" + param}
+                        value={param}
+                      />
+                      <label
+                        for={"invite/" + param}
+                        class="ml-2"
+                        class:text-red-500={//required
+                        required &&
+                          (!states.invite_query_params.includes(param) ||
+                            //if checked and empty field
+                            !states.invite_query_param_values[param])}
+                      >
+                        {param}
+                        {required ? "*" : ""}
+                      </label>
+                    </div>
+
+                    <div class="w-1/2 md:w-3/4">
+                      <div
+                        class="flex flex-col w-full items-start"
+                        class:opacity-60={!states.invite_query_params.includes(
+                          param
+                        )}
+                      >
+                        {#if param === "client_id"}
+                          <div class="mb-0.5">
+                            <button
+                              on:click={() =>
+                                (states.invite_query_param_values.client_id =
+                                  clientIds.playground)}
+                              class="text-xs xl:text-sm hover:underline"
+                              >Playground</button
+                            >
+                            <button
+                              on:click={() =>
+                                (states.invite_query_param_values.client_id =
+                                  clientIds.greenfield)}
+                              class="text-xs xl:text-sm hover:underline xl:ml-2"
+                              >GreenfieldFitness</button
+                            >
+                          </div>
+                        {/if}
+                        <input
+                          type="text"
+                          name={param}
+                          class="h-8 w-full form-input"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                          placeholder={param === "prompt"
+                            ? "Subscribe to Blue Fox"
+                            : ""}
+                          bind:value={states.invite_query_param_values[param]}
+                        />
+                      </div>
+                    </div>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+          </div>
+          <button
+            on:click={inviteWithHello}
+            class="hello-btn-black-and-static w-full lg:hidden"
+            class:hello-btn-loader={inviteWithHelloAjax}
+            disabled={inviteWithHelloAjax}
+            class:hello-btn-hover-flare={darkMode}
+            >ō&nbsp;&nbsp;&nbsp;Invite with Hellō</button
+          >
+        </div>
+      </section>
+    {/if}
 
     {#if result.authorize}
       <section class="btn group">
