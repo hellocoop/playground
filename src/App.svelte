@@ -111,6 +111,23 @@
     }
 
     if (
+      ![
+        "https://wallet.hello.coop/authorize",
+        ...states.custom_authorization_servers,
+      ].includes(states.selected_authorization_server)
+    ) {
+      custom_authorization_server = states.selected_authorization_server;
+    }
+    if (
+      ![
+        "https://wallet.hello.coop/invite",
+        ...states.custom_invite_servers,
+      ].includes(states.selected_invite_server)
+    ) {
+      custom_invite_server = states.selected_invite_server;
+    }
+
+    if (
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
     ) {
@@ -1141,7 +1158,7 @@
                   {@const required = inviteQueryParams.required.includes(param)}
                   <li class="flex items-center relative">
                     <div
-                      class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
+                      class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[12rem] flex items-center"
                       class:mt-6={param === "client_id"}
                     >
                       <input
