@@ -431,13 +431,13 @@
       const _states = JSON.parse(localStorage.getItem("states"));
       if (!compareKeys(states, _states)) {
         console.info("State keys do not match, clearing localStorage");
-        localStorage.clear();
+        localStorage.removeItem("states");
         return;
       }
       states = _states;
     } catch (err) {
       console.error(err);
-      localStorage.clear();
+      localStorage.removeItem("states");
     }
   }
 
