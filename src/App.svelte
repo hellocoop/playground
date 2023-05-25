@@ -175,7 +175,7 @@
       inviter: "",
       client_id: "",
       prompt: "",
-      initiated_login_uri: "",
+      initiate_login_uri: "",
       event_uri: "",
       return_uri: "",
       manage: "",
@@ -186,7 +186,7 @@
     required: [
       "inviter",
       "client_id",
-      "initiated_login_uri",
+      "initiate_login_uri",
       "event_uri",
       "prompt",
       "return_uri",
