@@ -277,6 +277,15 @@
     cleanURL();
     const id_token = queryParams.get("id_token");
     const code = queryParams.get("code");
+    const initiate_login = queryParams.has("initiate-login");
+    if (initiate_login) {
+      const url = new URL(requestURL);
+      const loginHint = queryParams.get("login_hint");
+      if (loginHint) {
+        url.searchParams.set("login_hint", loginHint);
+      }
+      window.location.href = url;
+    }
     if (code) {
       try {
         const res = await getToken(code);
@@ -439,8 +448,8 @@
   function makeRequestURL(server, scopes, queryParams, type) {
     try {
       const url = new URL(server);
-      if(type === "invite") {
-        url.pathname = "invite"
+      if (type === "invite") {
+        url.pathname = "invite";
       }
       if (scopes.length) {
         const _scopes = scopes.join(" "); //array of scopes to string separated by space
