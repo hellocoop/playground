@@ -277,15 +277,19 @@
     cleanURL();
     const id_token = queryParams.get("id_token");
     const code = queryParams.get("code");
-    const initiate_login = queryParams.has("initiate-login");
+    const initiate_login = queryParams.get("initiate-login");
     if (initiate_login) {
       await tick(); //wait for requestURL to compute
-      const url = new URL(requestURL);
+      const url = new URL(initiate_login);
       const loginHint = queryParams.get("login_hint");
+      const existingSearchParams = new URL(requestURL).search;
+      if (existingSearchParams) {
+        url.search = existingSearchParams;
+      }
       if (loginHint) {
         url.searchParams.set("login_hint", loginHint);
       }
-      window.location.href = url;
+      window.location.href = url.href;
     }
     if (code) {
       try {
