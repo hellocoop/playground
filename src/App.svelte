@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import { fade, slide } from "svelte/transition";
   import Prism from "svelte-prism";
   import makePKCE from "./utils/pkce.js";
@@ -279,6 +279,7 @@
     const code = queryParams.get("code");
     const initiate_login = queryParams.has("initiate-login");
     if (initiate_login) {
+      await tick(); //wait for requestURL to compute
       const url = new URL(requestURL);
       const loginHint = queryParams.get("login_hint");
       if (loginHint) {
