@@ -989,7 +989,7 @@
                       class:opacity-60={!states.query_params.includes(param) &&
                         param !== "code_challenge"}
                     >
-                      {#if param === "client_id"}
+                      <!-- {#if param === "client_id"}
                         <div class="mb-0.5">
                           <button
                             on:click={() =>
@@ -1006,7 +1006,7 @@
                             >GreenfieldFitness</button
                           >
                         </div>
-                      {/if}
+                      {/if} -->
                       <input
                         type="text"
                         name={param}
