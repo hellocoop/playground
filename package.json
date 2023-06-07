@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "engines" : { 
-    "npm" : ">=7.0.0",
-    "node" : ">=16.0.0"
+    "node" : "~18",
+    "npm" : "~9"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
