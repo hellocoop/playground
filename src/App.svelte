@@ -52,6 +52,7 @@
     "phone",
     "ethereum",
     "qrcode",
+    "passkey",
   ];
 
   let invalidProviderHintSlug = null;
