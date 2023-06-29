@@ -1038,11 +1038,13 @@
                     <p class="text-xs mt-1.5">
                       <span class="opacity-80"
                         >{possibleSlugs
-                          .filter((i) => !["google", "email"].includes(i))
+                          .filter(
+                            (i) => !["google", "email", "passkey"].includes(i)
+                          )
                           .join(" ")}</span
                       ><br />
                       <span class="opacity-80"
-                        >apple-- microsoft-- google-- email--</span
+                        >apple-- microsoft-- google-- email-- passkey--</span
                       >
                     </p>
                   {/if}
