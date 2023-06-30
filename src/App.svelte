@@ -175,14 +175,15 @@
     params: {
       inviter: "",
       client_id: "",
-      prompt: "",
       initiate_login_uri: "",
       events_uri: "",
       return_uri: "",
+      app_name: "",
+      role: "",
+      prompt: "",
       manage: "",
       state: "",
       tenant: "",
-      role: "",
       local: "true",
     },
     required: [
@@ -190,7 +191,6 @@
       "client_id",
       "initiate_login_uri",
       "events_uri",
-      "prompt",
       "return_uri",
     ],
   };
