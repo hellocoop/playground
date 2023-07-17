@@ -204,11 +204,8 @@
     token: null,
   };
 
-  //default values, also binds to user input
-  let states = {
-    selected_authorization_server: "https://wallet.hello.coop/authorize",
-    custom_authorization_servers: [],
-    scopes: ["openid"],
+  //this is so we can reset query params to original state
+  const defaultQueryParamStates = {
     query_params: ["client_id", "redirect_uri", "nonce", "response_type"],
     invite_query_params: ["inviter", "client_id"],
     query_param_values: {
@@ -218,7 +215,15 @@
       redirect_uri: window.location.origin + "/",
       response_mode: "fragment",
       response_type: "id_token",
-    },
+    }
+  }
+
+  //default values, also binds to user input
+  let states = {
+    selected_authorization_server: "https://wallet.hello.coop/authorize",
+    custom_authorization_servers: [],
+    scopes: ["openid"],
+    ...defaultQueryParamStates,
     invite_query_param_values: {
       ...inviteQueryParams.params,
       client_id: clientIds.playground,
@@ -609,6 +614,13 @@
       console.error(err);
     }
   }
+
+  const resetQueryParams = () => {
+    states = {
+      ...states,
+      ...defaultQueryParamStates
+    }
+  }
 </script>
 
 <svelte:window
@@ -906,7 +918,10 @@
       </div>
 
       <div class="flex-1 w-full">
-        <h1 class="font-semibold text-lg">Query Params (* required)</h1>
+        <div>
+          <h1 class="font-semibold text-lg inline-block">Query Params (* required)</h1>
+          <button class="inline-block ml-2" on:click={resetQueryParams}>Reset</button>
+        </div>
         <div class="mt-2">
           <ul class="space-y-2 mt-2">
             {#each Object.entries(queryParams.params) as [param, value]}
