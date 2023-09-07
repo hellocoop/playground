@@ -113,3 +113,5 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
+S3
