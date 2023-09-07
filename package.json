@@ -4,9 +4,12 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
+    "postinstall": "node scripts/pre-requisties.mjs",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "review": "./scripts/review.mjs"
   },
   "engines" : { 
     "node" : "~18",
