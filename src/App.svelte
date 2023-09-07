@@ -638,7 +638,6 @@
 />
 
 <header
-  data-test="test-run-3"
   class="text-white dark:text-gray flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg"
 >
   <div class="w-1/3 inline-flex items-center">
