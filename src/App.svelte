@@ -86,7 +86,7 @@
     sendEvent();
 
     if (localStorage.plausible_ignore == "true") {
-      const _standard_scopes = ["preferred_username"];
+      const _standard_scopes = ["preferred_username", "discord"];
       const _custom_scopes = [
         // "twitter",
         // "github",
