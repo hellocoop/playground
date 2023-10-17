@@ -18,7 +18,7 @@
       "phone",
       "picture",
     ],
-    custom: ["profile_update", "ethereum"],
+    custom: ["profile_update", "ethereum", "discord", "twitter", "github", "gitlab"],
     required: ["openid"],
     claims: [
       "sub",
@@ -86,7 +86,7 @@
     sendEvent();
 
     if (localStorage.plausible_ignore == "true") {
-      const _standard_scopes = ["preferred_username", "discord", "twitter", "github", "gitlab"];
+      const _standard_scopes = ["preferred_username"];
       const _custom_scopes = [
         // "twitter",
         // "github",
