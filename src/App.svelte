@@ -86,7 +86,7 @@
     sendEvent();
 
     if (localStorage.plausible_ignore == "true") {
-      const _standard_scopes = ["preferred_username", "discord"];
+      const _standard_scopes = ["preferred_username", "discord", "twitter", "github", "gitlab"];
       const _custom_scopes = [
         // "twitter",
         // "github",
@@ -1510,6 +1510,7 @@
               class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50"
             >
               {#each scopes.claims.filter((i) => result.introspect[i]) as claim}
+                {@const isString = typeof result.introspect[claim] == 'string'}
                 <li class="py-4 flex items-center w-full">
                   <div class="w-1/3">{claim}</div>
                   <div>
@@ -1521,7 +1522,8 @@
                         alt="Picture claim"
                       />
                     {:else}
-                      {result.introspect[claim] || ""}
+                                                             <!-- discord claim is {id, username} -->
+                      {isString ? result.introspect[claim] : JSON.stringify(result.introspect[claim]) || ""}
                     {/if}
                   </div>
                 </li>
