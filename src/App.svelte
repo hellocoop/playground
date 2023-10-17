@@ -30,6 +30,10 @@
       "phone",
       "picture",
       "ethereum",
+      "discord",
+      "twitter",
+      "github",
+      "gitlab"
     ],
   };
 
@@ -1523,7 +1527,7 @@
                       />
                     {:else}
                                                              <!-- discord claim is {id, username} -->
-                      {isString ? result.introspect[claim] : JSON.stringify(result.introspect[claim]) || ""}
+                      <pre>{isString ? result.introspect[claim] : JSON.stringify(result.introspect[claim], null, 2) || ""}</pre>
                     {/if}
                   </div>
                 </li>
