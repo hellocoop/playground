@@ -4,12 +4,14 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
-    "postinstall": "node scripts/pre-requisties.mjs",
+    "postinstall": "./scripts/pre-requisties.sh",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "review": "./scripts/review.mjs"
+    "pr": "./scripts/pr.sh",
+    "rebase": "git pull origin main --rebase",
+    "review": "npm run rebase && npm run test && npm run pr"
   },
   "engines": {
     "node": "~18",
