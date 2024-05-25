@@ -1515,8 +1515,8 @@
             >
               {#each scopes.claims.filter((i) => result.introspect[i]) as claim}
                 {@const isString = typeof result.introspect[claim] == 'string'}
-                <li class="py-4 flex items-center w-full">
-                  <div class="w-1/3">{claim}</div>
+                <li class="py-4 flex items-center w-full overflow-x-auto pr-6">
+                  <div class="w-1/4 md:w-1/3 flex-shrink-0">{claim}</div>
                   <div>
                     {#if claim === "picture" && result.introspect[claim]}
                       <!-- svelte-ignore a11y-img-redundant-alt -->
