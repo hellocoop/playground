@@ -187,10 +187,10 @@
       app_name: "",
       role: "",
       prompt: "",
-      manage: "",
       state: "",
       tenant: "",
-      local: "true",
+      manage: false,
+      localhost_invite: false,
     },
     required: [
       "inviter",
@@ -483,8 +483,12 @@
             type === "request"
               ? states.query_param_values[param]
               : states.invite_query_param_values[param];
-          if (!query_param_value) continue;
-          url.searchParams.set(param, query_param_value);
+          if(query_param_value) {
+            url.searchParams.set(param, query_param_value);
+          }
+          if(type == "invite" && (param == "manage" || param == "localhost_invite")) {
+            url.searchParams.set(param, "true");
+          }
         }
       }
       const lineBreakedURL = url
@@ -1205,19 +1209,21 @@
                             >
                           </div>
                         {/if}
-                        <input
-                          type="text"
-                          name={param}
-                          class="h-8 w-full form-input"
-                          autocomplete="off"
-                          autocorrect="off"
-                          autocapitalize="off"
-                          spellcheck="false"
-                          placeholder={param === "prompt"
-                            ? "Subscribe to Blue Fox"
-                            : ""}
-                          bind:value={states.invite_query_param_values[param]}
-                        />
+                        {#if typeof value == "string"}
+                          <input
+                            type="text"
+                            name={param}
+                            class="h-8 w-full form-input"
+                            autocomplete="off"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                            placeholder={param === "prompt"
+                              ? "Subscribe to Blue Fox"
+                              : ""}
+                            bind:value={states.invite_query_param_values[param]}
+                          />
+                        {/if}
                       </div>
                     </div>
                   </li>
