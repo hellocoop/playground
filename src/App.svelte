@@ -183,6 +183,7 @@
       client_id: "",
       initiate_login_uri: "",
       events_uri: "",
+      localhost_invite: false,
       return_uri: "",
       app_name: "",
       role: "",
@@ -190,14 +191,13 @@
       state: "",
       tenant: "",
       manage: false,
-      localhost_invite: false,
     },
     required: [
       "inviter",
       "client_id",
       "initiate_login_uri",
       "events_uri",
-      "return_uri",
+      "return_uri"
     ],
   };
 
@@ -213,7 +213,7 @@
   //this is so we can reset query params to original state
   const defaultQueryParamStates = {
     query_params: ["client_id", "redirect_uri", "nonce", "response_type"],
-    invite_query_params: ["inviter", "client_id"],
+    invite_query_params: ["inviter", "client_id", "initiate_login_uri", "events_uri", "return_uri"],
     query_param_values: {
       ...queryParams.params,
       client_id: clientIds.playground,
@@ -233,6 +233,9 @@
     invite_query_param_values: {
       ...inviteQueryParams.params,
       client_id: clientIds.playground,
+      initiate_login_uri: "https://playground.hello.dev/initiate-login",
+      events_uri: "https://playground.hello.dev/initiate-login",
+      return_uri: "https://playground.hello.dev/profile"
     },
   };
 
@@ -1156,6 +1159,7 @@
             <div class="mt-2">
               <ul class="space-y-2 mt-2">
                 {#each Object.entries(inviteQueryParams.params) as [param, value]}
+                  {@const isString = typeof value == 'string'}
                   {@const required = inviteQueryParams.required.includes(param)}
                   <li class="flex items-center relative">
                     <div
@@ -1209,7 +1213,7 @@
                             >
                           </div>
                         {/if}
-                        {#if typeof value == "string"}
+                        {#if isString}
                           <input
                             type="text"
                             name={param}
@@ -1223,6 +1227,8 @@
                               : ""}
                             bind:value={states.invite_query_param_values[param]}
                           />
+                        {:else}
+                          {states.invite_query_params.includes(param)}
                         {/if}
                       </div>
                     </div>
