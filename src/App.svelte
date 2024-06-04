@@ -10,6 +10,7 @@
   const scopes = {
     standard: [
       "openid",
+      "profile",
       "name",
       "nickname",
       "given_name",
