@@ -812,7 +812,7 @@
     <section
       class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row gap-y-4 lg:gap-y-0 lg:gap-x-5"
     >
-      <button on:click={resetAll} class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-[#151515]">Reset</button>
+      <button on:click={resetAll} class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]">Reset</button>
       <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
         <h1 class="font-semibold text-lg">Authorization Server</h1>
 
