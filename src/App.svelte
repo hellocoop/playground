@@ -1,6 +1,6 @@
 <script>
   import { onMount, tick } from "svelte";
-  import { fade, slide } from "svelte/transition";
+  import { slide } from "svelte/transition";
   import Prism from "svelte-prism";
   import makePKCE from "./utils/pkce.js";
 
@@ -173,6 +173,7 @@
       login_hint: "",
       response_mode: ["fragment", "query"],
       state: "",
+      custom: "",
       provider_hint: "",
     },
     required: ["client_id", "redirect_uri", "nonce", "response_type"],
@@ -483,6 +484,10 @@
       }
       if (queryParams.length) {
         for (const param of queryParams) {
+          if(param === "custom" && type == "request") {
+            url.search += states.query_param_values[param]
+            continue;
+          }
           const query_param_value =
             type === "request"
               ? states.query_param_values[param]
@@ -638,6 +643,11 @@
       ...states,
       ...defaultQueryParamStates
     }
+  }
+
+  const resetAll = () => {
+    localStorage.removeItem("states");
+    window.location.reload();
   }
 </script>
 
@@ -798,10 +808,11 @@
 {/if}
 
 <main class="flex-1 overflow-y-auto">
-  <div class="p-4 space-y-4">
+  <div class="py-6 px-4 space-y-6">
     <section
-      class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5"
+      class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row gap-y-4 lg:gap-y-0 lg:gap-x-5"
     >
+      <button on:click={resetAll} class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-[#151515]">Reset</button>
       <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
         <h1 class="font-semibold text-lg">Authorization Server</h1>
 
@@ -829,7 +840,7 @@
                 class="text-charcoal form-radio dark:text-gray-800"
                 bind:group={states.selected_authorization_server}
               />
-              <label for={server} class="ml-2 w-full">{server}</label>
+              <label for={server} class="ml-2 w-full break-all">{server}</label>
             </li>
           {/each}
           <li class="flex items-center">
