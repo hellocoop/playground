@@ -835,7 +835,7 @@
                 class="text-charcoal form-radio dark:text-gray-800"
                 bind:group={states.selected_authorization_server}
               />
-              <label for={server} class="ml-2 w-full">{server}</label>
+              <label for={server} class="ml-2 w-full break-all">{server}</label>
             </li>
           {/each}
           <li class="flex items-center">
