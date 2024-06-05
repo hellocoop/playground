@@ -1,6 +1,6 @@
 <script>
   import { onMount, tick } from "svelte";
-  import { fade, slide } from "svelte/transition";
+  import { slide } from "svelte/transition";
   import Prism from "svelte-prism";
   import makePKCE from "./utils/pkce.js";
 
@@ -639,6 +639,11 @@
       ...defaultQueryParamStates
     }
   }
+
+  const resetAll = () => {
+    localStorage.removeItem("states");
+    window.location.reload();
+  }
 </script>
 
 <svelte:window
@@ -798,10 +803,11 @@
 {/if}
 
 <main class="flex-1 overflow-y-auto">
-  <div class="p-4 space-y-4">
+  <div class="py-6 px-4 space-y-6">
     <section
-      class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5"
+      class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row gap-y-4 lg:gap-y-0 lg:gap-x-5"
     >
+      <button on:click={resetAll} class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-[#151515]">Reset</button>
       <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
         <h1 class="font-semibold text-lg">Authorization Server</h1>
 
