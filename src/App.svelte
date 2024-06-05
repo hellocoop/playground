@@ -173,6 +173,7 @@
       login_hint: "",
       response_mode: ["fragment", "query"],
       state: "",
+      custom: "",
       provider_hint: "",
     },
     required: ["client_id", "redirect_uri", "nonce", "response_type"],
@@ -483,6 +484,10 @@
       }
       if (queryParams.length) {
         for (const param of queryParams) {
+          if(param === "custom" && type == "request") {
+            url.search += states.query_param_values[param]
+            continue;
+          }
           const query_param_value =
             type === "request"
               ? states.query_param_values[param]
