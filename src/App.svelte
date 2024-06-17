@@ -305,13 +305,15 @@
     }
     if(iss) {
       try {
-        const res = await fetch(iss + "/.well-known/openid-configuration");
-        const { authorization_endpoint } = await res.json();
-        const requestUrl = new URL(authorization_endpoint)
+        const issUrl = new URL(iss)
+        const parts = issUrl.hostname.split('.');
+        parts.shift();
+        const domain = parts.join('.');
+        const requestURL = new URL('https://wallet.' + domain)
         if(queryParams.has('login_hint')) {
           requestUrl.searchParams.set('login_hint', queryParams.get('login_hint'))
         }
-        window.location.href = requestURL;
+        window.location.href = requestURL.href;
       } catch(err) {
         console.error(err)
         errorNotification = 'Invalid Issuer URL'
