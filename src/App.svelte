@@ -306,12 +306,10 @@
     }
     if(iss) {
       try {
-        const issUrl = new URL(iss)
-        const parts = issUrl.hostname.split('.');
-        parts.shift();
-        const domain = parts.join('.');
+        const res = await fetch(iss + '/.well-known/openid-configuration')
+        const { authorization_endpoint } = await res.json();
         let _requestUrl = makeRequestURL(
-          'https://wallet.' + domain,
+          authorization_endpoint,
           states.scopes,
           states.query_params,
           "request"
