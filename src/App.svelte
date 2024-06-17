@@ -296,6 +296,7 @@
     }
     cleanURL();
     const id_token = queryParams.get("id_token");
+    const loginHint = queryParams.get("login_hint");
     const code = queryParams.get("code");
     const initiate_login = queryParams.get("initiate-login");
     const iss = queryParams.get("iss");
@@ -309,11 +310,16 @@
         const parts = issUrl.hostname.split('.');
         parts.shift();
         const domain = parts.join('.');
-        const requestURL = new URL('https://wallet.' + domain)
-        if(queryParams.has('login_hint')) {
-          requestUrl.searchParams.set('login_hint', queryParams.get('login_hint'))
+        let _requestUrl = makeRequestURL(
+          'https://wallet.' + domain,
+          states.scopes,
+          states.query_params,
+          "request"
+        )
+        if(loginHint) {
+          _requestUrl += '&login_hint=' + loginHint
         }
-        window.location.href = requestURL.href;
+        window.location.href = _requestUrl;
       } catch(err) {
         console.error(err)
         errorNotification = 'Invalid Issuer URL'
