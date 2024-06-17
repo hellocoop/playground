@@ -283,7 +283,9 @@
   }
 
   async function processFragmentOrQuery() {
-    if (!window.location.hash && !window.location.search) return;
+    if (!window.location.hash && !window.location.search)
+      return;
+    
     let queryParams;
     if (window.location.hash) {
       queryParams = new URLSearchParams(window.location.hash.substring(1));
@@ -296,9 +298,24 @@
     const id_token = queryParams.get("id_token");
     const code = queryParams.get("code");
     const initiate_login = queryParams.get("initiate-login");
+    const iss = queryParams.get("iss");
     const error = queryParams.get("error")
     if(error) {
       errorNotification = error?.replaceAll("_", " ")
+    }
+    if(iss) {
+      try {
+        const res = await fetch(iss + "/.well-known/openid-configuration");
+        const { authorization_endpoint } = await res.json();
+        const requestUrl = new URL(authorization_endpoint)
+        if(queryParams.has('login_hint')) {
+          requestUrl.searchParams.set('login_hint', queryParams.get('login_hint'))
+        }
+        window.location.href = requestURL;
+      } catch(err) {
+        console.error(err)
+        errorNotification = 'Invalid Issuer URL'
+      }
     }
     if (initiate_login) {
       await tick(); //wait for requestURL to compute
