@@ -11,14 +11,15 @@
     standard: [
       "openid",
       "profile",
+      "email",
+      "phone",
+      "picture",
       "name",
       "nickname",
       "given_name",
       "family_name",
-      "email",
-      "phone",
-      "picture",
     ],
+    update: ["profile_update", "update_profile", "update_email", "update_phone", "update_picture"],
     custom: ["profile_update", "ethereum", "discord", "twitter", "github", "gitlab"],
     required: ["openid"],
     claims: [
@@ -954,6 +955,28 @@
               {/each}
             </ul>
           </div>
+          {#if localStorage.plausible_ignore == "true"}
+            <div class="truncate">
+              <h2 class="pl-1">Update</h2>
+              <ul class="space-y-2 mt-2">
+                {#each scopes.update as scope}
+                  <li
+                    class="flex items-center truncate pl-1"
+                  >
+                    <input
+                      type="checkbox"
+                      class="text-charcoal form-checkbox dark:text-gray-800"
+                      name={scope}
+                      id={scope}
+                      value={scope}
+                      bind:group={states.scopes}
+                    />
+                    <label for={scope} class="ml-2 truncate">{scope}</label>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+          {/if}
           <div class="truncate">
             <h2 class="pl-1">Hellō Extended</h2>
             <ul class="space-y-2 mt-2">
