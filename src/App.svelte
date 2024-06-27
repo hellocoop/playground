@@ -487,9 +487,10 @@
       if (!compareKeys(states, _states)) {
         console.info("State keys do not match, clearing localStorage");
         localStorage.removeItem("states");
-        return true;
+        return false;
       }
       states = _states;
+      return true;
     } catch (err) {
       console.error(err);
       localStorage.removeItem("states");
