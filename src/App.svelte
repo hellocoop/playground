@@ -85,7 +85,11 @@
   }
 
   onMount(() => {
-    getStatesFromLocalStorage();
+    if(!getStatesFromLocalStorage()) {
+      //states not found in local storage, save default states to local storage
+      states = states; //triggers saveStatesToLocalStorage
+    }
+
     processFragmentOrQuery();
     updateFavicon();
 
@@ -475,13 +479,15 @@
   }
 
   function getStatesFromLocalStorage() {
-    if (!localStorage.states) return;
+    if (!localStorage.states)
+      return false;
+
     try {
       const _states = JSON.parse(localStorage.getItem("states"));
       if (!compareKeys(states, _states)) {
         console.info("State keys do not match, clearing localStorage");
         localStorage.removeItem("states");
-        return;
+        return true;
       }
       states = _states;
     } catch (err) {
