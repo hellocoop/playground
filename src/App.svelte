@@ -4,7 +4,7 @@
   import Prism from "svelte-prism";
   import makePKCE from "./utils/pkce.js";
 
-  let onMountDone = false;
+  let readFromLocalStorage = false;
   let darkMode = false;
 
   const scopes = {
@@ -87,8 +87,10 @@
   onMount(() => {
     if(!getStatesFromLocalStorage()) {
       //states not found in local storage, save default states to local storage
-      states = states; //triggers saveStatesToLocalStorage
+      const _states = JSON.stringify(states);
+      localStorage.setItem("states", _states);
     }
+    readFromLocalStorage = true;
 
     processFragmentOrQuery();
     updateFavicon();
@@ -145,8 +147,6 @@
           darkMode = false;
         }
       });
-
-    onMountDone = true;
   });
 
   const navLinks = [
@@ -498,7 +498,12 @@
   }
 
   function saveStatesToLocalStorage() {
-    if (!onMountDone) return;
+    if (!readFromLocalStorage) {
+      //only update states in localStorage after reading from it on onMount
+      //if not, states gets reset on every page load (we need to update on existing localstorage state)
+      return;
+    }
+
     const _states = JSON.stringify(states);
     localStorage.setItem("states", _states);
   }
