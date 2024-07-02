@@ -1177,7 +1177,7 @@
       >
     </section>
 
-    {#if (result.introspect?.sub || states.invite_query_param_values.inviter) && localStorage.plausible_ignore == "true"}
+    {#if (result.introspect?.sub || states.invite_query_param_values.inviter)}
       <section
         class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4"
       >
