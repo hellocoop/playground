@@ -200,10 +200,8 @@
       manage: false,
     },
     required: [
-      "inviter",
       "client_id",
       "initiate_login_uri",
-      "events_uri",
       "return_uri"
     ],
   };
@@ -221,6 +219,7 @@
   const defaultQueryParamStates = {
     query_params: ["client_id", "redirect_uri", "nonce", "response_type"],
     invite_query_params: ["inviter", "client_id", "initiate_login_uri", "return_uri"],
+    invite_playground_query_params: ["inviter", "client_id", "initiate_login_uri", "return_uri"],
     query_param_values: {
       ...queryParams.params,
       client_id: clientIds.playground,
@@ -243,6 +242,12 @@
       initiate_login_uri: "https://playground.hello.dev/",
       return_uri: "https://playground.hello.dev/"
     },
+    invite_playground_query_param_values: {
+      ...inviteQueryParams.params,
+      client_id: clientIds.playground,
+      initiate_login_uri: "https://playground.hello.dev/",
+      return_uri: "https://playground.hello.dev/"
+    },
   };
 
   let mobileMenu = false;
@@ -250,6 +255,7 @@
   const copyTooltip = {
     requestURL: false,
     inviteURL: false,
+    invitePlaygroundURL: false,
     authorize: false,
     introspect: false,
     userinfo: false,
@@ -316,6 +322,7 @@
           authorization_endpoint,
           states.scopes,
           states.query_params,
+          states.query_param_values,
           "request"
         )
         if(loginHint) {
@@ -364,6 +371,7 @@
         //set inviter to sub
         if (result.introspect.sub) {
           states.invite_query_param_values.inviter = result.introspect.sub;
+          states.invite_playground_query_param_values.inviter = result.introspect.sub;
         }
       } catch (err) {
         result.introspect = err;
@@ -507,7 +515,7 @@
     localStorage.setItem("states", _states);
   }
 
-  function makeRequestURL(server, scopes, queryParams, type) {
+  function makeRequestURL(server, scopes, queryParams, queryParamValues, type) {
     try {
       const url = new URL(server);
       if (type === "invite") {
@@ -520,16 +528,14 @@
       if (queryParams.length) {
         for (const param of queryParams) {
           if(param === "custom" && type == "request") {
-            url.search += states.query_param_values[param]
+            url.search += queryParamValues[param]
             continue;
           }
-          const query_param_value =
-            type === "request"
-              ? states.query_param_values[param]
-              : states.invite_query_param_values[param];
+          const query_param_value = queryParamValues[param]
           if(query_param_value) {
             url.searchParams.set(param, query_param_value);
           }
+          //boolean states
           if(type == "invite" && (param == "manage" || param == "localhost_invite")) {
             url.searchParams.set(param, "true");
           }
@@ -571,6 +577,12 @@
     } finally {
       window.location.href = requestURL;
     }
+  }
+
+  let invitePlaygroundWithHelloAjax = false;
+  function invitePlaygroundWithHello() {
+    invitePlaygroundWithHelloAjax = true
+    window.location.href = invitePlaygroundURL;
   }
 
   let inviteWithHelloAjax = false;
@@ -640,6 +652,7 @@
     states.selected_authorization_server,
     states.scopes,
     states.query_params,
+    states.query_param_values,
     "request"
   );
 
@@ -647,6 +660,15 @@
     states.selected_authorization_server,
     [],
     states.invite_query_params,
+    states.invite_query_param_values,
+    "invite"
+  );
+
+  $: invitePlaygroundURL = makeRequestURL(
+    states.selected_authorization_server,
+    [],
+    states.invite_playground_query_params,
+    states.invite_playground_query_param_values,
     "invite"
   );
 
@@ -685,7 +707,7 @@
     window.location.reload();
   }
 
-  $: canInvite = states.invite_query_param_values.inviter && states.scopes.includes('openid') && states.scopes.includes('name') && states.scopes.includes('email');
+  $: canInvite = states.invite_playground_query_param_values.inviter && states.scopes.includes('openid') && states.scopes.includes('name') && states.scopes.includes('email');
 </script>
 
 <svelte:window
@@ -947,7 +969,7 @@
           >
             <h2 class="inline-flex items-center">
               <span>Invite URL</span>
-              <button on:click={() => copy("inviteURL", inviteURL)}>
+              <button on:click={() => copy("invitePlaygroundURL", invitePlaygroundURL)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-5 ml-1 stroke-2 hover:stroke-3"
@@ -965,18 +987,18 @@
             </h2>
             <span
               class="mt-2 block text-sm whitespace-pre-line"
-              class:flash={copyTooltip.inviteURL}
+              class:flash={copyTooltip.invitePlaygroundURL}
             >
-              {inviteURL}
+              {invitePlaygroundURL}
             </span>
           </div>
         {/if}
 
         <button
-          on:click={inviteWithHello}
+          on:click={invitePlaygroundWithHello}
           class="hello-btn-black-and-static w-full hidden lg:flex disabled:opacity-80"
-          class:hello-btn-loader={inviteWithHelloAjax}
-          disabled={inviteWithHelloAjax || !canInvite}
+          class:hello-btn-loader={invitePlaygroundWithHelloAjax}
+          disabled={invitePlaygroundWithHelloAjax || !canInvite}
           class:hello-btn-hover-flare={darkMode}
           >Invite others to Playground</button
         >
@@ -1226,10 +1248,10 @@
         >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
       >
       <button
-          on:click={inviteWithHello}
+          on:click={invitePlaygroundWithHello}
           class="hello-btn-black-and-static w-full lg:hidden disabled:opacity-80 mt-4"
-          class:hello-btn-loader={inviteWithHelloAjax}
-          disabled={inviteWithHelloAjax || !canInvite}
+          class:hello-btn-loader={invitePlaygroundWithHelloAjax}
+          disabled={invitePlaygroundWithHelloAjax || !canInvite}
           class:hello-btn-hover-flare={darkMode}
           >Invite others to Playground</button
         >
