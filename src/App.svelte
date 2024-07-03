@@ -220,7 +220,7 @@
   //this is so we can reset query params to original state
   const defaultQueryParamStates = {
     query_params: ["client_id", "redirect_uri", "nonce", "response_type"],
-    invite_query_params: ["inviter", "client_id", "initiate_login_uri", "events_uri", "return_uri"],
+    invite_query_params: ["inviter", "client_id", "initiate_login_uri", "return_uri"],
     query_param_values: {
       ...queryParams.params,
       client_id: clientIds.playground,
@@ -240,9 +240,8 @@
     invite_query_param_values: {
       ...inviteQueryParams.params,
       client_id: clientIds.playground,
-      initiate_login_uri: "https://playground.hello.dev/initiate-login",
-      events_uri: "https://playground.hello.dev/initiate-login",
-      return_uri: "https://playground.hello.dev/profile"
+      initiate_login_uri: "https://playground.hello.dev/",
+      return_uri: "https://playground.hello.dev/"
     },
   };
 
@@ -685,6 +684,8 @@
     localStorage.removeItem("states");
     window.location.reload();
   }
+
+  $: canInvite = states.invite_query_param_values.inviter && states.scopes.includes('openid') && states.scopes.includes('name') && states.scopes.includes('email');
 </script>
 
 <svelte:window
@@ -937,6 +938,55 @@
           class:hello-btn-hover-flare={darkMode}
           >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
         >
+
+        <hr class="mt-6 border-t border-charcoal dark:border-gray-800 opacity-80 mb-6"/>
+
+        {#if canInvite}
+          <div
+            class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6"
+          >
+            <h2 class="inline-flex items-center">
+              <span>Invite URL</span>
+              <button on:click={() => copy("inviteURL", inviteURL)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 ml-1 stroke-2 hover:stroke-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </button>
+            </h2>
+            <span
+              class="mt-2 block text-sm whitespace-pre-line"
+              class:flash={copyTooltip.inviteURL}
+            >
+              {inviteURL}
+            </span>
+          </div>
+        {/if}
+
+        <button
+          on:click={inviteWithHello}
+          class="hello-btn-black-and-static w-full hidden lg:flex disabled:opacity-80"
+          class:hello-btn-loader={inviteWithHelloAjax}
+          disabled={inviteWithHelloAjax || !canInvite}
+          class:hello-btn-hover-flare={darkMode}
+          >Invite others to Playground</button
+        >
+        <p class="text-sm text-center mt-4 opacity-80 hidden lg:block">
+          {#if canInvite}
+            Use this to test sending invitations
+          {:else}
+            To invite others, your must be logged in <br/> with `name` and `email` scopes
+          {/if}
+        </p>
       </div>
 
       <div class="truncate w-full sm:w-auto -ml-1">
@@ -1024,7 +1074,7 @@
           <ul class="space-y-2 mt-2">
             {#each Object.entries(queryParams.params) as [param, value]}
               {#if param === "provider_hint"}
-                <hr class="border-charcoal/50 dark:border-[#d4d4d4]/50" />
+                <hr class="border-t border-charcoal dark:border-gray-800 opacity-80" />
               {/if}
               {@const required = queryParams.required.includes(param)}
               <li
@@ -1175,6 +1225,21 @@
         class:hello-btn-hover-flare={darkMode}
         >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
       >
+      <button
+          on:click={inviteWithHello}
+          class="hello-btn-black-and-static w-full lg:hidden disabled:opacity-80 mt-4"
+          class:hello-btn-loader={inviteWithHelloAjax}
+          disabled={inviteWithHelloAjax || !canInvite}
+          class:hello-btn-hover-flare={darkMode}
+          >Invite others to Playground</button
+        >
+        <p class="text-sm text-center mt-0 opacity-80 mx-auto block lg:hidden">
+          {#if canInvite}
+            Use this to test sending invitations
+          {:else}
+            To invite others, your must be logged in <br/> with `name` and `email` scopes
+          {/if}
+        </p>
     </section>
 
     {#if (result.introspect?.sub || states.invite_query_param_values.inviter) && localStorage.plausible_ignore == "true"}
