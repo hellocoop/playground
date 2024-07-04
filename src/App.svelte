@@ -717,7 +717,7 @@
   $: canInvite = 
     states.invite_playground_query_param_values.inviter
     && result.introspect?.name
-    && result?.introspect?.email;
+    && result.introspect?.email;
 </script>
 
 <svelte:window
