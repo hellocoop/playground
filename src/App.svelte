@@ -248,12 +248,6 @@
       client_id: clientIds.playground,
       initiate_login_uri: "https://playground.hello.dev/",
       return_uri: "https://playground.hello.dev/"
-    },
-    results: {
-      authorize: null,
-      introspect: null,
-      userinfo: null,
-      token: null,
     }
   };
 
