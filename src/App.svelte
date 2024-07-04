@@ -1404,313 +1404,315 @@
       </section>
     {/if}
 
-    {#if result.authorize}
-      <section class="btn group">
-        <button
-          on:click={() => (dropdown.authorize = !dropdown.authorize)}
-          class="py-2 w-full flex justify-between items-center px-4"
-        >
-          <div class="flex flex-col items-start">
-            <span class="font-semibold text-lg"
-              >{new URL(
-                "/authorize",
-                states.selected_authorization_server
-              )}</span
+    <section
+      class="relative w-auto border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800 {result.authorize ? "" : "h-72 flex items-center justify-center"}"
+    >
+      <span class="absolute -top-3 left-4 px-2 bg-white dark:bg-[#151515]">Authorization Response</span>
+      {#if !result.authorize}
+        <span class="opacity-80 ">Nothing to see here yet</span>
+      {:else}
+        <div class="space-y-4">
+          <section class="btn group">
+            <button
+              on:click={() => (dropdown.authorize = !dropdown.authorize)}
+              class="py-2 w-full flex justify-between items-center px-4"
             >
-            <div class="inline-flex items-center">
-              <span>Response</span>
-              <button
-                on:click={() => {
-                  if (!result.authorize) return;
-                  dropdown.authorize = false;
-                  copy("authorize", JSON.stringify(result.authorize));
-                }}
+              <div class="flex flex-col items-start">
+                <span class="font-semibold text-lg"
+                  >{new URL(
+                    "/authorize",
+                    states.selected_authorization_server
+                  )}</span
+                >
+                <div class="inline-flex items-center">
+                  <span>Response</span>
+                  <button
+                    on:click={() => {
+                      if (!result.authorize) return;
+                      dropdown.authorize = false;
+                      copy("authorize", JSON.stringify(result.authorize));
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 ml-1 stroke-2 hover:stroke-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="stroke-2 group-hover:stroke-3 h-5 transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                class:rotate-180={dropdown.authorize}
               >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+      
+            {#if dropdown.authorize}
+              <p class="p-4 break-words">
+                <span class:flash={copyTooltip.authorize}>{result.authorize}</span>
+              </p>
+            {/if}
+          </section>
+      
+          {#if result.token !== null}
+            <section class="btn group">
+              <button
+                on:click={() => (dropdown.token = !dropdown.token)}
+                class="py-2 w-full flex justify-between items-center px-4"
+              >
+                <div class="flex flex-col items-start">
+                  <span class="font-semibold text-lg"
+                    >{new URL(
+                      "/oauth/token",
+                      states.selected_authorization_server
+                    )}</span
+                  >
+                  <div class="inline-flex items-center">
+                    <span>Response</span>
+                    <button
+                      on:click={() => {
+                        if (!result.token) return;
+                        dropdown.token = false;
+                        copy("token", JSON.stringify(result.token));
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 ml-1 stroke-2 hover:stroke-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 ml-1 stroke-2 hover:stroke-3"
+                  class="stroke-2 group-hover:stroke-3 h-5 transform"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  class:rotate-180={dropdown.token}
                 >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    d="M19 9l-7 7-7-7"
                   />
                 </svg>
               </button>
-            </div>
-          </div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="stroke-2 group-hover:stroke-3 h-5 transform"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class:rotate-180={dropdown.authorize}
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-
-        {#if dropdown.authorize}
-          <p class="p-4 break-words">
-            <span class:flash={copyTooltip.authorize}>{result.authorize}</span>
-          </p>
-        {/if}
-      </section>
-
-      {#if result.token !== null}
-        <section class="btn group">
-          <button
-            on:click={() => (dropdown.token = !dropdown.token)}
-            class="py-2 w-full flex justify-between items-center px-4"
-          >
-            <div class="flex flex-col items-start">
-              <span class="font-semibold text-lg"
-                >{new URL(
-                  "/oauth/token",
-                  states.selected_authorization_server
-                )}</span
-              >
-              <div class="inline-flex items-center">
-                <span>Response</span>
-                <button
-                  on:click={() => {
-                    if (!result.token) return;
-                    dropdown.token = false;
-                    copy("token", JSON.stringify(result.token));
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 ml-1 stroke-2 hover:stroke-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="stroke-2 group-hover:stroke-3 h-5 transform"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              class:rotate-180={dropdown.token}
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-          {#if dropdown.token}
-            <span class:flash={copyTooltip.token}>
-              <Prism language="javascript">
-                {JSON.stringify(result.token, null, 2)}
-              </Prism>
-            </span>
+              {#if dropdown.token}
+                <span class:flash={copyTooltip.token}>
+                  <Prism language="javascript">
+                    {JSON.stringify(result.token, null, 2)}
+                  </Prism>
+                </span>
+              {/if}
+            </section>
           {/if}
-        </section>
-      {/if}
-
-      {#if result.userinfo !== null}
-        <section class="btn group">
-          <button
-            on:click={() => (dropdown.userinfo = !dropdown.userinfo)}
-            class="py-2 w-full flex justify-between items-center px-4"
-          >
-            <div class="flex flex-col items-start">
-              <span class="font-semibold text-lg"
-                >{new URL(
-                  "/oauth/userinfo",
-                  states.selected_authorization_server
-                )}</span
+      
+          {#if result.userinfo !== null}
+            <section class="btn group">
+              <button
+                on:click={() => (dropdown.userinfo = !dropdown.userinfo)}
+                class="py-2 w-full flex justify-between items-center px-4"
               >
-              <div class="inline-flex items-center">
-                <span>Response</span>
-                <button
-                  on:click={() => {
-                    if (!result.token) return;
-                    dropdown.userinfo = false;
-                    copy("userinfo", JSON.stringify(result.userinfo));
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 ml-1 stroke-2 hover:stroke-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                <div class="flex flex-col items-start">
+                  <span class="font-semibold text-lg"
+                    >{new URL(
+                      "/oauth/userinfo",
+                      states.selected_authorization_server
+                    )}</span
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="stroke-2 group-hover:stroke-3 h-5 transform"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              class:rotate-180={dropdown.userinfo}
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-          {#if dropdown.userinfo}
-            <span class:flash={copyTooltip.userinfo}>
-              <Prism language="javascript">
-                {JSON.stringify(result.userinfo, null, 2)}
-              </Prism>
-            </span>
-          {/if}
-        </section>
-      {/if}
-
-      {#if result.introspect !== null}
-        <section class="btn group">
-          <button
-            on:click={() => (dropdown.introspect = !dropdown.introspect)}
-            class="py-2 w-full flex justify-between items-center px-4"
-          >
-            <div class="flex flex-col items-start">
-              <span class="font-semibold text-lg"
-                >{new URL(
-                  "/oauth/introspect",
-                  states.selected_authorization_server
-                )}</span
-              >
-              <div class="inline-flex items-center">
-                <span>Response</span>
-                <button
-                  on:click={() => {
-                    if (!result.introspect) return;
-                    dropdown.introspect = false;
-                    copy("introspect", JSON.stringify(result.introspect));
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 ml-1 stroke-2 hover:stroke-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="stroke-2 group-hover:stroke-3 h-5 transform"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              class:rotate-180={dropdown.introspect}
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-          {#if dropdown.introspect}
-            <span class:flash={copyTooltip.introspect}>
-              <Prism language="javascript">
-                {JSON.stringify(result.introspect, null, 2)}
-              </Prism>
-            </span>
-          {/if}
-        </section>
-      {/if}
-
-      {#if result.introspect}
-        <section class="btn group">
-          <button
-            on:click={() => (dropdown.claims = !dropdown.claims)}
-            class="h-12 w-full flex justify-between items-center px-4"
-          >
-            <span class="font-semibold text-lg">Claims</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="stroke-2 group-hover:stroke-3 h-5 transform"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              class:rotate-180={dropdown.claims}
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-          {#if dropdown.claims}
-            <ul
-              class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50"
-            >
-              {#each scopes.claims.filter((i) => result.introspect[i]) as claim}
-                {@const isString = typeof result.introspect[claim] == 'string'}
-                <li class="py-4 flex items-center w-full overflow-x-auto pr-6">
-                  <div class="w-1/4 md:w-1/3 flex-shrink-0">{claim}</div>
-                  <div>
-                    {#if claim === "picture" && result.introspect[claim]}
-                      <!-- svelte-ignore a11y-img-redundant-alt -->
-                      <img
-                        src={result.introspect[claim]}
-                        class="h-10 w-10 rounded-full object-fit"
-                        alt="Picture claim"
-                      />
-                    {:else}
-                                                             <!-- discord claim is {id, username} -->
-                      <pre>{isString ? result.introspect[claim] : JSON.stringify(result.introspect[claim], null, 2) || ""}</pre>
-                    {/if}
+                  <div class="inline-flex items-center">
+                    <span>Response</span>
+                    <button
+                      on:click={() => {
+                        if (!result.token) return;
+                        dropdown.userinfo = false;
+                        copy("userinfo", JSON.stringify(result.userinfo));
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 ml-1 stroke-2 hover:stroke-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
-                </li>
-              {/each}
-            </ul>
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="stroke-2 group-hover:stroke-3 h-5 transform"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  class:rotate-180={dropdown.userinfo}
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {#if dropdown.userinfo}
+                <span class:flash={copyTooltip.userinfo}>
+                  <Prism language="javascript">
+                    {JSON.stringify(result.userinfo, null, 2)}
+                  </Prism>
+                </span>
+              {/if}
+            </section>
           {/if}
-        </section>
+      
+          {#if result.introspect !== null}
+            <section class="btn group">
+              <button
+                on:click={() => (dropdown.introspect = !dropdown.introspect)}
+                class="py-2 w-full flex justify-between items-center px-4"
+              >
+                <div class="flex flex-col items-start">
+                  <span class="font-semibold text-lg"
+                    >{new URL(
+                      "/oauth/introspect",
+                      states.selected_authorization_server
+                    )}</span
+                  >
+                  <div class="inline-flex items-center">
+                    <span>Response</span>
+                    <button
+                      on:click={() => {
+                        if (!result.introspect) return;
+                        dropdown.introspect = false;
+                        copy("introspect", JSON.stringify(result.introspect));
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 ml-1 stroke-2 hover:stroke-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="stroke-2 group-hover:stroke-3 h-5 transform"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  class:rotate-180={dropdown.introspect}
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {#if dropdown.introspect}
+                <span class:flash={copyTooltip.introspect}>
+                  <Prism language="javascript">
+                    {JSON.stringify(result.introspect, null, 2)}
+                  </Prism>
+                </span>
+              {/if}
+            </section>
+          {/if}
+      
+          {#if result.introspect}
+            <section class="btn group">
+              <button
+                on:click={() => (dropdown.claims = !dropdown.claims)}
+                class="h-12 w-full flex justify-between items-center px-4"
+              >
+                <span class="font-semibold text-lg">Claims</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="stroke-2 group-hover:stroke-3 h-5 transform"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  class:rotate-180={dropdown.claims}
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {#if dropdown.claims}
+                <ul
+                  class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50"
+                >
+                  {#each scopes.claims.filter((i) => result.introspect[i]) as claim}
+                    {@const isString = typeof result.introspect[claim] == 'string'}
+                    <li class="py-4 flex items-center w-full overflow-x-auto pr-6">
+                      <div class="w-1/4 md:w-1/3 flex-shrink-0">{claim}</div>
+                      <div>
+                        {#if claim === "picture" && result.introspect[claim]}
+                          <!-- svelte-ignore a11y-img-redundant-alt -->
+                          <img
+                            src={result.introspect[claim]}
+                            class="h-10 w-10 rounded-full object-fit"
+                            alt="Picture claim"
+                          />
+                        {:else}
+                                                                  <!-- discord claim is {id, username} -->
+                          <pre>{isString ? result.introspect[claim] : JSON.stringify(result.introspect[claim], null, 2) || ""}</pre>
+                        {/if}
+                      </div>
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
+            </section>
+          {/if}
+        </div>
       {/if}
-    {:else}
-      <section
-        class="relative w-auto border border-charcoal dark:border-gray-800 h-72 flex items-center justify-center"
-      >
-        <span class="absolute -top-3 left-4 px-2 bg-white dark:bg-[#151515]">Authorization Response</span>
-        <span class="opacity-80 ">Nothing to see here yet</span>
-      </section>
-    {/if}
+    </section>
 
     <section class="py-6">
       <a
