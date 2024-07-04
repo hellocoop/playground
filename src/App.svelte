@@ -162,6 +162,7 @@
 
   const clientIds = {
     playground: "app_HelloDeveloperPlayground_Iq2",
+    playground_old: "46be57a7-d0f5-459e-9655-24799433637d",
     greenfield: "app_GreenfieldFitnessDemoApp_s9z",
   };
 
@@ -248,6 +249,12 @@
       initiate_login_uri: "https://playground.hello.dev/",
       return_uri: "https://playground.hello.dev/"
     },
+    results: {
+      authorize: null,
+      introspect: null,
+      userinfo: null,
+      token: null,
+    }
   };
 
   let mobileMenu = false;
@@ -496,6 +503,12 @@
         localStorage.removeItem("states");
         return false;
       }
+      
+      //Purge localstorage cache -- replace old playground client_id with new
+      if(_states.query_param_values.client_id === clientIds.playground_old) {
+        _states.query_param_values.client_id = clientIds.playground;
+      }
+
       states = _states;
       return true;
     } catch (err) {
@@ -707,7 +720,10 @@
     window.location.reload();
   }
 
-  $: canInvite = states.invite_playground_query_param_values.inviter && states.scopes.includes('openid') && states.scopes.includes('name') && states.scopes.includes('email');
+  $: canInvite = 
+    states.invite_playground_query_param_values.inviter
+    && result.introspect?.name
+    && result?.introspect?.email;
 </script>
 
 <svelte:window
@@ -869,8 +885,9 @@
 <main class="flex-1 overflow-y-auto">
   <div class="py-6 px-4 space-y-6">
     <section
-      class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full p-4 flex items-start flex-col lg:flex-row gap-y-4 lg:gap-y-0 lg:gap-x-5"
+      class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6 flex items-start flex-col lg:flex-row gap-y-4 lg:gap-y-0 lg:gap-x-5"
     >
+      <span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2">Authorization Request</span>
       <button on:click={resetAll} class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]">Reset</button>
       <div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
         <h1 class="font-semibold text-lg">Authorization Server</h1>
@@ -960,55 +977,6 @@
           class:hello-btn-hover-flare={darkMode}
           >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
         >
-
-        <hr class="mt-6 border-t border-charcoal dark:border-gray-800 opacity-80 mb-6"/>
-
-        {#if canInvite}
-          <div
-            class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6"
-          >
-            <h2 class="inline-flex items-center">
-              <span>Invite URL</span>
-              <button on:click={() => copy("invitePlaygroundURL", invitePlaygroundURL)}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 ml-1 stroke-2 hover:stroke-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-              </button>
-            </h2>
-            <span
-              class="mt-2 block text-sm whitespace-pre-line"
-              class:flash={copyTooltip.invitePlaygroundURL}
-            >
-              {invitePlaygroundURL}
-            </span>
-          </div>
-        {/if}
-
-        <button
-          on:click={invitePlaygroundWithHello}
-          class="hello-btn-black-and-static w-full hidden lg:flex disabled:opacity-80"
-          class:hello-btn-loader={invitePlaygroundWithHelloAjax}
-          disabled={invitePlaygroundWithHelloAjax || !canInvite}
-          class:hello-btn-hover-flare={darkMode}
-          >Invite others to Playground</button
-        >
-        <p class="text-sm text-center mt-4 opacity-80 hidden lg:block">
-          {#if canInvite}
-            Use this to test sending invitations
-          {:else}
-            To invite others, your must be logged in <br/> with `name` and `email` scopes
-          {/if}
-        </p>
       </div>
 
       <div class="truncate w-full sm:w-auto -ml-1">
@@ -1090,7 +1058,6 @@
       <div class="flex-1 w-full">
         <div>
           <h1 class="font-semibold text-lg inline-block">Query Params (* required)</h1>
-          <button class="inline-block ml-2" on:click={resetQueryParams}>Reset</button>
         </div>
         <div class="mt-2">
           <ul class="space-y-2 mt-2">
@@ -1103,7 +1070,7 @@
                 class="flex {param === 'provider_hint'
                   ? 'items-start'
                   : 'items-center'} relative"
-                class:pb-2={param === "state"}
+                class:pb-2={param === "custom"}
                 class:pt-2={param === "provider_hint"}
               >
                 <div
@@ -1151,7 +1118,7 @@
                 <div class="w-1/2 md:w-3/4">
                   {#if Array.isArray(value)}
                     <div
-                      class="xl:h-8 p-0.5 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+                      class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
                       class:opacity-60={!states.query_params.includes(param) &&
                         param !== "response_mode"}
                     >
@@ -1197,7 +1164,7 @@
                       <input
                         type="text"
                         name={param}
-                        class="h-8 w-full form-input"
+                        class="h-9 w-full form-input"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
@@ -1247,21 +1214,58 @@
         class:hello-btn-hover-flare={darkMode}
         >ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
       >
-      <button
+    </section>
+
+    <section class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6">
+      <span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2">Invite Request</span>
+      <div class="max-w-sm mx-auto">
+        {#if canInvite}
+          <div
+            class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6"
+          >
+            <h2 class="inline-flex items-center">
+              <span>Invite URL</span>
+              <button on:click={() => copy("invitePlaygroundURL", invitePlaygroundURL)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 ml-1 stroke-2 hover:stroke-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </button>
+            </h2>
+            <span
+              class="mt-2 block text-sm whitespace-pre-line"
+              class:flash={copyTooltip.invitePlaygroundURL}
+            >
+              {invitePlaygroundURL}
+            </span>
+          </div>
+        {/if}
+  
+        <button
           on:click={invitePlaygroundWithHello}
-          class="hello-btn-black-and-static w-full lg:hidden disabled:opacity-80 mt-4"
+          class="hello-btn-black-and-static w-full disabled:opacity-30"
           class:hello-btn-loader={invitePlaygroundWithHelloAjax}
           disabled={invitePlaygroundWithHelloAjax || !canInvite}
           class:hello-btn-hover-flare={darkMode}
           >Invite others to Playground</button
         >
-        <p class="text-sm text-center mt-0 opacity-80 mx-auto block lg:hidden">
+        <p class="text-sm text-center mt-4 opacity-80">
           {#if canInvite}
             Use this to test sending invitations
           {:else}
-            To invite others, your must be logged in <br/> with `name` and `email` scopes
+            To invite others, your must provide the<br/>`name` and `email` claims
           {/if}
         </p>
+      </div>
     </section>
 
     {#if (result.introspect?.sub || states.invite_query_param_values.inviter) && localStorage.plausible_ignore == "true"}
@@ -1707,9 +1711,10 @@
       {/if}
     {:else}
       <section
-        class="w-auto border border-charcoal dark:border-gray-800 opacity-80 h-72 flex items-center justify-center"
+        class="relative w-auto border border-charcoal dark:border-gray-800 h-72 flex items-center justify-center"
       >
-        <span>Nothing to see here yet</span>
+        <span class="absolute -top-3 left-4 px-2 bg-white dark:bg-[#151515]">Authorization Response</span>
+        <span class="opacity-80 ">Nothing to see here yet</span>
       </section>
     {/if}
 
