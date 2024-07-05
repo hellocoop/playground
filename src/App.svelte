@@ -1417,8 +1417,8 @@
               on:click={() => (dropdown.authorize = !dropdown.authorize)}
               class="py-2 w-full flex justify-between items-center px-4"
             >
-              <div class="flex flex-col items-start">
-                <span class="font-semibold text-lg"
+              <div class="flex flex-col items-start text-left">
+                <span class="font-semibold text-lg" style="word-break: break-word;"
                   >{new URL(
                     "/authorize",
                     states.selected_authorization_server
@@ -1478,8 +1478,8 @@
                 on:click={() => (dropdown.token = !dropdown.token)}
                 class="py-2 w-full flex justify-between items-center px-4"
               >
-                <div class="flex flex-col items-start">
-                  <span class="font-semibold text-lg"
+                <div class="flex flex-col items-start text-left">
+                  <span class="font-semibold text-lg"  style="word-break: break-word;"
                     >{new URL(
                       "/oauth/token",
                       states.selected_authorization_server
@@ -1541,8 +1541,8 @@
                 on:click={() => (dropdown.userinfo = !dropdown.userinfo)}
                 class="py-2 w-full flex justify-between items-center px-4"
               >
-                <div class="flex flex-col items-start">
-                  <span class="font-semibold text-lg"
+                <div class="flex flex-col items-start text-left">
+                  <span class="font-semibold text-lg"  style="word-break: break-word;"
                     >{new URL(
                       "/oauth/userinfo",
                       states.selected_authorization_server
@@ -1604,8 +1604,8 @@
                 on:click={() => (dropdown.introspect = !dropdown.introspect)}
                 class="py-2 w-full flex justify-between items-center px-4"
               >
-                <div class="flex flex-col items-start">
-                  <span class="font-semibold text-lg"
+                <div class="flex flex-col items-start text-left">
+                  <span class="font-semibold text-lg"  style="word-break: break-word;"
                     >{new URL(
                       "/oauth/introspect",
                       states.selected_authorization_server
@@ -1685,11 +1685,11 @@
               </button>
               {#if dropdown.claims}
                 <ul
-                  class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50"
+                  class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50 overflow-x-auto"
                 >
                   {#each scopes.claims.filter((i) => result.introspect[i]) as claim}
                     {@const isString = typeof result.introspect[claim] == 'string'}
-                    <li class="py-4 flex items-center w-full overflow-x-auto pr-6">
+                    <li class="py-4 flex items-center">
                       <div class="w-1/4 md:w-1/3 flex-shrink-0">{claim}</div>
                       <div>
                         {#if claim === "picture" && result.introspect[claim]}
@@ -1699,9 +1699,10 @@
                             class="h-10 w-10 rounded-full object-fit"
                             alt="Picture claim"
                           />
+                        {:else if isString}
+                          {result.introspect[claim]}
                         {:else}
-                                                                  <!-- discord claim is {id, username} -->
-                          <pre>{isString ? result.introspect[claim] : JSON.stringify(result.introspect[claim], null, 2) || ""}</pre>
+                          <pre>{JSON.stringify(result.introspect[claim], null, 2)}</pre>
                         {/if}
                       </div>
                     </li>
