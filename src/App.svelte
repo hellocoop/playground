@@ -19,8 +19,8 @@
 			'given_name',
 			'family_name'
 		],
-		update: ['profile_update', 'update_profile', 'update_email', 'update_phone', 'update_picture'],
-		custom: ['profile_update', 'ethereum', 'discord', 'twitter', 'github', 'gitlab'],
+		update: ['update_profile', 'update_email', 'update_phone', 'update_picture'],
+		custom: ['ethereum', 'discord', 'twitter', 'github', 'gitlab'],
 		required: ['openid'],
 		claims: [
 			'sub',
@@ -212,6 +212,13 @@
 			redirect_uri: window.location.origin + '/',
 			response_mode: 'fragment',
 			response_type: 'id_token'
+		},
+		dropdowns: {
+			scopeParam: true,
+			queryParams: true,
+			protocolParams: false,
+			authzServer: false,
+			requestURL: true
 		}
 	};
 
@@ -818,321 +825,562 @@
 <main class="flex-1 overflow-y-auto">
 	<div class="py-6 px-4 space-y-6">
 		<section
-			class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6 flex items-start flex-col lg:flex-row gap-y-4 lg:gap-y-0 lg:gap-x-5"
+			class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
 		>
-			<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2">Authorization Request</span>
+			<span class="absolute -mt-9 bg-white dark:bg-[#151515]">Authorization Request</span>
 			<button
 				on:click={resetAll}
 				class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
 				>Reset</button
 			>
-			<div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
-				<h1 class="font-semibold text-lg">Authorization Server</h1>
 
-				<ul class="space-y-2 mt-2">
-					<li class="flex items-center">
-						<input
-							type="radio"
-							name="authorization_server"
-							value="https://wallet.hello.coop/authorize"
-							id="wallet/authorize"
-							class="text-charcoal form-radio dark:text-gray-800"
-							bind:group={states.selected_authorization_server}
-						/>
-						<label for="wallet/authorize" class="ml-2 w-full">
-							https://wallet.hello.coop/authorize
-						</label>
-					</li>
-					{#each states.custom_authorization_servers as server}
-						<li class="flex items-center">
-							<input
-								type="radio"
-								name="authorization_server"
-								value={server}
-								id={server}
-								class="text-charcoal form-radio dark:text-gray-800"
-								bind:group={states.selected_authorization_server}
-							/>
-							<label for={server} class="ml-2 w-full break-all">{server}</label>
-						</li>
-					{/each}
-					<li class="flex items-center">
-						<input
-							type="radio"
-							name="authorization_server"
-							value={custom_authorization_server}
-							class="text-charcoal form-radio dark:text-gray-800"
-							id="custom-authorization-server"
-							bind:group={states.selected_authorization_server}
-						/>
-						<input
-							bind:value={custom_authorization_server}
-							on:input={(e) => (states.selected_authorization_server = e.target.value)}
-							type="url"
-							name="custom"
-							class="h-8 ml-2 w-full text-charcoal form-input"
-							placeholder="eg http://example.com:9000/"
-						/>
-					</li>
-				</ul>
-
-				<div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words my-6">
-					<h2 class="inline-flex items-center">
-						<span>Request URL</span>
-						<button on:click={() => copy('requestURL', requestURL)}>
+			<div class="columns-3 gap-x-12 space-y-6">
+				<!-- Scope Param -->
+				<div class="break-inside-avoid-column">
+					<div class="inline-flex items-center space-x-2">
+						<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
+						<button on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 ml-1 stroke-2 hover:stroke-3"
 								fill="none"
 								viewBox="0 0 24 24"
+								stroke-width="3"
 								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.scopeParam}
 							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
-									d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
 								/>
 							</svg>
 						</button>
-					</h2>
-					<span class="mt-2 block text-sm whitespace-pre-line" class:flash={copyTooltip.requestURL}>
-						{requestURL}
-					</span>
-				</div>
-
-				<button
-					on:click={continueWithHello}
-					class="hello-btn-black-and-static w-full hidden lg:flex"
-					class:hello-btn-loader={continueWithHelloAjax}
-					disabled={continueWithHelloAjax}
-					class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
-				>
-			</div>
-
-			<div class="truncate w-full sm:w-auto -ml-1">
-				<h1 class="font-semibold text-lg pl-1">Scopes (* required)</h1>
-				<div class="flex mt-2 gap-x-4 truncate pl-1">
-					<div>
-						<h2>Standard</h2>
-						<ul class="space-y-2 mt-2">
-							{#each scopes.standard as scope}
-								{@const required = scopes.required.includes(scope)}
-								<li
-									class="flex items-center"
-									class:text-red-500={required && !states.scopes.includes(scope)}
-								>
-									<input
-										type="checkbox"
-										class="text-charcoal form-checkbox dark:text-gray-800"
-										name={scope}
-										id={scope}
-										value={scope}
-										bind:group={states.scopes}
-									/>
-									<label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
-								</li>
-							{/each}
-						</ul>
 					</div>
-					{#if localStorage.plausible_ignore == 'true'}
-						<div class="truncate">
-							<h2 class="pl-1">Update</h2>
-							<ul class="space-y-2 mt-2">
-								{#each scopes.update as scope}
-									<li class="flex items-center truncate pl-1">
-										<input
-											type="checkbox"
-											class="text-charcoal form-checkbox dark:text-gray-800"
-											name={scope}
-											id={scope}
-											value={scope}
-											bind:group={states.scopes}
-										/>
-										<label for={scope} class="ml-2 truncate">{scope}</label>
-									</li>
-								{/each}
-							</ul>
+					{#if states.dropdowns.scopeParam}
+						<div class="flex mt-2 gap-x-4 truncate pl-1" transition:slide|local>
+							<div>
+								<ul class="space-y-2 mt-2">
+									{#each scopes.standard as scope}
+										{@const required = scopes.required.includes(scope)}
+										<li
+											class="flex items-center"
+											class:text-red-500={required && !states.scopes.includes(scope)}
+										>
+											<input
+												type="checkbox"
+												class="text-charcoal form-checkbox dark:text-gray-800"
+												name={scope}
+												id={scope}
+												value={scope}
+												bind:group={states.scopes}
+											/>
+											<label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
+										</li>
+									{/each}
+								</ul>
+							</div>
+							{#if localStorage.plausible_ignore == 'true'}
+								<div class="truncate">
+									<ul class="space-y-2 mt-2">
+										{#each scopes.update as scope}
+											<li class="flex items-center truncate pl-1">
+												<input
+													type="checkbox"
+													class="text-charcoal form-checkbox dark:text-gray-800"
+													name={scope}
+													id={scope}
+													value={scope}
+													bind:group={states.scopes}
+												/>
+												<label for={scope} class="ml-2 truncate">{scope}</label>
+											</li>
+										{/each}
+									</ul>
+								</div>
+							{/if}
+							<div class="truncate">
+								<ul class="space-y-2 mt-2">
+									{#each scopes.custom as scope}
+										{@const required = scopes.required.includes(scope)}
+										<li
+											class="flex items-center truncate pl-1"
+											class:text-red-500={required && !states.scopes.includes(scope)}
+										>
+											<input
+												type="checkbox"
+												class="text-charcoal form-checkbox dark:text-gray-800"
+												name={scope}
+												id={scope}
+												value={scope}
+												bind:group={states.scopes}
+											/>
+											<label for={scope} class="ml-2 truncate">{scope}</label>
+										</li>
+									{/each}
+								</ul>
+							</div>
 						</div>
 					{/if}
-					<div class="truncate">
-						<h2 class="pl-1">Hellō Extended</h2>
-						<ul class="space-y-2 mt-2">
-							{#each scopes.custom as scope}
-								{@const required = scopes.required.includes(scope)}
+				</div>
+
+				<!-- Query Params -->
+				<div class="break-inside-avoid-column">
+					<div class="inline-flex items-center space-x-2">
+						<h1 class="font-semibold text-lg inline-block">Query Params</h1>
+						<button on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.queryParams}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
+					</div>
+					{#if states.dropdowns.queryParams}
+						<ul class="space-y-2 mt-2" transition:slide|local>
+							{#each Object.entries(queryParams.params).filter( (i) => ['login_hint', 'provider_hint'].includes(i[0]) ) as [param, value]}
+								{@const required = queryParams.required.includes(param)}
 								<li
-									class="flex items-center truncate pl-1"
-									class:text-red-500={required && !states.scopes.includes(scope)}
+									class="flex {param === 'provider_hint' ? 'items-start' : 'items-center'} relative"
+									class:pb-2={param === 'custom'}
+									class:pt-2={param === 'provider_hint'}
 								>
-									<input
-										type="checkbox"
-										class="text-charcoal form-checkbox dark:text-gray-800"
-										name={scope}
-										id={scope}
-										value={scope}
-										bind:group={states.scopes}
-									/>
-									<label for={scope} class="ml-2 truncate">{scope}</label>
+									<div
+										class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
+										class:mt-6={param === 'client_id'}
+										class:mt-1={param === 'provider_hint'}
+									>
+										{#if param !== 'code_verifier'}
+											<input
+												type="checkbox"
+												bind:group={states.query_params}
+												on:change={(e) => handleCheckboxInput(e, param)}
+												class="text-charcoal form-checkbox dark:text-gray-800"
+												name={param}
+												id={param}
+												value={param}
+											/>
+										{:else}
+											<span class="w-4" />
+										{/if}
+										<label
+											for={param}
+											class="ml-2"
+											class:text-red-500={//required
+											(required &&
+												(!states.query_params.includes(param) ||
+													//if checked and empty field
+													!states.query_param_values[param])) ||
+												//response_type: code but not code_challenge unchecked
+												(param === 'code_challenge' &&
+													states.query_param_values.response_type === 'code' &&
+													!states.query_params.includes('code_challenge')) ||
+												//response_type: id_token and response_mode: query
+												(param === 'response_mode' &&
+													states.query_params.includes('response_mode') &&
+													states.query_param_values.response_mode === 'query' &&
+													states.query_params.includes('response_type') &&
+													states.query_param_values.response_type === 'id_token')}
+										>
+											{param}
+											{required ? '*' : ''}
+										</label>
+									</div>
+
+									<div class="w-1/2 md:w-3/4">
+										{#if Array.isArray(value)}
+											<div
+												class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+												class:opacity-60={!states.query_params.includes(param) &&
+													param !== 'response_mode'}
+											>
+												{#each value as ele}
+													<button
+														on:click={() => (states.query_param_values[param] = ele)}
+														disabled={param === 'response_mode' &&
+															!states.query_params.includes('response_mode')}
+														class="{states.query_param_values[param] === ele
+															? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
+															: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
+							"
+													>
+														{ele}
+													</button>
+												{/each}
+											</div>
+										{:else}
+											<div
+												class="flex flex-col w-full items-start"
+												class:opacity-60={!states.query_params.includes(param) &&
+													param !== 'code_challenge'}
+											>
+												<!-- {#if param === "client_id"}
+							<div class="mb-0.5">
+								<button
+								on:click={() =>
+									(states.query_param_values.client_id =
+									clientIds.playground)}
+								class="text-xs xl:text-sm hover:underline"
+								>Playground</button
+								>
+								<button
+								on:click={() =>
+									(states.query_param_values.client_id =
+									clientIds.greenfield)}
+								class="text-xs xl:text-sm hover:underline xl:ml-2"
+								>GreenfieldFitness</button
+								>
+							</div>
+							{/if} -->
+												<input
+													type="text"
+													name={param}
+													class="h-6 px-2 w-full form-input"
+													autocomplete="off"
+													autocorrect="off"
+													autocapitalize="off"
+													spellcheck="false"
+													bind:value={states.query_param_values[param]}
+												/>
+											</div>
+										{/if}
+
+										{#if param === 'provider_hint'}
+											{#if Array.isArray(invalidProviderHintSlug)}
+												<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
+													{#if invalidProviderHintSlug.length > 1}
+														{invalidProviderHintSlug.join(', ')} are unsupported values
+													{:else}
+														{invalidProviderHintSlug} is an unsupported value
+													{/if}
+												</p>
+											{/if}
+											<p class="text-xs mt-1.5">
+												<span class="opacity-80"
+													>{possibleSlugs
+														.filter((i) => !['google', 'email', 'passkey'].includes(i))
+														.join(' ')}</span
+												><br />
+												<span class="opacity-80"
+													>apple-- microsoft-- google-- email-- passkey--</span
+												>
+											</p>
+										{/if}
+									</div>
 								</li>
 							{/each}
 						</ul>
-					</div>
+					{/if}
 				</div>
-			</div>
 
-			<div class="flex-1 w-full">
-				<div>
-					<h1 class="font-semibold text-lg inline-block">Query Params (* required)</h1>
-				</div>
-				<div class="mt-2">
-					<ul class="space-y-2 mt-2">
-						{#each Object.entries(queryParams.params) as [param, value]}
-							{#if param === 'provider_hint'}
-								<hr class="border-t border-charcoal dark:border-gray-800 opacity-80" />
-							{/if}
-							{@const required = queryParams.required.includes(param)}
-							<li
-								class="flex {param === 'provider_hint' ? 'items-start' : 'items-center'} relative"
-								class:pb-2={param === 'custom'}
-								class:pt-2={param === 'provider_hint'}
+				<!-- Protocol Params -->
+				<div class="break-inside-avoid-column">
+					<div class="inline-flex items-center space-x-2">
+						<h1 class="font-semibold text-lg inline-block">Protocol Params</h1>
+						<button
+							on:click={() => (states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.protocolParams}
 							>
-								<div
-									class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
-									class:mt-6={param === 'client_id'}
-									class:mt-1={param === 'provider_hint'}
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
+					</div>
+					{#if states.dropdowns.protocolParams}
+						<ul class="space-y-2 mt-2" transition:slide|local>
+							{#each Object.entries(queryParams.params).filter((i) => !['login_hint', 'provider_hint'].includes(i[0])) as [param, value]}
+								{@const required = queryParams.required.includes(param)}
+								<li
+									class="flex {param === 'provider_hint' ? 'items-start' : 'items-center'} relative"
+									class:pb-2={param === 'custom'}
+									class:pt-2={param === 'provider_hint'}
 								>
-									{#if param !== 'code_verifier'}
-										<input
-											type="checkbox"
-											bind:group={states.query_params}
-											on:change={(e) => handleCheckboxInput(e, param)}
-											class="text-charcoal form-checkbox dark:text-gray-800"
-											name={param}
-											id={param}
-											value={param}
-										/>
-									{:else}
-										<span class="w-4" />
-									{/if}
-									<label
-										for={param}
-										class="ml-2"
-										class:text-red-500={//required
-										(required &&
-											(!states.query_params.includes(param) ||
-												//if checked and empty field
-												!states.query_param_values[param])) ||
-											//response_type: code but not code_challenge unchecked
-											(param === 'code_challenge' &&
-												states.query_param_values.response_type === 'code' &&
-												!states.query_params.includes('code_challenge')) ||
-											//response_type: id_token and response_mode: query
-											(param === 'response_mode' &&
-												states.query_params.includes('response_mode') &&
-												states.query_param_values.response_mode === 'query' &&
-												states.query_params.includes('response_type') &&
-												states.query_param_values.response_type === 'id_token')}
-									>
-										{param}
-										{required ? '*' : ''}
-									</label>
-								</div>
-
-								<div class="w-1/2 md:w-3/4">
-									{#if Array.isArray(value)}
-										<div
-											class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
-											class:opacity-60={!states.query_params.includes(param) &&
-												param !== 'response_mode'}
-										>
-											{#each value as ele}
-												<button
-													on:click={() => (states.query_param_values[param] = ele)}
-													disabled={param === 'response_mode' &&
-														!states.query_params.includes('response_mode')}
-													class="{states.query_param_values[param] === ele
-														? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
-														: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
-                        "
-												>
-													{ele}
-												</button>
-											{/each}
-										</div>
-									{:else}
-										<div
-											class="flex flex-col w-full items-start"
-											class:opacity-60={!states.query_params.includes(param) &&
-												param !== 'code_challenge'}
-										>
-											<!-- {#if param === "client_id"}
-                        <div class="mb-0.5">
-                          <button
-                            on:click={() =>
-                              (states.query_param_values.client_id =
-                                clientIds.playground)}
-                            class="text-xs xl:text-sm hover:underline"
-                            >Playground</button
-                          >
-                          <button
-                            on:click={() =>
-                              (states.query_param_values.client_id =
-                                clientIds.greenfield)}
-                            class="text-xs xl:text-sm hover:underline xl:ml-2"
-                            >GreenfieldFitness</button
-                          >
-                        </div>
-                      {/if} -->
+									<div class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center">
+										{#if param !== 'code_verifier'}
 											<input
-												type="text"
+												type="checkbox"
+												bind:group={states.query_params}
+												on:change={(e) => handleCheckboxInput(e, param)}
+												class="text-charcoal form-checkbox dark:text-gray-800"
 												name={param}
-												class="h-9 w-full form-input"
-												autocomplete="off"
-												autocorrect="off"
-												autocapitalize="off"
-												spellcheck="false"
-												bind:value={states.query_param_values[param]}
+												id={param}
+												value={param}
 											/>
-										</div>
-									{/if}
+										{:else}
+											<span class="w-4" />
+										{/if}
+										<label
+											for={param}
+											class="ml-2"
+											class:text-red-500={//required
+											(required &&
+												(!states.query_params.includes(param) ||
+													//if checked and empty field
+													!states.query_param_values[param])) ||
+												//response_type: code but not code_challenge unchecked
+												(param === 'code_challenge' &&
+													states.query_param_values.response_type === 'code' &&
+													!states.query_params.includes('code_challenge')) ||
+												//response_type: id_token and response_mode: query
+												(param === 'response_mode' &&
+													states.query_params.includes('response_mode') &&
+													states.query_param_values.response_mode === 'query' &&
+													states.query_params.includes('response_type') &&
+													states.query_param_values.response_type === 'id_token')}
+										>
+											{param}
+											{required ? '*' : ''}
+										</label>
+									</div>
 
-									{#if param === 'provider_hint'}
-										{#if Array.isArray(invalidProviderHintSlug)}
-											<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
-												{#if invalidProviderHintSlug.length > 1}
-													{invalidProviderHintSlug.join(', ')} are unsupported values
-												{:else}
-													{invalidProviderHintSlug} is an unsupported value
-												{/if}
+									<div class="w-1/2 md:w-3/4">
+										{#if Array.isArray(value)}
+											<div
+												class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+												class:opacity-60={!states.query_params.includes(param) &&
+													param !== 'response_mode'}
+											>
+												{#each value as ele}
+													<button
+														on:click={() => (states.query_param_values[param] = ele)}
+														disabled={param === 'response_mode' &&
+															!states.query_params.includes('response_mode')}
+														class="{states.query_param_values[param] === ele
+															? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
+															: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
+							"
+													>
+														{ele}
+													</button>
+												{/each}
+											</div>
+										{:else}
+											<div
+												class="flex flex-col w-full items-start"
+												class:opacity-60={!states.query_params.includes(param) &&
+													param !== 'code_challenge'}
+											>
+												<!-- {#if param === "client_id"}
+							<div class="mb-0.5">
+							<button
+								on:click={() =>
+								(states.query_param_values.client_id =
+									clientIds.playground)}
+								class="text-xs xl:text-sm hover:underline"
+								>Playground</button
+							>
+							<button
+								on:click={() =>
+								(states.query_param_values.client_id =
+									clientIds.greenfield)}
+								class="text-xs xl:text-sm hover:underline xl:ml-2"
+								>GreenfieldFitness</button
+							>
+							</div>
+						{/if} -->
+												<input
+													type="text"
+													name={param}
+													class="h-6 px-2 w-full form-input"
+													autocomplete="off"
+													autocorrect="off"
+													autocapitalize="off"
+													spellcheck="false"
+													bind:value={states.query_param_values[param]}
+												/>
+											</div>
+										{/if}
+
+										{#if param === 'provider_hint'}
+											{#if Array.isArray(invalidProviderHintSlug)}
+												<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
+													{#if invalidProviderHintSlug.length > 1}
+														{invalidProviderHintSlug.join(', ')} are unsupported values
+													{:else}
+														{invalidProviderHintSlug} is an unsupported value
+													{/if}
+												</p>
+											{/if}
+											<p class="text-xs mt-1.5">
+												<span class="opacity-80"
+													>{possibleSlugs
+														.filter((i) => !['google', 'email', 'passkey'].includes(i))
+														.join(' ')}</span
+												><br />
+												<span class="opacity-80"
+													>apple-- microsoft-- google-- email-- passkey--</span
+												>
 											</p>
 										{/if}
-										<p class="text-xs mt-1.5">
-											<span class="opacity-80"
-												>{possibleSlugs
-													.filter((i) => !['google', 'email', 'passkey'].includes(i))
-													.join(' ')}</span
-											><br />
-											<span class="opacity-80">apple-- microsoft-- google-- email-- passkey--</span>
-										</p>
-									{/if}
-								</div>
+									</div>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
+
+				<!-- Authorization Server -->
+				<div class="break-inside-avoid-column">
+					<div class="inline-flex items-center space-x-2">
+						<h1 class="font-semibold text-lg">Authorization Server</h1>
+						<button on:click={() => (states.dropdowns.authzServer = !states.dropdowns.authzServer)}>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.authzServer}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
+					</div>
+
+					{#if states.dropdowns.authzServer}
+						<ul class="space-y-2 mt-2" transition:slide|local>
+							<li class="flex items-center">
+								<input
+									type="radio"
+									name="authorization_server"
+									value="https://wallet.hello.coop/authorize"
+									id="wallet/authorize"
+									class="text-charcoal form-radio dark:text-gray-800"
+									bind:group={states.selected_authorization_server}
+								/>
+								<label for="wallet/authorize" class="ml-2 w-full">
+									https://wallet.hello.coop/authorize
+								</label>
 							</li>
-						{/each}
-					</ul>
+							{#each states.custom_authorization_servers as server}
+								<li class="flex items-center">
+									<input
+										type="radio"
+										name="authorization_server"
+										value={server}
+										id={server}
+										class="text-charcoal form-radio dark:text-gray-800"
+										bind:group={states.selected_authorization_server}
+									/>
+									<label for={server} class="ml-2 w-full break-all">{server}</label>
+								</li>
+							{/each}
+							<li class="flex items-center">
+								<input
+									type="radio"
+									name="authorization_server"
+									value={custom_authorization_server}
+									class="text-charcoal form-radio dark:text-gray-800"
+									id="custom-authorization-server"
+									bind:group={states.selected_authorization_server}
+								/>
+								<input
+									bind:value={custom_authorization_server}
+									on:input={(e) => (states.selected_authorization_server = e.target.value)}
+									type="url"
+									name="custom"
+									class="h-8 ml-2 w-full text-charcoal form-input"
+									placeholder="eg http://example.com:9000/"
+								/>
+							</li>
+						</ul>
+					{/if}
+				</div>
+
+				<!-- Request URL -->
+				<div class="break-inside-avoid-column">
+					<div class="flex items-center">
+						<div class="inline-flex items-center space-x-2">
+							<h1 class="font-semibold text-lg">Request URL</h1>
+							<button on:click={() => (states.dropdowns.requestURL = !states.dropdowns.requestURL)}>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="3"
+									stroke="currentColor"
+									class="w-4 h-4"
+									class:rotate-180={states.dropdowns.requestURL}
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="m19.5 8.25-7.5 7.5-7.5-7.5"
+									/>
+								</svg>
+							</button>
+						</div>
+					</div>
+					{#if states.dropdowns.requestURL}
+						<div
+							class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative"
+							transition:slide|local
+						>
+							<button
+								on:click={() => copy('requestURL', requestURL)}
+								class="absolute right-4 top-4"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 ml-1 stroke-2 hover:stroke-3"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+									/>
+								</svg>
+							</button>
+							<span class="block text-sm whitespace-pre-line" class:flash={copyTooltip.requestURL}>
+								{requestURL}
+							</span>
+						</div>
+
+						<button
+							on:click={continueWithHello}
+							class="hello-btn-black-and-static w-full hidden lg:flex mt-4"
+							class:hello-btn-loader={continueWithHelloAjax}
+							disabled={continueWithHelloAjax}
+							class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
+						>
+					{/if}
 				</div>
 			</div>
-			<button
-				on:click={continueWithHello}
-				class="hello-btn-black-and-static w-full lg:hidden"
-				class:hello-btn-loader={continueWithHelloAjax}
-				disabled={continueWithHelloAjax}
-				class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
-			>
 		</section>
 
 		<section
 			class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
 		>
-			<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2">Invite Request</span>
+			<span class="absolute -mt-9 bg-white dark:bg-[#151515]">Invite Request</span>
 			<div class="max-w-sm mx-auto">
 				{#if canInvite}
 					<div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6">
@@ -1312,9 +1560,7 @@
 				? ''
 				: 'h-72 flex items-center justify-center'}"
 		>
-			<span class="absolute -top-3 left-4 px-2 bg-white dark:bg-[#151515]"
-				>Authorization Response</span
-			>
+			<span class="absolute -top-3 left-4 bg-white dark:bg-[#151515]">Authorization Response</span>
 			{#if !result.authorize}
 				<span class="opacity-80">Nothing to see here yet</span>
 			{:else}
