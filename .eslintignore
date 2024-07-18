@@ -1,0 +1,7 @@
+dist
+node_modules
+S3
+cypress
+rumTracker.js
+assets
+playwright-report

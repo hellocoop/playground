@@ -6,7 +6,7 @@ body {
 	overflow-x: auto;
 }
 
-pre[class*="language-"] {
+pre[class*='language-'] {
 	@apply m-0;
 }
 
@@ -14,12 +14,12 @@ button {
 	@apply rounded-sm;
 }
 
-input[type=url] {
+input[type='url'] {
 	@apply text-charcoal dark:text-[#d4d4d4];
 }
 
-input[type=radio],
-input[type=checkbox] {
+input[type='radio'],
+input[type='checkbox'] {
 	@apply hover:border-2 border-charcoal dark:border-[#808080];
 }
 
