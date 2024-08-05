@@ -154,6 +154,8 @@
 		greenfield: 'app_GreenfieldFitnessDemoApp_s9z'
 	};
 
+	const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
+
 	let errorNotification = null;
 
 	const queryParams = {
@@ -226,6 +228,7 @@
 	let states = {
 		selected_authorization_server: 'https://wallet.hello.coop/authorize',
 		custom_authorization_servers: [],
+		update_scope: false,
 		scopes: ['openid'],
 		...defaultQueryParamStates,
 		invite_query_param_values: {
@@ -866,7 +869,7 @@
 									class="text-charcoal form-checkbox dark:text-gray-800"
 									name="update-scope"
 									id="update-scope"
-									value="update-scope"
+									bind:checked={states.update_scope}
 								/>
 								<label for="update-scope" class="ml-2">update</label>
 							</div>
@@ -877,6 +880,9 @@
 										{@const required = scopes.required.includes(scope)}
 										<li
 											class="flex items-center"
+											class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
+											class:pointer-events-none={states.update_scope &&
+												!updateScopes.includes(scope)}
 											class:text-red-500={required && !states.scopes.includes(scope)}
 										>
 											<input
@@ -884,32 +890,20 @@
 												class="text-charcoal form-checkbox dark:text-gray-800"
 												name={scope}
 												id={scope}
-												value={scope}
+												value={states.update_scope && updateScopes.includes(scope)
+													? 'update_' + scope
+													: scope}
 												bind:group={states.scopes}
 											/>
-											<label for={scope} class="ml-2">{scope} {required ? '*' : ''}</label>
+											<label for={scope} class="ml-2"
+												>{states.update_scope && updateScopes.includes(scope)
+													? 'update_' + scope
+													: scope}
+												{required ? '*' : ''}</label
+											>
 										</li>
 									{/each}
 								</ul>
-								{#if localStorage.plausible_ignore == 'true'}
-									<div class="truncate">
-										<ul class="space-y-2 mt-2">
-											{#each scopes.update as scope}
-												<li class="flex items-center truncate pl-1">
-													<input
-														type="checkbox"
-														class="text-charcoal form-checkbox dark:text-gray-800"
-														name={scope}
-														id={scope}
-														value={scope}
-														bind:group={states.scopes}
-													/>
-													<label for={scope} class="ml-2 truncate">{scope}</label>
-												</li>
-											{/each}
-										</ul>
-									</div>
-								{/if}
 								<div class="truncate">
 									<ul class="space-y-2 mt-2">
 										{#each scopes.custom as scope}
@@ -917,6 +911,9 @@
 											<li
 												class="flex items-center truncate pl-1"
 												class:text-red-500={required && !states.scopes.includes(scope)}
+												class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
+												class:pointer-events-none={states.update_scope &&
+													!updateScopes.includes(scope)}
 											>
 												<input
 													type="checkbox"
