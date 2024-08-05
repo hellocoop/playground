@@ -245,6 +245,7 @@
 	let mobileMenu = false;
 
 	const copyTooltip = {
+		scopeParam: false,
 		requestURL: false,
 		inviteURL: false,
 		invitePlaygroundURL: false,
@@ -858,8 +859,19 @@
 						</button>
 					</div>
 					{#if states.dropdowns.scopeParam}
-						<div class="flex mt-2 gap-x-4 truncate pl-1" transition:slide|local>
-							<div>
+						<div class="mt-2" transition:slide|local>
+							<div class="px-1">
+								<input
+									type="checkbox"
+									class="text-charcoal form-checkbox dark:text-gray-800"
+									name="update-scope"
+									id="update-scope"
+									value="update-scope"
+								/>
+								<label for="update-scope" class="ml-2">update</label>
+							</div>
+
+							<div class="flex mt-2 gap-x-4 truncate pl-1">
 								<ul class="space-y-2 mt-2">
 									{#each scopes.standard as scope}
 										{@const required = scopes.required.includes(scope)}
@@ -879,12 +891,33 @@
 										</li>
 									{/each}
 								</ul>
-							</div>
-							{#if localStorage.plausible_ignore == 'true'}
+								{#if localStorage.plausible_ignore == 'true'}
+									<div class="truncate">
+										<ul class="space-y-2 mt-2">
+											{#each scopes.update as scope}
+												<li class="flex items-center truncate pl-1">
+													<input
+														type="checkbox"
+														class="text-charcoal form-checkbox dark:text-gray-800"
+														name={scope}
+														id={scope}
+														value={scope}
+														bind:group={states.scopes}
+													/>
+													<label for={scope} class="ml-2 truncate">{scope}</label>
+												</li>
+											{/each}
+										</ul>
+									</div>
+								{/if}
 								<div class="truncate">
 									<ul class="space-y-2 mt-2">
-										{#each scopes.update as scope}
-											<li class="flex items-center truncate pl-1">
+										{#each scopes.custom as scope}
+											{@const required = scopes.required.includes(scope)}
+											<li
+												class="flex items-center truncate pl-1"
+												class:text-red-500={required && !states.scopes.includes(scope)}
+											>
 												<input
 													type="checkbox"
 													class="text-charcoal form-checkbox dark:text-gray-800"
@@ -893,32 +926,38 @@
 													value={scope}
 													bind:group={states.scopes}
 												/>
-												<label for={scope} class="ml-2 truncate">{scope}</label>
+												<label for={scope} class="ml-2 truncate italic">{scope}</label>
 											</li>
 										{/each}
 									</ul>
 								</div>
-							{/if}
-							<div class="truncate">
-								<ul class="space-y-2 mt-2">
-									{#each scopes.custom as scope}
-										{@const required = scopes.required.includes(scope)}
-										<li
-											class="flex items-center truncate pl-1"
-											class:text-red-500={required && !states.scopes.includes(scope)}
-										>
-											<input
-												type="checkbox"
-												class="text-charcoal form-checkbox dark:text-gray-800"
-												name={scope}
-												id={scope}
-												value={scope}
-												bind:group={states.scopes}
-											/>
-											<label for={scope} class="ml-2 truncate">{scope}</label>
-										</li>
-									{/each}
-								</ul>
+							</div>
+
+							<div class="bg-gray-200 dark:bg-charcoal rounded-sm pl-4 pr-10 py-4 mt-2 relative">
+								<button
+									on:click={() => copy('scopeParam', states.scopes.join('+'))}
+									class="absolute right-4 top-4"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 ml-1 stroke-2 hover:stroke-3"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+										/>
+									</svg>
+								</button>
+								<span
+									class="block text-sm whitespace-pre-line break-all"
+									class:flash={copyTooltip.scopeParam}
+								>
+									{states.scopes.join('+')}
+								</span>
 							</div>
 						</div>
 					{/if}
