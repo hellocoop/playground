@@ -875,7 +875,7 @@
 							</div>
 
 							<div class="flex mt-2 gap-x-4 truncate pl-1">
-								<ul class="space-y-2 mt-2">
+								<ul class="space-y-2 mt-2 w-44">
 									{#each scopes.standard as scope}
 										{@const required = scopes.required.includes(scope)}
 										<li
