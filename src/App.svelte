@@ -882,11 +882,16 @@
 								<ul class="space-y-2 mt-2 w-44">
 									{#each scopes.standard as scope}
 										{@const required = scopes.required.includes(scope)}
+										{@const disabled =
+											states.update_scope && !['openid', ...updateScopes].includes(scope)}
+										{@const error =
+											states.update_scope &&
+											updateScopes.includes(scope) &&
+											states.scopes.filter((i) => i.startsWith('update_')).length > 1}
 										<li
 											class="flex items-center"
-											class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
-											class:pointer-events-none={states.update_scope &&
-												!updateScopes.includes(scope)}
+											class:opacity-50={disabled}
+											class:pointer-events-none={disabled}
 											class:text-red-500={required && !states.scopes.includes(scope)}
 										>
 											<input
@@ -899,7 +904,7 @@
 													: scope}
 												bind:group={states.scopes}
 											/>
-											<label for={scope} class="ml-2"
+											<label for={scope} class="ml-2" class:text-red-500={error}
 												>{states.update_scope && updateScopes.includes(scope)
 													? 'update_' + scope
 													: scope}
