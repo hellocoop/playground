@@ -1385,57 +1385,6 @@
 			</div>
 		</section>
 
-		<section
-			class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
-		>
-			<span class="absolute -mt-9 bg-white dark:bg-[#151515]">Invite Request</span>
-			<div class="max-w-sm mx-auto">
-				{#if canInvite}
-					<div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6">
-						<h2 class="inline-flex items-center">
-							<span>Invite URL</span>
-							<button on:click={() => copy('invitePlaygroundURL', invitePlaygroundURL)}>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									class="h-5 ml-1 stroke-2 hover:stroke-3"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-									/>
-								</svg>
-							</button>
-						</h2>
-						<span
-							class="mt-2 block text-sm whitespace-pre-line"
-							class:flash={copyTooltip.invitePlaygroundURL}
-						>
-							{invitePlaygroundURL}
-						</span>
-					</div>
-				{/if}
-
-				<button
-					on:click={invitePlaygroundWithHello}
-					class="hello-btn-black-and-static w-full disabled:opacity-30"
-					class:hello-btn-loader={invitePlaygroundWithHelloAjax}
-					disabled={invitePlaygroundWithHelloAjax || !canInvite}
-					class:hello-btn-hover-flare={darkMode}>Invite others to Playground</button
-				>
-				<p class="text-sm text-center mt-4 opacity-80">
-					{#if canInvite}
-						Use this to test sending invitations
-					{:else}
-						To invite others, your must provide the<br />`name` and `email` claims
-					{/if}
-				</p>
-			</div>
-		</section>
-
 		{#if (result.introspect?.sub || states.invite_query_param_values.inviter) && localStorage.plausible_ignore == 'true'}
 			<section class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4">
 				<h1 class="font-semibold text-lg">Invite</h1>
@@ -1842,6 +1791,57 @@
 					{/if}
 				</div>
 			{/if}
+		</section>
+
+		<section
+			class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
+		>
+			<span class="absolute -mt-9 bg-white dark:bg-[#151515]">Invite Request</span>
+			<div class="max-w-sm mx-auto">
+				{#if canInvite}
+					<div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6">
+						<h2 class="inline-flex items-center">
+							<span>Invite URL</span>
+							<button on:click={() => copy('invitePlaygroundURL', invitePlaygroundURL)}>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 ml-1 stroke-2 hover:stroke-3"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+									/>
+								</svg>
+							</button>
+						</h2>
+						<span
+							class="mt-2 block text-sm whitespace-pre-line"
+							class:flash={copyTooltip.invitePlaygroundURL}
+						>
+							{invitePlaygroundURL}
+						</span>
+					</div>
+				{/if}
+
+				<button
+					on:click={invitePlaygroundWithHello}
+					class="hello-btn-black-and-static w-full disabled:opacity-30"
+					class:hello-btn-loader={invitePlaygroundWithHelloAjax}
+					disabled={invitePlaygroundWithHelloAjax || !canInvite}
+					class:hello-btn-hover-flare={darkMode}>Invite others to Playground</button
+				>
+				<p class="text-sm text-center mt-4 opacity-80">
+					{#if canInvite}
+						Use this to test sending invitations
+					{:else}
+						To invite others, your must provide the<br />`name` and `email` claims
+					{/if}
+				</p>
+			</div>
 		</section>
 
 		<section class="py-6">
