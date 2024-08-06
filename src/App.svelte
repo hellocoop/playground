@@ -918,7 +918,7 @@
 										</li>
 									{/each}
 								</ul>
-								<div class="truncate">
+								<div>
 									<ul class="space-y-2 mt-2">
 										{#each scopes.custom as scope}
 											{@const required = scopes.required.includes(scope)}
@@ -940,6 +940,26 @@
 												<label for={scope} class="ml-2 truncate italic">{scope}</label>
 											</li>
 										{/each}
+
+										<li
+											class="flex items-center pl-1"
+											class:opacity-50={states.update_scope && !updateScopes.includes('asdf')}
+											class:pointer-events-none={states.update_scope &&
+												!updateScopes.includes('asdf')}
+										>
+											<input
+												type="checkbox"
+												class="text-charcoal form-checkbox dark:text-gray-800"
+											/>
+											<input
+												type="text"
+												class="h-6 px-2 ml-2 w-32 form-input"
+												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
+											/>
+										</li>
 									</ul>
 								</div>
 							</div>
