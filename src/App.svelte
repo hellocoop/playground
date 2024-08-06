@@ -170,6 +170,7 @@
 			response_mode: ['fragment', 'query'],
 			state: '',
 			custom: '',
+			scope: '',
 			provider_hint: ''
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
@@ -840,7 +841,11 @@
 
 			<div class="columns-3 gap-x-12 space-y-6">
 				<!-- Scope Param -->
-				<div class="break-inside-avoid-column">
+				<div
+					class="break-inside-avoid-column"
+					class:opacity-50={states.query_params.includes('scope')}
+					class:pointer-events-none={states.query_params.includes('scope')}
+				>
 					<div class="space-x-6 inline-flex justify-between items-center">
 						<div class="space-x-2 inline-flex items-center">
 							<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
