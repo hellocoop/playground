@@ -943,9 +943,9 @@
 
 										<li
 											class="flex items-center pl-1"
-											class:opacity-50={states.update_scope && !updateScopes.includes('asdf')}
+											class:opacity-50={states.update_scope && !updateScopes.includes('asd')}
 											class:pointer-events-none={states.update_scope &&
-												!updateScopes.includes('asdf')}
+												!updateScopes.includes('asd')}
 										>
 											<input
 												type="checkbox"
@@ -953,7 +953,7 @@
 											/>
 											<input
 												type="text"
-												class="h-6 px-2 ml-2 w-32 form-input"
+												class="h-6 px-2 ml-2 w-32 form-input italic"
 												autocomplete="off"
 												autocorrect="off"
 												autocapitalize="off"
