@@ -830,7 +830,7 @@
 		<section
 			class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
 		>
-			<span class="absolute -mt-9 bg-white dark:bg-[#151515]">Authorization Request</span>
+			<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2">Authorization Request</span>
 			<button
 				on:click={resetAll}
 				class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
@@ -1517,7 +1517,7 @@
 				? ''
 				: 'h-72 flex items-center justify-center'}"
 		>
-			<span class="absolute -top-3 left-4 bg-white dark:bg-[#151515]">Authorization Response</span>
+			<span class="absolute -top-3 left-4 bg-white dark:bg-[#151515] px-2 -mx-2">Authorization Response</span>
 			{#if !result.authorize}
 				<span class="opacity-80">Nothing to see here yet</span>
 			{:else}
@@ -1796,7 +1796,7 @@
 		<section
 			class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
 		>
-			<span class="absolute -mt-9 bg-white dark:bg-[#151515]">Invite Request</span>
+			<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2">Invite Request</span>
 			<div class="max-w-sm mx-auto">
 				{#if canInvite}
 					<div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6">
