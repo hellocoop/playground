@@ -1136,7 +1136,6 @@
 								{@const required = queryParams.required.includes(param)}
 								<li
 									class="flex {param === 'provider_hint' ? 'items-start' : 'items-center'} relative"
-									class:pb-2={param === 'custom'}
 									class:pt-2={param === 'provider_hint'}
 								>
 									<div class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center">
