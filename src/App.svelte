@@ -830,7 +830,8 @@
 		<section
 			class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
 		>
-			<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2">Authorization Request</span>
+			<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2">Authorization Request</span
+			>
 			<button
 				on:click={resetAll}
 				class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
@@ -840,28 +841,29 @@
 			<div class="columns-3 gap-x-12 space-y-6">
 				<!-- Scope Param -->
 				<div class="break-inside-avoid-column">
-					<div class="inline-flex items-center space-x-2">
-						<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
-						<button on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="3"
-								stroke="currentColor"
-								class="w-4 h-4"
-								class:rotate-180={states.dropdowns.scopeParam}
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m19.5 8.25-7.5 7.5-7.5-7.5"
-								/>
-							</svg>
-						</button>
-					</div>
-					{#if states.dropdowns.scopeParam}
-						<div class="mt-2" transition:slide|local>
+					<div class="space-x-6 inline-flex justify-between items-center">
+						<div class="space-x-2 inline-flex items-center">
+							<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
+							<button on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="3"
+									stroke="currentColor"
+									class="w-4 h-4"
+									class:rotate-180={states.dropdowns.scopeParam}
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="m19.5 8.25-7.5 7.5-7.5-7.5"
+									/>
+								</svg>
+							</button>
+						</div>
+
+						{#if states.dropdowns.scopeParam}
 							<div class="px-1">
 								<input
 									type="checkbox"
@@ -872,8 +874,11 @@
 								/>
 								<label for="update-scope" class="ml-2">update</label>
 							</div>
-
-							<div class="flex mt-2 gap-x-4 truncate pl-1">
+						{/if}
+					</div>
+					{#if states.dropdowns.scopeParam}
+						<div class="mt-2" transition:slide|local>
+							<div class="flex gap-x-4 truncate pl-1">
 								<ul class="space-y-2 mt-2 w-44">
 									{#each scopes.standard as scope}
 										{@const required = scopes.required.includes(scope)}
@@ -1517,7 +1522,9 @@
 				? ''
 				: 'h-72 flex items-center justify-center'}"
 		>
-			<span class="absolute -top-3 left-4 bg-white dark:bg-[#151515] px-2 -mx-2">Authorization Response</span>
+			<span class="absolute -top-3 left-4 bg-white dark:bg-[#151515] px-2 -mx-2"
+				>Authorization Response</span
+			>
 			{#if !result.authorize}
 				<span class="opacity-80">Nothing to see here yet</span>
 			{:else}
