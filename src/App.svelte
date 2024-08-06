@@ -839,7 +839,7 @@
 				>Reset</button
 			>
 
-			<div class="columns-3 gap-x-12 space-y-6">
+			<div class="columns-1 md:columns-2 xl:columns-3 gap-x-12 space-y-6">
 				<!-- Scope Param -->
 				<div
 					class="break-inside-avoid-column"
