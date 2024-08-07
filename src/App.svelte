@@ -114,7 +114,7 @@
 			scopes.standard = [...scopes.standard, ..._standard_scopes];
 			scopes.custom = [...scopes.custom, ..._custom_scopes];
 			scopes.claims = [...scopes.claims, ..._standard_scopes, ..._custom_scopes];
-			queryParams.params.passkeys = states.query_param_values.passkeys = 'global';
+			protocolParams.params.passkeys = states.protocol_param_values.passkeys = 'global';
 		}
 
 		if (
@@ -160,18 +160,23 @@
 
 	const queryParams = {
 		params: {
+			login_hint: '',
+			provider_hint: ''
+		},
+		required: []
+	};
+	const protocolParams = {
+		params: {
 			client_id: '',
 			nonce: '',
 			redirect_uri: '',
 			response_type: ['code', 'id_token'],
 			code_challenge: '',
 			code_verifier: '',
-			login_hint: '',
 			response_mode: ['fragment', 'query'],
 			state: '',
 			custom: '',
-			scope: '',
-			provider_hint: ''
+			scope: ''
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
 	};
@@ -205,11 +210,15 @@
 
 	//this is so we can reset query params to original state
 	const defaultQueryParamStates = {
-		query_params: ['client_id', 'redirect_uri', 'nonce', 'response_type'],
+		query_params: [],
+		protocol_params: ['client_id', 'redirect_uri', 'nonce', 'response_type'],
 		invite_query_params: ['inviter', 'client_id', 'initiate_login_uri', 'return_uri'],
 		invite_playground_query_params: ['inviter', 'client_id', 'initiate_login_uri', 'return_uri'],
 		query_param_values: {
-			...queryParams.params,
+			...queryParams.params
+		},
+		protocol_param_values: {
+			...protocolParams.params,
 			client_id: clientIds.playground,
 			nonce: makeNonce(),
 			redirect_uri: window.location.origin + '/',
@@ -286,21 +295,21 @@
 	async function processFragmentOrQuery() {
 		if (!window.location.hash && !window.location.search) return;
 
-		let queryParams;
+		let protocolParams;
 		if (window.location.hash) {
-			queryParams = new URLSearchParams(window.location.hash.substring(1));
+			protocolParams = new URLSearchParams(window.location.hash.substring(1));
 			result.authorize = window.location.hash;
 		} else if (window.location.search) {
-			queryParams = new URLSearchParams(window.location.search);
+			protocolParams = new URLSearchParams(window.location.search);
 			result.authorize = window.location.search;
 		}
 		cleanURL();
-		const id_token = queryParams.get('id_token');
-		const loginHint = queryParams.get('login_hint');
-		const code = queryParams.get('code');
-		const initiate_login = queryParams.get('initiate-login');
-		const iss = queryParams.get('iss');
-		const error = queryParams.get('error');
+		const id_token = protocolParams.get('id_token');
+		const loginHint = protocolParams.get('login_hint');
+		const code = protocolParams.get('code');
+		const initiate_login = protocolParams.get('initiate-login');
+		const iss = protocolParams.get('iss');
+		const error = protocolParams.get('error');
 		if (error) {
 			errorNotification = error?.replaceAll('_', ' ');
 		}
@@ -308,13 +317,15 @@
 			try {
 				const res = await fetch(iss + '/.well-known/openid-configuration');
 				const { authorization_endpoint } = await res.json();
-				let _requestUrl = makeRequestURL(
-					authorization_endpoint,
-					states.scopes,
-					states.query_params,
-					states.query_param_values,
-					'request'
-				);
+				let _requestUrl = makeRequestURL({
+					server: authorization_endpoint,
+					scopes: states.scopes,
+					queryParams: states.query_params,
+					queryParamValues: states.query_param_values,
+					protocolParams: states.protocol_params,
+					protocolParamValues: states.protocol_param_values,
+					type: 'request'
+				});
 				if (loginHint) {
 					_requestUrl += '&login_hint=' + loginHint;
 				}
@@ -327,7 +338,7 @@
 		if (initiate_login) {
 			await tick(); //wait for requestURL to compute
 			const url = new URL(initiate_login);
-			const loginHint = queryParams.get('login_hint');
+			const loginHint = protocolParams.get('login_hint');
 			const existingSearchParams = new URL(requestURL).search;
 			if (existingSearchParams) {
 				url.search = existingSearchParams;
@@ -401,10 +412,10 @@
 	async function getToken(code) {
 		const params = {
 			code,
-			client_id: states.query_param_values.client_id,
-			redirect_uri: states.query_param_values.redirect_uri,
+			client_id: states.protocol_param_values.client_id,
+			redirect_uri: states.protocol_param_values.redirect_uri,
 			grant_type: 'authorization_code',
-			code_verifier: states.query_param_values.code_verifier
+			code_verifier: states.protocol_param_values.code_verifier
 		};
 		const options = {
 			method: 'POST',
@@ -423,8 +434,8 @@
 	async function getIntrospect(id_token) {
 		const introspectEndpoint = new URL('/oauth/introspect', states.selected_authorization_server);
 		const params = {
-			client_id: states.query_param_values.client_id,
-			nonce: states.query_param_values.nonce,
+			client_id: states.protocol_param_values.client_id,
+			nonce: states.protocol_param_values.nonce,
 			token: id_token
 		};
 		const options = {
@@ -474,8 +485,8 @@
 			}
 
 			//Purge localstorage cache -- replace old playground client_id with new
-			if (_states.query_param_values.client_id === clientIds.playground_old) {
-				_states.query_param_values.client_id = clientIds.playground;
+			if (_states.protocol_param_values.client_id === clientIds.playground_old) {
+				_states.protocol_param_values.client_id = clientIds.playground;
 			}
 
 			states = _states;
@@ -497,7 +508,15 @@
 		localStorage.setItem('states', _states);
 	}
 
-	function makeRequestURL(server, scopes, queryParams, queryParamValues, type) {
+	function makeRequestURL({
+		server,
+		scopes,
+		queryParams,
+		queryParamValues,
+		protocolParams,
+		protocolParamValues,
+		type
+	} = {}) {
 		try {
 			const url = new URL(server);
 			if (type === 'invite') {
@@ -516,6 +535,18 @@
 					const query_param_value = queryParamValues[param];
 					if (query_param_value) {
 						url.searchParams.set(param, query_param_value);
+					}
+				}
+			}
+			if (protocolParams.length) {
+				for (const param of protocolParams) {
+					if (param === 'custom' && type == 'request') {
+						url.search += protocolParamValues[param];
+						continue;
+					}
+					const protocol_param_value = protocolParamValues[param];
+					if (protocol_param_value) {
+						url.searchParams.set(param, protocol_param_value);
 					}
 					//boolean states
 					if (type == 'invite' && (param == 'manage' || param == 'localhost_invite')) {
@@ -595,52 +626,55 @@
 	async function handleCheckboxInput(e, param) {
 		if (param === 'nonce') {
 			if (e.target.checked) {
-				states.query_param_values.nonce = makeNonce();
+				states.protocol_param_values.nonce = makeNonce();
 			} else {
-				states.query_param_values.nonce = '';
+				states.protocol_param_values.nonce = '';
 			}
 		}
 
 		if (param === 'code_challenge') {
 			if (e.target.checked) {
 				const { code_challenge, code_verifier } = await makePKCE();
-				states.query_param_values.code_challenge = code_challenge;
-				states.query_param_values.code_verifier = code_verifier;
+				states.protocol_param_values.code_challenge = code_challenge;
+				states.protocol_param_values.code_verifier = code_verifier;
 			} else {
-				states.query_param_values.code_challenge = states.query_param_values.code_verifier = '';
+				states.protocol_param_values.code_challenge = states.protocol_param_values.code_verifier =
+					'';
 			}
 		}
 
 		if (param === 'response_mode') {
 			if (!e.target.checked) {
-				states.query_param_values.response_mode = 'fragment';
+				states.protocol_param_values.response_mode = 'fragment';
 			}
 		}
 	}
 
-	$: requestURL = makeRequestURL(
-		states.selected_authorization_server,
-		states.scopes,
-		states.query_params,
-		states.query_param_values,
-		'request'
-	);
+	$: requestURL = makeRequestURL({
+		server: states.selected_authorization_server,
+		scopes: states.scopes,
+		queryParams: states.query_params,
+		queryParamValues: states.query_param_values,
+		protocolParams: states.protocol_params,
+		protocolParamValues: states.protocol_param_values,
+		type: 'request'
+	});
 
-	$: inviteURL = makeRequestURL(
-		states.selected_authorization_server,
-		[],
-		states.invite_query_params,
-		states.invite_query_param_values,
-		'invite'
-	);
+	$: inviteURL = makeRequestURL({
+		server: states.selected_authorization_server,
+		scopes: [],
+		protocolParams: states.invite_query_params,
+		protocolParamValues: states.invite_query_param_values,
+		type: 'invite'
+	});
 
-	$: invitePlaygroundURL = makeRequestURL(
-		states.selected_authorization_server,
-		[],
-		states.invite_playground_query_params,
-		states.invite_playground_query_param_values,
-		'invite'
-	);
+	$: invitePlaygroundURL = makeRequestURL({
+		server: states.selected_authorization_server,
+		scopes: [],
+		protocolParams: states.invite_playground_query_params,
+		protocolParamValues: states.invite_playground_query_param_values,
+		type: 'invite'
+	});
 
 	async function sendEvent() {
 		if (localStorage.getItem('plausible_ignore') == 'true') {
@@ -843,8 +877,8 @@
 				<!-- Scope Param -->
 				<div
 					class="break-inside-avoid-column"
-					class:opacity-50={states.query_params.includes('scope')}
-					class:pointer-events-none={states.query_params.includes('scope')}
+					class:opacity-50={states.protocol_params.includes('scope')}
+					class:pointer-events-none={states.protocol_params.includes('scope')}
 				>
 					<div class="space-x-6 inline-flex justify-between items-center">
 						<div class="space-x-2 inline-flex items-center">
@@ -943,13 +977,9 @@
 									<li
 										class="flex items-center pl-1"
 										class:opacity-50={states.update_scope && !updateScopes.includes('asd')}
-										class:pointer-events-none={states.update_scope &&
-											!updateScopes.includes('asd')}
+										class:pointer-events-none={states.update_scope && !updateScopes.includes('asd')}
 									>
-										<input
-											type="checkbox"
-											class="text-charcoal form-checkbox dark:text-gray-800"
-										/>
+										<input type="checkbox" class="text-charcoal form-checkbox dark:text-gray-800" />
 										<input
 											type="text"
 											class="h-6 px-2 ml-2 w-32 form-input italic"
@@ -989,7 +1019,7 @@
 					</div>
 					{#if states.dropdowns.queryParams}
 						<ul class="space-y-2 mt-2" transition:slide|local>
-							{#each Object.entries(queryParams.params).filter( (i) => ['login_hint', 'provider_hint'].includes(i[0]) ) as [param, value]}
+							{#each Object.entries(queryParams.params) as [param, value]}
 								{@const required = queryParams.required.includes(param)}
 								<li
 									class="flex {param === 'provider_hint' ? 'items-start' : 'items-center'} relative"
@@ -1001,19 +1031,15 @@
 										class:mt-6={param === 'client_id'}
 										class:mt-1={param === 'provider_hint'}
 									>
-										{#if param !== 'code_verifier'}
-											<input
-												type="checkbox"
-												bind:group={states.query_params}
-												on:change={(e) => handleCheckboxInput(e, param)}
-												class="text-charcoal form-checkbox dark:text-gray-800"
-												name={param}
-												id={param}
-												value={param}
-											/>
-										{:else}
-											<span class="w-4" />
-										{/if}
+										<input
+											type="checkbox"
+											bind:group={states.query_params}
+											on:change={(e) => handleCheckboxInput(e, param)}
+											class="text-charcoal form-checkbox dark:text-gray-800"
+											name={param}
+											id={param}
+											value={param}
+										/>
 										<label
 											for={param}
 											class="ml-2"
@@ -1039,62 +1065,22 @@
 									</div>
 
 									<div class="w-1/2 md:w-3/4">
-										{#if Array.isArray(value)}
-											<div
-												class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
-												class:opacity-60={!states.query_params.includes(param) &&
-													param !== 'response_mode'}
-											>
-												{#each value as ele}
-													<button
-														on:click={() => (states.query_param_values[param] = ele)}
-														disabled={param === 'response_mode' &&
-															!states.query_params.includes('response_mode')}
-														class="{states.query_param_values[param] === ele
-															? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
-															: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
-							"
-													>
-														{ele}
-													</button>
-												{/each}
-											</div>
-										{:else}
-											<div
-												class="flex flex-col w-full items-start"
-												class:opacity-60={!states.query_params.includes(param) &&
-													param !== 'code_challenge'}
-											>
-												<!-- {#if param === "client_id"}
-							<div class="mb-0.5">
-								<button
-								on:click={() =>
-									(states.query_param_values.client_id =
-									clientIds.playground)}
-								class="text-xs xl:text-sm hover:underline"
-								>Playground</button
-								>
-								<button
-								on:click={() =>
-									(states.query_param_values.client_id =
-									clientIds.greenfield)}
-								class="text-xs xl:text-sm hover:underline xl:ml-2"
-								>GreenfieldFitness</button
-								>
-							</div>
-							{/if} -->
-												<input
-													type="text"
-													name={param}
-													class="h-6 px-2 w-full form-input"
-													autocomplete="off"
-													autocorrect="off"
-													autocapitalize="off"
-													spellcheck="false"
-													bind:value={states.query_param_values[param]}
-												/>
-											</div>
-										{/if}
+										<div
+											class="flex flex-col w-full items-start"
+											class:opacity-60={!states.query_params.includes(param) &&
+												param !== 'code_challenge'}
+										>
+											<input
+												type="text"
+												name={param}
+												class="h-6 px-2 w-full form-input"
+												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
+												bind:value={states.query_param_values[param]}
+											/>
+										</div>
 
 										{#if param === 'provider_hint'}
 											{#if Array.isArray(invalidProviderHintSlug)}
@@ -1150,17 +1136,14 @@
 					</div>
 					{#if states.dropdowns.protocolParams}
 						<ul class="space-y-2 mt-2" transition:slide|local>
-							{#each Object.entries(queryParams.params).filter((i) => !['login_hint', 'provider_hint'].includes(i[0])) as [param, value]}
-								{@const required = queryParams.required.includes(param)}
-								<li
-									class="flex {param === 'provider_hint' ? 'items-start' : 'items-center'} relative"
-									class:pt-2={param === 'provider_hint'}
-								>
+							{#each Object.entries(protocolParams.params) as [param, value]}
+								{@const required = protocolParams.required.includes(param)}
+								<li class="flex items-center relative">
 									<div class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center">
 										{#if param !== 'code_verifier'}
 											<input
 												type="checkbox"
-												bind:group={states.query_params}
+												bind:group={states.protocol_params}
 												on:change={(e) => handleCheckboxInput(e, param)}
 												class="text-charcoal form-checkbox dark:text-gray-800"
 												name={param}
@@ -1175,19 +1158,19 @@
 											class="ml-2"
 											class:text-red-500={//required
 											(required &&
-												(!states.query_params.includes(param) ||
+												(!states.protocol_params.includes(param) ||
 													//if checked and empty field
-													!states.query_param_values[param])) ||
+													!states.protocol_param_values[param])) ||
 												//response_type: code but not code_challenge unchecked
 												(param === 'code_challenge' &&
-													states.query_param_values.response_type === 'code' &&
-													!states.query_params.includes('code_challenge')) ||
+													states.protocol_param_values.response_type === 'code' &&
+													!states.protocol_params.includes('code_challenge')) ||
 												//response_type: id_token and response_mode: query
 												(param === 'response_mode' &&
-													states.query_params.includes('response_mode') &&
-													states.query_param_values.response_mode === 'query' &&
-													states.query_params.includes('response_type') &&
-													states.query_param_values.response_type === 'id_token')}
+													states.protocol_params.includes('response_mode') &&
+													states.protocol_param_values.response_mode === 'query' &&
+													states.protocol_params.includes('response_type') &&
+													states.protocol_param_values.response_type === 'id_token')}
 										>
 											{param}
 											{required ? '*' : ''}
@@ -1198,15 +1181,15 @@
 										{#if Array.isArray(value)}
 											<div
 												class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
-												class:opacity-60={!states.query_params.includes(param) &&
+												class:opacity-60={!states.protocol_params.includes(param) &&
 													param !== 'response_mode'}
 											>
 												{#each value as ele}
 													<button
-														on:click={() => (states.query_param_values[param] = ele)}
+														on:click={() => (states.protocol_param_values[param] = ele)}
 														disabled={param === 'response_mode' &&
-															!states.query_params.includes('response_mode')}
-														class="{states.query_param_values[param] === ele
+															!states.protocol_params.includes('response_mode')}
+														class="{states.protocol_param_values[param] === ele
 															? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
 															: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
 							"
@@ -1218,21 +1201,21 @@
 										{:else}
 											<div
 												class="flex flex-col w-full items-start"
-												class:opacity-60={!states.query_params.includes(param) &&
+												class:opacity-60={!states.protocol_params.includes(param) &&
 													param !== 'code_challenge'}
 											>
 												<!-- {#if param === "client_id"}
 							<div class="mb-0.5">
 							<button
 								on:click={() =>
-								(states.query_param_values.client_id =
+								(states.protocol_param_values.client_id =
 									clientIds.playground)}
 								class="text-xs xl:text-sm hover:underline"
 								>Playground</button
 							>
 							<button
 								on:click={() =>
-								(states.query_param_values.client_id =
+								(states.protocol_param_values.client_id =
 									clientIds.greenfield)}
 								class="text-xs xl:text-sm hover:underline xl:ml-2"
 								>GreenfieldFitness</button
@@ -1247,7 +1230,7 @@
 													autocorrect="off"
 													autocapitalize="off"
 													spellcheck="false"
-													bind:value={states.query_param_values[param]}
+													bind:value={states.protocol_param_values[param]}
 												/>
 											</div>
 										{/if}
