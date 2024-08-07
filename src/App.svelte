@@ -522,7 +522,8 @@
 			if (type === 'invite') {
 				url.pathname = 'invite';
 			}
-			if (scopes.length) {
+			//not overriding existing scopes
+			if (scopes.length && !states.protocol_params.includes('scope')) {
 				const _scopes = scopes.join(' '); //array of scopes to string separated by space
 				url.searchParams.set('scope', _scopes);
 			}
