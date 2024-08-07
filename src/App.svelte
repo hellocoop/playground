@@ -953,7 +953,7 @@
 											/>
 											<input
 												type="text"
-												class="h-6 px-2 ml-2 w-32 form-input italic"
+												class="h-5 px-2 ml-2 w-32 form-input italic"
 												autocomplete="off"
 												autocorrect="off"
 												autocapitalize="off"
