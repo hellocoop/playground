@@ -883,7 +883,7 @@
 					</div>
 					{#if states.dropdowns.scopeParam}
 						<div class="mt-2" transition:slide|local>
-							<div class="flex gap-x-4 truncate pl-1">
+							<div class="flex gap-x-4 pl-1">
 								<ul class="space-y-2 mt-2 w-44">
 									{#each scopes.standard as scope}
 										{@const required = scopes.required.includes(scope)}
@@ -918,50 +918,48 @@
 										</li>
 									{/each}
 								</ul>
-								<div>
-									<ul class="space-y-2 mt-2">
-										{#each scopes.custom as scope}
-											{@const required = scopes.required.includes(scope)}
-											<li
-												class="flex items-center truncate pl-1"
-												class:text-red-500={required && !states.scopes.includes(scope)}
-												class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
-												class:pointer-events-none={states.update_scope &&
-													!updateScopes.includes(scope)}
-											>
-												<input
-													type="checkbox"
-													class="text-charcoal form-checkbox dark:text-gray-800"
-													name={scope}
-													id={scope}
-													value={scope}
-													bind:group={states.scopes}
-												/>
-												<label for={scope} class="ml-2 truncate italic">{scope}</label>
-											</li>
-										{/each}
-
+								<ul class="space-y-2 mt-2">
+									{#each scopes.custom as scope}
+										{@const required = scopes.required.includes(scope)}
 										<li
-											class="flex items-center pl-1"
-											class:opacity-50={states.update_scope && !updateScopes.includes('asd')}
+											class="flex items-center truncate pl-1"
+											class:text-red-500={required && !states.scopes.includes(scope)}
+											class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
 											class:pointer-events-none={states.update_scope &&
-												!updateScopes.includes('asd')}
+												!updateScopes.includes(scope)}
 										>
 											<input
 												type="checkbox"
 												class="text-charcoal form-checkbox dark:text-gray-800"
+												name={scope}
+												id={scope}
+												value={scope}
+												bind:group={states.scopes}
 											/>
-											<input
-												type="text"
-												class="h-5 px-2 ml-2 w-32 form-input italic"
-												autocomplete="off"
-												autocorrect="off"
-												autocapitalize="off"
-												spellcheck="false"
-											/>
+											<label for={scope} class="ml-2 truncate italic">{scope}</label>
 										</li>
-									</ul>
-								</div>
+									{/each}
+
+									<li
+										class="flex items-center pl-1"
+										class:opacity-50={states.update_scope && !updateScopes.includes('asd')}
+										class:pointer-events-none={states.update_scope &&
+											!updateScopes.includes('asd')}
+									>
+										<input
+											type="checkbox"
+											class="text-charcoal form-checkbox dark:text-gray-800"
+										/>
+										<input
+											type="text"
+											class="h-6 px-2 ml-2 w-32 form-input italic"
+											autocomplete="off"
+											autocorrect="off"
+											autocapitalize="off"
+											spellcheck="false"
+										/>
+									</li>
+								</ul>
 							</div>
 						</div>
 					{/if}
