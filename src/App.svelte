@@ -2,7 +2,8 @@
 	import { onMount, tick } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import makePKCE from './utils/pkce.js';
-	import { createHighlighter } from 'shiki';
+	import { createHighlighterCore } from 'shiki';
+	import getWasm from 'shiki/wasm'; //TBD: does not work without importin this
 
 	let readFromLocalStorage = false;
 	let darkMode = false;
@@ -86,9 +87,10 @@
 	}
 
 	onMount(async () => {
-		highlighter = await createHighlighter({
-			themes: ['github-light', 'github-dark'],
-			langs: ['json', 'http']
+		highlighter = await createHighlighterCore({
+			themes: [import('shiki/themes/github-dark.mjs'), import('shiki/themes/github-light.mjs')],
+			langs: [import('shiki/langs/json.mjs'), import('shiki/langs/http.mjs')],
+			loadWasm: getWasm //TBD: does not work without importin this
 		});
 
 		if (!getStatesFromLocalStorage()) {
