@@ -1,11 +1,12 @@
 <script>
 	import { onMount, tick } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import Prism from 'svelte-prism';
 	import makePKCE from './utils/pkce.js';
+	import { createHighlighter } from 'shiki';
 
 	let readFromLocalStorage = false;
 	let darkMode = false;
+	let highlighter;
 
 	const scopes = {
 		standard: [
@@ -58,7 +59,7 @@
 		'phone',
 		'ethereum',
 		'qrcode',
-		'passkey',
+		'passkey'
 		// 'managed'
 	];
 
@@ -84,7 +85,12 @@
 		}
 	}
 
-	onMount(() => {
+	onMount(async () => {
+		highlighter = await createHighlighter({
+			themes: ['github-light', 'github-dark'],
+			langs: ['json', 'http']
+		});
+
 		if (!getStatesFromLocalStorage()) {
 			//states not found in local storage, save default states to local storage
 			const _states = JSON.stringify(states);
@@ -716,6 +722,15 @@
 		states.invite_playground_query_param_values.inviter &&
 		result.introspect?.name &&
 		result.introspect?.email;
+
+	const highlight = (lang, content) => {
+		if (!highlighter) return '...';
+		const html = highlighter.codeToHtml(content, {
+			lang,
+			themes: { light: 'github-light', dark: 'github-dark' }
+		});
+		return html;
+	};
 </script>
 
 <svelte:window
@@ -1392,8 +1407,12 @@
 									/>
 								</svg>
 							</button>
-							<span class="block text-sm whitespace-pre-line" class:flash={copyTooltip.requestURL}>
-								{requestURL}
+							<span
+								id="request-url-container"
+								class="block text-sm whitespace-pre-line"
+								class:flash={copyTooltip.requestURL}
+							>
+								{@html highlight('http', requestURL)}
 							</span>
 						</div>
 
@@ -1469,7 +1488,7 @@
 
 						{#if dropdown.authorize}
 							<p class="p-4 break-words">
-								<span class:flash={copyTooltip.authorize}>{result.authorize}</span>
+								<span class:flash={copyTooltip.authorize} class="text-sm">{result.authorize}</span>
 							</p>
 						{/if}
 					</section>
@@ -1521,10 +1540,8 @@
 								</svg>
 							</button>
 							{#if dropdown.token}
-								<span class:flash={copyTooltip.token}>
-									<Prism language="javascript">
-										{JSON.stringify(result.token, null, 2)}
-									</Prism>
+								<span class:flash={copyTooltip.token} class="text-sm json-container">
+									{@html highlight('json', JSON.stringify(result.token, null, 2))}
 								</span>
 							{/if}
 						</section>
@@ -1577,10 +1594,8 @@
 								</svg>
 							</button>
 							{#if dropdown.userinfo}
-								<span class:flash={copyTooltip.userinfo}>
-									<Prism language="javascript">
-										{JSON.stringify(result.userinfo, null, 2)}
-									</Prism>
+								<span class:flash={copyTooltip.userinfo} class="text-sm json-container">
+									{@html highlight('json', JSON.stringify(result.userinfo, null, 2))}
 								</span>
 							{/if}
 						</section>
@@ -1633,10 +1648,8 @@
 								</svg>
 							</button>
 							{#if dropdown.introspect}
-								<span class:flash={copyTooltip.introspect}>
-									<Prism language="javascript">
-										{JSON.stringify(result.introspect, null, 2)}
-									</Prism>
+								<span class:flash={copyTooltip.introspect} class="text-sm json-container">
+									{@html highlight('json', JSON.stringify(result.introspect, null, 2))}
 								</span>
 							{/if}
 						</section>
@@ -1898,6 +1911,23 @@
 </main>
 
 <style>
+	@media (prefers-color-scheme: dark) {
+		:global(.shiki),
+		:global(.shiki span) {
+			color: var(--shiki-dark) !important;
+			background-color: var(--shiki-dark-bg) !important;
+		}
+	}
+
+	:global(.json-container pre) {
+		padding: 14px;
+		overflow-x: auto;
+	}
+
+	:global(#request-url-container pre) {
+		background-color: transparent !important;
+	}
+
 	.nav-link:hover::after {
 		width: 100%;
 		content: ' ';
