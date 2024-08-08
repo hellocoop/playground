@@ -59,7 +59,7 @@
 		'ethereum',
 		'qrcode',
 		'passkey',
-		'managed'
+		// 'managed'
 	];
 
 	let invalidProviderHintSlug = null;
