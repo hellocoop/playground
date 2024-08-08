@@ -200,6 +200,7 @@
 	};
 
 	let custom_authorization_server = '';
+	let custom_scope = '';
 
 	const result = {
 		authorize: null,
@@ -240,6 +241,7 @@
 		custom_authorization_servers: [],
 		update_scope: false,
 		scopes: ['openid'],
+		custom_scopes: [],
 		...defaultQueryParamStates,
 		invite_query_param_values: {
 			...inviteQueryParams.params,
@@ -579,6 +581,10 @@
 				states.selected_authorization_server = url.href;
 				custom_authorization_server = '';
 			}
+
+			//save custom scope
+			states.custom_scopes = [...states.custom_scopes, custom_scope];
+			custom_scope = '';
 		} catch {
 			// console.error('Custom auth server endpoint not saved locally: Invalid URL')
 		} finally {
@@ -975,12 +981,12 @@
 										</li>
 									{/each}
 
-									<li
+									<!-- <li
 										class="flex items-center pl-1"
-										class:opacity-50={states.update_scope && !updateScopes.includes('asd')}
-										class:pointer-events-none={states.update_scope && !updateScopes.includes('asd')}
+										class:opacity-50={states.update_scope && !updateScopes.includes(custom_scope)}
+										class:pointer-events-none={states.update_scope && !updateScopes.includes(custom_scope)}
 									>
-										<input type="checkbox" class="text-charcoal form-checkbox dark:text-gray-800" />
+										<input type="checkbox" bind:group={states.scopes} value={custom_scope} class="text-charcoal form-checkbox dark:text-gray-800" />
 										<input
 											type="text"
 											class="h-6 px-2 ml-2 w-32 form-input italic"
@@ -988,8 +994,9 @@
 											autocorrect="off"
 											autocapitalize="off"
 											spellcheck="false"
+											bind:value={custom_scope}
 										/>
-									</li>
+									</li> -->
 								</ul>
 							</div>
 						</div>
