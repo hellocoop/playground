@@ -904,26 +904,27 @@
 					class:pointer-events-none={states.protocol_params.includes('scope')}
 				>
 					<div class="space-x-6 inline-flex justify-between items-center">
-						<div class="space-x-2 inline-flex items-center">
+						<button
+							class="inline-flex items-center space-x-2"
+							on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}
+						>
 							<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
-							<button on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="3"
-									stroke="currentColor"
-									class="w-4 h-4"
-									class:rotate-180={states.dropdowns.scopeParam}
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="m19.5 8.25-7.5 7.5-7.5-7.5"
-									/>
-								</svg>
-							</button>
-						</div>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.scopeParam}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
 
 						{#if states.dropdowns.scopeParam}
 							<div class="px-1">
@@ -1021,26 +1022,23 @@
 
 				<!-- Query Params -->
 				<div class="break-inside-avoid-column">
-					<div class="inline-flex items-center space-x-2">
+					<button
+						class="inline-flex items-center space-x-2"
+						on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
+					>
 						<h1 class="font-semibold text-lg inline-block">Query Params</h1>
-						<button on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="3"
-								stroke="currentColor"
-								class="w-4 h-4"
-								class:rotate-180={states.dropdowns.queryParams}
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m19.5 8.25-7.5 7.5-7.5-7.5"
-								/>
-							</svg>
-						</button>
-					</div>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="3"
+							stroke="currentColor"
+							class="w-4 h-4"
+							class:rotate-180={states.dropdowns.queryParams}
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+						</svg>
+					</button>
 					{#if states.dropdowns.queryParams}
 						<ul class="space-y-2 mt-2" transition:slide|local>
 							{#each Object.entries(queryParams.params) as [param, value]}
@@ -1136,28 +1134,23 @@
 
 				<!-- Protocol Params -->
 				<div class="break-inside-avoid-column">
-					<div class="inline-flex items-center space-x-2">
+					<button
+						class="inline-flex items-center space-x-2"
+						on:click={() => (states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
+					>
 						<h1 class="font-semibold text-lg inline-block">Protocol Params</h1>
-						<button
-							on:click={() => (states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="3"
+							stroke="currentColor"
+							class="w-4 h-4"
+							class:rotate-180={states.dropdowns.protocolParams}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="3"
-								stroke="currentColor"
-								class="w-4 h-4"
-								class:rotate-180={states.dropdowns.protocolParams}
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m19.5 8.25-7.5 7.5-7.5-7.5"
-								/>
-							</svg>
-						</button>
-					</div>
+							<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+						</svg>
+					</button>
 					{#if states.dropdowns.protocolParams}
 						<ul class="space-y-2 mt-2" transition:slide|local>
 							{#each Object.entries(protocolParams.params) as [param, value]}
@@ -1289,26 +1282,23 @@
 
 				<!-- Authorization Server -->
 				<div class="break-inside-avoid-column">
-					<div class="inline-flex items-center space-x-2">
+					<button
+						class="inline-flex items-center space-x-2"
+						on:click={() => (states.dropdowns.authzServer = !states.dropdowns.authzServer)}
+					>
 						<h1 class="font-semibold text-lg">Authorization Server</h1>
-						<button on:click={() => (states.dropdowns.authzServer = !states.dropdowns.authzServer)}>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="3"
-								stroke="currentColor"
-								class="w-4 h-4"
-								class:rotate-180={states.dropdowns.authzServer}
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m19.5 8.25-7.5 7.5-7.5-7.5"
-								/>
-							</svg>
-						</button>
-					</div>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="3"
+							stroke="currentColor"
+							class="w-4 h-4"
+							class:rotate-180={states.dropdowns.authzServer}
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+						</svg>
+					</button>
 
 					{#if states.dropdowns.authzServer}
 						<ul class="space-y-2 mt-2" transition:slide|local>
@@ -1363,26 +1353,27 @@
 				<!-- Request URL -->
 				<div class="break-inside-avoid-column">
 					<div class="flex items-center">
-						<div class="inline-flex items-center space-x-2">
+						<button
+							class="inline-flex items-center space-x-2"
+							on:click={() => (states.dropdowns.requestURL = !states.dropdowns.requestURL)}
+						>
 							<h1 class="font-semibold text-lg">Request URL</h1>
-							<button on:click={() => (states.dropdowns.requestURL = !states.dropdowns.requestURL)}>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="3"
-									stroke="currentColor"
-									class="w-4 h-4"
-									class:rotate-180={states.dropdowns.requestURL}
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="m19.5 8.25-7.5 7.5-7.5-7.5"
-									/>
-								</svg>
-							</button>
-						</div>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.requestURL}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
 					</div>
 					{#if states.dropdowns.requestURL}
 						<div
