@@ -978,7 +978,7 @@
 										</li>
 									{/each}
 								</ul>
-								<ul class="space-y-2 mt-2">
+								<ul class="space-y-2 mt-2 truncate">
 									{#each scopes.custom as scope}
 										{@const required = scopes.required.includes(scope)}
 										<li
@@ -1379,7 +1379,7 @@
 					</div>
 					{#if states.dropdowns.requestURL}
 						<div
-							class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative"
+							class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
 							transition:slide|local
 						>
 							<button
