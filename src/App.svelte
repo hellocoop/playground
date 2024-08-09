@@ -1408,15 +1408,15 @@
 								{@html highlight('http', requestURL)}
 							</span>
 						</div>
-
-						<button
-							on:click={continueWithHello}
-							class="hello-btn-black-and-static w-full flex mt-4"
-							class:hello-btn-loader={continueWithHelloAjax}
-							disabled={continueWithHelloAjax}
-							class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
-						>
 					{/if}
+
+					<button
+						on:click={continueWithHello}
+						class="hello-btn-black-and-static w-full flex mt-4"
+						class:hello-btn-loader={continueWithHelloAjax}
+						disabled={continueWithHelloAjax}
+						class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
+					>
 				</div>
 			</div>
 		</section>
