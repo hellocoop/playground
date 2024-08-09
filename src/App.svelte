@@ -1405,7 +1405,8 @@
 								class="block text-sm whitespace-pre-line"
 								class:flash={copyTooltip.requestURL}
 							>
-								{@html highlight('http', requestURL)}
+								{requestURL}
+								<!-- {@html highlight('http', requestURL)} -->
 							</span>
 						</div>
 					{/if}
