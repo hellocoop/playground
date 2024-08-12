@@ -21,7 +21,7 @@
 			'given_name',
 			'family_name'
 		],
-		update: ['update_profile', 'update_email', 'update_phone', 'update_picture'],
+		// update: ['update_profile', 'update_email', 'update_phone', 'update_picture'],
 		custom: ['ethereum', 'discord', 'twitter', 'github', 'gitlab'],
 		required: ['openid'],
 		claims: [
@@ -163,7 +163,7 @@
 		greenfield: 'app_GreenfieldFitnessDemoApp_s9z'
 	};
 
-	const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
+	// const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
 
 	let errorNotification = null;
 
@@ -235,7 +235,7 @@
 			redirect_uri: window.location.origin + '/',
 			response_mode: 'fragment',
 			response_type: 'id_token',
-			login_hint: 'login'
+			prompt: 'login'
 		},
 		dropdowns: {
 			scopeParam: true,
@@ -250,7 +250,7 @@
 	let states = {
 		selected_authorization_server: 'https://wallet.hello.coop/authorize',
 		custom_authorization_servers: [],
-		update_scope: false,
+		// update_scope: false,
 		scopes: ['openid'],
 		custom_scopes: [],
 		...defaultQueryParamStates,
@@ -944,13 +944,13 @@
 									<ul class="space-y-2 mt-2 w-44">
 										{#each scopes.standard as scope}
 											{@const required = scopes.required.includes(scope)}
-											{@const disabled =
+											<!-- {@const disabled =
 												states.update_scope && !['openid', ...updateScopes].includes(scope)}
 											{@const error =
 												states.update_scope &&
 												updateScopes.includes(scope) &&
-												states.scopes.filter((i) => i.startsWith('update_')).length > 1}
-											<li
+												states.scopes.filter((i) => i.startsWith('update_')).length > 1} -->
+											<!-- <li
 												class="flex items-center"
 												class:opacity-50={disabled}
 												class:pointer-events-none={disabled}
@@ -972,19 +972,46 @@
 														: scope}
 													{required ? '*' : ''}</label
 												>
+											</li> -->
+											<li
+												class="flex items-center"
+												class:text-red-500={required && !states.scopes.includes(scope)}
+											>
+												<input
+													type="checkbox"
+													class="text-charcoal form-checkbox dark:text-gray-800"
+													name={scope}
+													id={scope}
+													value={scope}
+													bind:group={states.scopes}
+												/>
+												<label for={scope} class="ml-2"
+													>{scope}
+													{required ? '*' : ''}</label
+												>
 											</li>
 										{/each}
 									</ul>
 									<ul class="space-y-2 mt-2 truncate">
 										{#each scopes.custom as scope}
-											{@const required = scopes.required.includes(scope)}
-											<li
+											<!-- <li
 												class="flex items-center truncate pl-1"
 												class:text-red-500={required && !states.scopes.includes(scope)}
 												class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
 												class:pointer-events-none={states.update_scope &&
 													!updateScopes.includes(scope)}
 											>
+												<input
+													type="checkbox"
+													class="text-charcoal form-checkbox dark:text-gray-800"
+													name={scope}
+													id={scope}
+													value={scope}
+													bind:group={states.scopes}
+												/>
+												<label for={scope} class="ml-2 truncate italic">{scope}</label>
+											</li> -->
+											<li class="flex items-center truncate pl-1">
 												<input
 													type="checkbox"
 													class="text-charcoal form-checkbox dark:text-gray-800"
@@ -1113,23 +1140,23 @@
 														param !== 'code_challenge'}
 												>
 													<!-- {#if param === "client_id"}
-								<div class="mb-0.5">
-								<button
-									on:click={() =>
-									(states.protocol_param_values.client_id =
-										clientIds.playground)}
-									class="text-xs xl:text-sm hover:underline"
-									>Playground</button
-								>
-								<button
-									on:click={() =>
-									(states.protocol_param_values.client_id =
-										clientIds.greenfield)}
-									class="text-xs xl:text-sm hover:underline xl:ml-2"
-									>GreenfieldFitness</button
-								>
-								</div>
-							{/if} -->
+														<div class="mb-0.5">
+														<button
+															on:click={() =>
+															(states.protocol_param_values.client_id =
+																clientIds.playground)}
+															class="text-xs xl:text-sm hover:underline"
+															>Playground</button
+														>
+														<button
+															on:click={() =>
+															(states.protocol_param_values.client_id =
+																clientIds.greenfield)}
+															class="text-xs xl:text-sm hover:underline xl:ml-2"
+															>GreenfieldFitness</button
+														>
+														</div>
+													{/if} -->
 													<input
 														type="text"
 														name={param}
@@ -1141,28 +1168,6 @@
 														bind:value={states.protocol_param_values[param]}
 													/>
 												</div>
-											{/if}
-
-											{#if param === 'provider_hint'}
-												{#if Array.isArray(invalidProviderHintSlug)}
-													<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
-														{#if invalidProviderHintSlug.length > 1}
-															{invalidProviderHintSlug.join(', ')} are unsupported values
-														{:else}
-															{invalidProviderHintSlug} is an unsupported value
-														{/if}
-													</p>
-												{/if}
-												<p class="text-xs mt-1.5">
-													<span class="opacity-80"
-														>{possibleSlugs
-															.filter((i) => !['google', 'email', 'passkey'].includes(i))
-															.join(' ')}</span
-													><br />
-													<span class="opacity-80"
-														>apple-- microsoft-- google-- email-- passkey--</span
-													>
-												</p>
 											{/if}
 										</div>
 									</li>
