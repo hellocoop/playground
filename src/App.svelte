@@ -1177,7 +1177,7 @@
 							class="inline-flex items-center space-x-2"
 							on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
 						>
-							<h1 class="font-semibold text-lg inline-block">Query Params</h1>
+							<h1 class="font-semibold text-lg inline-block">Custom Params</h1>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
