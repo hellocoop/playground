@@ -1026,124 +1026,6 @@
 						{/if}
 					</div>
 
-					<!-- Query Params -->
-					<div class="break-inside-avoid-column">
-						<button
-							class="inline-flex items-center space-x-2"
-							on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
-						>
-							<h1 class="font-semibold text-lg inline-block">Query Params</h1>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="3"
-								stroke="currentColor"
-								class="w-4 h-4"
-								class:rotate-180={states.dropdowns.queryParams}
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m19.5 8.25-7.5 7.5-7.5-7.5"
-								/>
-							</svg>
-						</button>
-						{#if states.dropdowns.queryParams}
-							<ul class="space-y-2 mt-2" transition:slide|local>
-								{#each Object.entries(queryParams.params) as [param, value]}
-									{@const required = queryParams.required.includes(param)}
-									<li
-										class="flex {param === 'provider_hint'
-											? 'items-start'
-											: 'items-center'} relative"
-										class:pb-2={param === 'custom'}
-										class:pt-2={param === 'provider_hint'}
-									>
-										<div
-											class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
-											class:mt-6={param === 'client_id'}
-											class:mt-1={param === 'provider_hint'}
-										>
-											<input
-												type="checkbox"
-												bind:group={states.query_params}
-												on:change={(e) => handleCheckboxInput(e, param)}
-												class="text-charcoal form-checkbox dark:text-gray-800"
-												name={param}
-												id={param}
-												value={param}
-											/>
-											<label
-												for={param}
-												class="ml-2"
-												class:text-red-500={//required
-												(required &&
-													(!states.query_params.includes(param) ||
-														//if checked and empty field
-														!states.query_param_values[param])) ||
-													//response_type: code but not code_challenge unchecked
-													(param === 'code_challenge' &&
-														states.query_param_values.response_type === 'code' &&
-														!states.query_params.includes('code_challenge')) ||
-													//response_type: id_token and response_mode: query
-													(param === 'response_mode' &&
-														states.query_params.includes('response_mode') &&
-														states.query_param_values.response_mode === 'query' &&
-														states.query_params.includes('response_type') &&
-														states.query_param_values.response_type === 'id_token')}
-											>
-												{param}
-												{required ? '*' : ''}
-											</label>
-										</div>
-
-										<div class="w-1/2 md:w-3/4">
-											<div
-												class="flex flex-col w-full items-start"
-												class:opacity-60={!states.query_params.includes(param) &&
-													param !== 'code_challenge'}
-											>
-												<input
-													type="text"
-													name={param}
-													class="h-6 px-2 w-full form-input"
-													autocomplete="off"
-													autocorrect="off"
-													autocapitalize="off"
-													spellcheck="false"
-													bind:value={states.query_param_values[param]}
-												/>
-											</div>
-
-											{#if param === 'provider_hint'}
-												{#if Array.isArray(invalidProviderHintSlug)}
-													<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
-														{#if invalidProviderHintSlug.length > 1}
-															{invalidProviderHintSlug.join(', ')} are unsupported values
-														{:else}
-															{invalidProviderHintSlug} is an unsupported value
-														{/if}
-													</p>
-												{/if}
-												<p class="text-xs mt-1.5">
-													<span class="opacity-80"
-														>{possibleSlugs
-															.filter((i) => !['google', 'email', 'passkey'].includes(i))
-															.join(' ')}</span
-													><br />
-													<span class="opacity-80"
-														>apple-- microsoft-- google-- email-- passkey--</span
-													>
-												</p>
-											{/if}
-										</div>
-									</li>
-								{/each}
-							</ul>
-						{/if}
-					</div>
-
 					<!-- Protocol Params -->
 					<div class="break-inside-avoid-column">
 						<button
@@ -1267,6 +1149,124 @@
 													/>
 												</div>
 											{/if}
+
+											{#if param === 'provider_hint'}
+												{#if Array.isArray(invalidProviderHintSlug)}
+													<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
+														{#if invalidProviderHintSlug.length > 1}
+															{invalidProviderHintSlug.join(', ')} are unsupported values
+														{:else}
+															{invalidProviderHintSlug} is an unsupported value
+														{/if}
+													</p>
+												{/if}
+												<p class="text-xs mt-1.5">
+													<span class="opacity-80"
+														>{possibleSlugs
+															.filter((i) => !['google', 'email', 'passkey'].includes(i))
+															.join(' ')}</span
+													><br />
+													<span class="opacity-80"
+														>apple-- microsoft-- google-- email-- passkey--</span
+													>
+												</p>
+											{/if}
+										</div>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+
+					<!-- Query Params -->
+					<div class="break-inside-avoid-column">
+						<button
+							class="inline-flex items-center space-x-2"
+							on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
+						>
+							<h1 class="font-semibold text-lg inline-block">Query Params</h1>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.queryParams}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
+						{#if states.dropdowns.queryParams}
+							<ul class="space-y-2 mt-2" transition:slide|local>
+								{#each Object.entries(queryParams.params) as [param, value]}
+									{@const required = queryParams.required.includes(param)}
+									<li
+										class="flex {param === 'provider_hint'
+											? 'items-start'
+											: 'items-center'} relative"
+										class:pb-2={param === 'custom'}
+										class:pt-2={param === 'provider_hint'}
+									>
+										<div
+											class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
+											class:mt-6={param === 'client_id'}
+											class:mt-1={param === 'provider_hint'}
+										>
+											<input
+												type="checkbox"
+												bind:group={states.query_params}
+												on:change={(e) => handleCheckboxInput(e, param)}
+												class="text-charcoal form-checkbox dark:text-gray-800"
+												name={param}
+												id={param}
+												value={param}
+											/>
+											<label
+												for={param}
+												class="ml-2"
+												class:text-red-500={//required
+												(required &&
+													(!states.query_params.includes(param) ||
+														//if checked and empty field
+														!states.query_param_values[param])) ||
+													//response_type: code but not code_challenge unchecked
+													(param === 'code_challenge' &&
+														states.query_param_values.response_type === 'code' &&
+														!states.query_params.includes('code_challenge')) ||
+													//response_type: id_token and response_mode: query
+													(param === 'response_mode' &&
+														states.query_params.includes('response_mode') &&
+														states.query_param_values.response_mode === 'query' &&
+														states.query_params.includes('response_type') &&
+														states.query_param_values.response_type === 'id_token')}
+											>
+												{param}
+												{required ? '*' : ''}
+											</label>
+										</div>
+
+										<div class="w-1/2 md:w-3/4">
+											<div
+												class="flex flex-col w-full items-start"
+												class:opacity-60={!states.query_params.includes(param) &&
+													param !== 'code_challenge'}
+											>
+												<input
+													type="text"
+													name={param}
+													class="h-6 px-2 w-full form-input"
+													autocomplete="off"
+													autocorrect="off"
+													autocapitalize="off"
+													spellcheck="false"
+													bind:value={states.query_param_values[param]}
+												/>
+											</div>
 
 											{#if param === 'provider_hint'}
 												{#if Array.isArray(invalidProviderHintSlug)}
