@@ -169,7 +169,6 @@
 
 	const queryParams = {
 		params: {
-			login_hint: '',
 			provider_hint: ''
 		},
 		required: []
@@ -184,6 +183,7 @@
 			code_verifier: '',
 			response_mode: ['fragment', 'query'],
 			state: '',
+			login_hint: '',
 			custom: '',
 			scope: ''
 		},
