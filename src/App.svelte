@@ -1418,8 +1418,7 @@
 									</svg>
 								</button>
 								<span
-									id="request-url-container"
-									class="block text-sm whitespace-pre-line"
+									class="url-container block text-sm whitespace-pre-line"
 									class:flash={copyTooltip.requestURL}
 								>
 									{@html highlight('http', requestURL)}
@@ -1720,9 +1719,9 @@
 				class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
 			>
 				<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2">Invite Request</span>
-				<div class="max-w-sm mx-auto">
+				<div class="max-w-lg mx-auto">
 					{#if canInvite}
-						<div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6">
+						<div class="overflow-x-auto bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6">
 							<h2 class="inline-flex items-center">
 								<span>Invite URL</span>
 								<button on:click={() => copy('invitePlaygroundURL', invitePlaygroundURL)}>
@@ -1742,10 +1741,10 @@
 								</button>
 							</h2>
 							<span
-								class="mt-2 block text-sm whitespace-pre-line"
+								class="url-container mt-2 block text-sm whitespace-pre-line"
 								class:flash={copyTooltip.invitePlaygroundURL}
 							>
-								{invitePlaygroundURL}
+								{@html highlight('http', invitePlaygroundURL)}
 							</span>
 						</div>
 					{/if}
@@ -1936,7 +1935,7 @@
 		overflow-x: auto;
 	}
 
-	:global(#request-url-container pre) {
+	:global(.url-container pre) {
 		background-color: transparent !important;
 	}
 
