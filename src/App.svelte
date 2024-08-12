@@ -124,6 +124,7 @@
 			scopes.custom = [...scopes.custom, ..._custom_scopes];
 			scopes.claims = [...scopes.claims, ..._standard_scopes, ..._custom_scopes];
 			protocolParams.params.passkeys = states.protocol_param_values.passkeys = 'global';
+			queryParams.params.account = ['personal', 'managed']
 		}
 
 		if (
@@ -226,7 +227,8 @@
 		invite_query_params: ['inviter', 'client_id', 'initiate_login_uri', 'return_uri'],
 		invite_playground_query_params: ['inviter', 'client_id', 'initiate_login_uri', 'return_uri'],
 		query_param_values: {
-			...queryParams.params
+			...queryParams.params,
+			account: 'personal',
 		},
 		protocol_param_values: {
 			...protocolParams.params,
@@ -1249,43 +1251,65 @@
 										</div>
 
 										<div class="w-1/2 md:w-3/4">
-											<div
-												class="flex flex-col w-full items-start"
-												class:opacity-60={!states.query_params.includes(param) &&
-													param !== 'code_challenge'}
-											>
-												<input
-													type="text"
-													name={param}
-													class="h-6 px-2 w-full form-input"
-													autocomplete="off"
-													autocorrect="off"
-													autocapitalize="off"
-													spellcheck="false"
-													bind:value={states.query_param_values[param]}
-												/>
-											</div>
+											{#if Array.isArray(value)}
+												<div
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class:opacity-60={!states.query_params.includes(param) &&
+														param !== 'response_mode'}
+												>
+													{#each value as ele}
+														<button
+															on:click={() => (states.query_param_values[param] = ele)}
+															disabled={param === 'response_mode' &&
+																!states.query_params.includes('response_mode')}
+															class="{states.query_param_values[param] === ele
+																? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
+																: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
+								"
+														>
+															{ele}
+														</button>
+													{/each}
+												</div>
+											{:else}
+												<div
+													class="flex flex-col w-full items-start"
+													class:opacity-60={!states.query_params.includes(param) &&
+														param !== 'code_challenge'}
+												>
+													<input
+														type="text"
+														name={param}
+														class="h-6 px-2 w-full form-input"
+														autocomplete="off"
+														autocorrect="off"
+														autocapitalize="off"
+														spellcheck="false"
+														bind:value={states.query_param_values[param]}
+													/>
+												</div>
 
-											{#if param === 'provider_hint'}
-												{#if Array.isArray(invalidProviderHintSlug)}
-													<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
-														{#if invalidProviderHintSlug.length > 1}
-															{invalidProviderHintSlug.join(', ')} are unsupported values
-														{:else}
-															{invalidProviderHintSlug} is an unsupported value
-														{/if}
+												{#if param === 'provider_hint'}
+													{#if Array.isArray(invalidProviderHintSlug)}
+														<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
+															{#if invalidProviderHintSlug.length > 1}
+																{invalidProviderHintSlug.join(', ')} are unsupported values
+															{:else}
+																{invalidProviderHintSlug} is an unsupported value
+															{/if}
+														</p>
+													{/if}
+													<p class="text-xs mt-1.5">
+														<span class="opacity-80"
+															>{possibleSlugs
+																.filter((i) => !['google', 'email', 'passkey'].includes(i))
+																.join(' ')}</span
+														><br />
+														<span class="opacity-80"
+															>apple-- microsoft-- google-- email-- passkey--</span
+														>
 													</p>
 												{/if}
-												<p class="text-xs mt-1.5">
-													<span class="opacity-80"
-														>{possibleSlugs
-															.filter((i) => !['google', 'email', 'passkey'].includes(i))
-															.join(' ')}</span
-													><br />
-													<span class="opacity-80"
-														>apple-- microsoft-- google-- email-- passkey--</span
-													>
-												</p>
 											{/if}
 										</div>
 									</li>
