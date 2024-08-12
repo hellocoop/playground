@@ -932,7 +932,7 @@
 								</svg>
 							</button>
 
-							{#if states.dropdowns.scopeParam}
+							<!-- {#if states.dropdowns.scopeParam}
 								<div class="px-1">
 									<input
 										type="checkbox"
@@ -943,7 +943,7 @@
 									/>
 									<label for="update-scope" class="ml-2">update</label>
 								</div>
-							{/if}
+							{/if} -->
 						</div>
 						{#if states.dropdowns.scopeParam}
 							<div class="mt-2" transition:slide|local>
