@@ -21,7 +21,7 @@
 			'given_name',
 			'family_name'
 		],
-		update: ['update_profile', 'update_email', 'update_phone', 'update_picture'],
+		// update: ['update_profile', 'update_email', 'update_phone', 'update_picture'],
 		custom: ['ethereum', 'discord', 'twitter', 'github', 'gitlab'],
 		required: ['openid'],
 		claims: [
@@ -163,13 +163,12 @@
 		greenfield: 'app_GreenfieldFitnessDemoApp_s9z'
 	};
 
-	const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
+	// const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
 
 	let errorNotification = null;
 
 	const queryParams = {
 		params: {
-			login_hint: '',
 			provider_hint: ''
 		},
 		required: []
@@ -184,6 +183,8 @@
 			code_verifier: '',
 			response_mode: ['fragment', 'query'],
 			state: '',
+			prompt: ['consent', 'login'],
+			login_hint: '',
 			custom: '',
 			scope: ''
 		},
@@ -233,7 +234,8 @@
 			nonce: makeNonce(),
 			redirect_uri: window.location.origin + '/',
 			response_mode: 'fragment',
-			response_type: 'id_token'
+			response_type: 'id_token',
+			prompt: 'consent'
 		},
 		dropdowns: {
 			scopeParam: true,
@@ -248,7 +250,7 @@
 	let states = {
 		selected_authorization_server: 'https://wallet.hello.coop/authorize',
 		custom_authorization_servers: [],
-		update_scope: false,
+		// update_scope: false,
 		scopes: ['openid'],
 		custom_scopes: [],
 		...defaultQueryParamStates,
@@ -494,14 +496,6 @@
 				localStorage.removeItem('states');
 				return false;
 			}
-
-			//Purge localstorage cache -- replace old playground client_id with new if not a response flow
-			const hasAuthzRes =
-				window.location?.hash?.includes('id_token') || window.location?.seach?.includes('id_token');
-			if (!hasAuthzRes && _states.protocol_param_values.client_id === clientIds.playground_old) {
-				_states.protocol_param_values.client_id = clientIds.playground;
-			}
-
 			states = _states;
 			return true;
 		} catch (err) {
@@ -542,10 +536,6 @@
 			}
 			if (queryParams?.length) {
 				for (const param of queryParams) {
-					if (param === 'custom' && type == 'request') {
-						url.search += queryParamValues[param];
-						continue;
-					}
 					const query_param_value = queryParamValues[param];
 					if (query_param_value) {
 						url.searchParams.set(param, query_param_value);
@@ -555,7 +545,10 @@
 			if (protocolParams?.length) {
 				for (const param of protocolParams) {
 					if (param === 'custom' && type == 'request') {
-						url.search += protocolParamValues[param];
+						const custom = new URLSearchParams(protocolParamValues[param]);
+						for (const [key, value] of custom) {
+							url.searchParams.set(key, value);
+						}
 						continue;
 					}
 					const protocol_param_value = protocolParamValues[param];
@@ -932,7 +925,7 @@
 								</svg>
 							</button>
 
-							{#if states.dropdowns.scopeParam}
+							<!-- {#if states.dropdowns.scopeParam}
 								<div class="px-1">
 									<input
 										type="checkbox"
@@ -943,7 +936,7 @@
 									/>
 									<label for="update-scope" class="ml-2">update</label>
 								</div>
-							{/if}
+							{/if} -->
 						</div>
 						{#if states.dropdowns.scopeParam}
 							<div class="mt-2" transition:slide|local>
@@ -951,13 +944,13 @@
 									<ul class="space-y-2 mt-2 w-44">
 										{#each scopes.standard as scope}
 											{@const required = scopes.required.includes(scope)}
-											{@const disabled =
+											<!-- {@const disabled =
 												states.update_scope && !['openid', ...updateScopes].includes(scope)}
 											{@const error =
 												states.update_scope &&
 												updateScopes.includes(scope) &&
-												states.scopes.filter((i) => i.startsWith('update_')).length > 1}
-											<li
+												states.scopes.filter((i) => i.startsWith('update_')).length > 1} -->
+											<!-- <li
 												class="flex items-center"
 												class:opacity-50={disabled}
 												class:pointer-events-none={disabled}
@@ -979,19 +972,46 @@
 														: scope}
 													{required ? '*' : ''}</label
 												>
+											</li> -->
+											<li
+												class="flex items-center"
+												class:text-red-500={required && !states.scopes.includes(scope)}
+											>
+												<input
+													type="checkbox"
+													class="text-charcoal form-checkbox dark:text-gray-800"
+													name={scope}
+													id={scope}
+													value={scope}
+													bind:group={states.scopes}
+												/>
+												<label for={scope} class="ml-2"
+													>{scope}
+													{required ? '*' : ''}</label
+												>
 											</li>
 										{/each}
 									</ul>
 									<ul class="space-y-2 mt-2 truncate">
 										{#each scopes.custom as scope}
-											{@const required = scopes.required.includes(scope)}
-											<li
+											<!-- <li
 												class="flex items-center truncate pl-1"
 												class:text-red-500={required && !states.scopes.includes(scope)}
 												class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
 												class:pointer-events-none={states.update_scope &&
 													!updateScopes.includes(scope)}
 											>
+												<input
+													type="checkbox"
+													class="text-charcoal form-checkbox dark:text-gray-800"
+													name={scope}
+													id={scope}
+													value={scope}
+													bind:group={states.scopes}
+												/>
+												<label for={scope} class="ml-2 truncate italic">{scope}</label>
+											</li> -->
+											<li class="flex items-center truncate pl-1">
 												<input
 													type="checkbox"
 													class="text-charcoal form-checkbox dark:text-gray-800"
@@ -1023,124 +1043,6 @@
 									</ul>
 								</div>
 							</div>
-						{/if}
-					</div>
-
-					<!-- Query Params -->
-					<div class="break-inside-avoid-column">
-						<button
-							class="inline-flex items-center space-x-2"
-							on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
-						>
-							<h1 class="font-semibold text-lg inline-block">Query Params</h1>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="3"
-								stroke="currentColor"
-								class="w-4 h-4"
-								class:rotate-180={states.dropdowns.queryParams}
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m19.5 8.25-7.5 7.5-7.5-7.5"
-								/>
-							</svg>
-						</button>
-						{#if states.dropdowns.queryParams}
-							<ul class="space-y-2 mt-2" transition:slide|local>
-								{#each Object.entries(queryParams.params) as [param, value]}
-									{@const required = queryParams.required.includes(param)}
-									<li
-										class="flex {param === 'provider_hint'
-											? 'items-start'
-											: 'items-center'} relative"
-										class:pb-2={param === 'custom'}
-										class:pt-2={param === 'provider_hint'}
-									>
-										<div
-											class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
-											class:mt-6={param === 'client_id'}
-											class:mt-1={param === 'provider_hint'}
-										>
-											<input
-												type="checkbox"
-												bind:group={states.query_params}
-												on:change={(e) => handleCheckboxInput(e, param)}
-												class="text-charcoal form-checkbox dark:text-gray-800"
-												name={param}
-												id={param}
-												value={param}
-											/>
-											<label
-												for={param}
-												class="ml-2"
-												class:text-red-500={//required
-												(required &&
-													(!states.query_params.includes(param) ||
-														//if checked and empty field
-														!states.query_param_values[param])) ||
-													//response_type: code but not code_challenge unchecked
-													(param === 'code_challenge' &&
-														states.query_param_values.response_type === 'code' &&
-														!states.query_params.includes('code_challenge')) ||
-													//response_type: id_token and response_mode: query
-													(param === 'response_mode' &&
-														states.query_params.includes('response_mode') &&
-														states.query_param_values.response_mode === 'query' &&
-														states.query_params.includes('response_type') &&
-														states.query_param_values.response_type === 'id_token')}
-											>
-												{param}
-												{required ? '*' : ''}
-											</label>
-										</div>
-
-										<div class="w-1/2 md:w-3/4">
-											<div
-												class="flex flex-col w-full items-start"
-												class:opacity-60={!states.query_params.includes(param) &&
-													param !== 'code_challenge'}
-											>
-												<input
-													type="text"
-													name={param}
-													class="h-6 px-2 w-full form-input"
-													autocomplete="off"
-													autocorrect="off"
-													autocapitalize="off"
-													spellcheck="false"
-													bind:value={states.query_param_values[param]}
-												/>
-											</div>
-
-											{#if param === 'provider_hint'}
-												{#if Array.isArray(invalidProviderHintSlug)}
-													<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
-														{#if invalidProviderHintSlug.length > 1}
-															{invalidProviderHintSlug.join(', ')} are unsupported values
-														{:else}
-															{invalidProviderHintSlug} is an unsupported value
-														{/if}
-													</p>
-												{/if}
-												<p class="text-xs mt-1.5">
-													<span class="opacity-80"
-														>{possibleSlugs
-															.filter((i) => !['google', 'email', 'passkey'].includes(i))
-															.join(' ')}</span
-													><br />
-													<span class="opacity-80"
-														>apple-- microsoft-- google-- email-- passkey--</span
-													>
-												</p>
-											{/if}
-										</div>
-									</li>
-								{/each}
-							</ul>
 						{/if}
 					</div>
 
@@ -1238,23 +1140,23 @@
 														param !== 'code_challenge'}
 												>
 													<!-- {#if param === "client_id"}
-								<div class="mb-0.5">
-								<button
-									on:click={() =>
-									(states.protocol_param_values.client_id =
-										clientIds.playground)}
-									class="text-xs xl:text-sm hover:underline"
-									>Playground</button
-								>
-								<button
-									on:click={() =>
-									(states.protocol_param_values.client_id =
-										clientIds.greenfield)}
-									class="text-xs xl:text-sm hover:underline xl:ml-2"
-									>GreenfieldFitness</button
-								>
-								</div>
-							{/if} -->
+														<div class="mb-0.5">
+														<button
+															on:click={() =>
+															(states.protocol_param_values.client_id =
+																clientIds.playground)}
+															class="text-xs xl:text-sm hover:underline"
+															>Playground</button
+														>
+														<button
+															on:click={() =>
+															(states.protocol_param_values.client_id =
+																clientIds.greenfield)}
+															class="text-xs xl:text-sm hover:underline xl:ml-2"
+															>GreenfieldFitness</button
+														>
+														</div>
+													{/if} -->
 													<input
 														type="text"
 														name={param}
@@ -1267,6 +1169,102 @@
 													/>
 												</div>
 											{/if}
+										</div>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+
+					<!-- Query Params -->
+					<div class="break-inside-avoid-column">
+						<button
+							class="inline-flex items-center space-x-2"
+							on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
+						>
+							<h1 class="font-semibold text-lg inline-block">Custom Params</h1>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.queryParams}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
+						{#if states.dropdowns.queryParams}
+							<ul class="space-y-2 mt-2" transition:slide|local>
+								{#each Object.entries(queryParams.params) as [param, value]}
+									{@const required = queryParams.required.includes(param)}
+									<li
+										class="flex {param === 'provider_hint'
+											? 'items-start'
+											: 'items-center'} relative"
+										class:pb-2={param === 'custom'}
+										class:pt-2={param === 'provider_hint'}
+									>
+										<div
+											class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
+											class:mt-6={param === 'client_id'}
+											class:mt-1={param === 'provider_hint'}
+										>
+											<input
+												type="checkbox"
+												bind:group={states.query_params}
+												on:change={(e) => handleCheckboxInput(e, param)}
+												class="text-charcoal form-checkbox dark:text-gray-800"
+												name={param}
+												id={param}
+												value={param}
+											/>
+											<label
+												for={param}
+												class="ml-2"
+												class:text-red-500={//required
+												(required &&
+													(!states.query_params.includes(param) ||
+														//if checked and empty field
+														!states.query_param_values[param])) ||
+													//response_type: code but not code_challenge unchecked
+													(param === 'code_challenge' &&
+														states.query_param_values.response_type === 'code' &&
+														!states.query_params.includes('code_challenge')) ||
+													//response_type: id_token and response_mode: query
+													(param === 'response_mode' &&
+														states.query_params.includes('response_mode') &&
+														states.query_param_values.response_mode === 'query' &&
+														states.query_params.includes('response_type') &&
+														states.query_param_values.response_type === 'id_token')}
+											>
+												{param}
+												{required ? '*' : ''}
+											</label>
+										</div>
+
+										<div class="w-1/2 md:w-3/4">
+											<div
+												class="flex flex-col w-full items-start"
+												class:opacity-60={!states.query_params.includes(param) &&
+													param !== 'code_challenge'}
+											>
+												<input
+													type="text"
+													name={param}
+													class="h-6 px-2 w-full form-input"
+													autocomplete="off"
+													autocorrect="off"
+													autocapitalize="off"
+													spellcheck="false"
+													bind:value={states.query_param_values[param]}
+												/>
+											</div>
 
 											{#if param === 'provider_hint'}
 												{#if Array.isArray(invalidProviderHintSlug)}
