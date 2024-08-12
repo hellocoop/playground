@@ -496,14 +496,6 @@
 				localStorage.removeItem('states');
 				return false;
 			}
-
-			//Purge localstorage cache -- replace old playground client_id with new if not a response flow
-			const hasAuthzRes =
-				window.location?.hash?.includes('id_token') || window.location?.seach?.includes('id_token');
-			if (!hasAuthzRes && _states.protocol_param_values.client_id === clientIds.playground_old) {
-				_states.protocol_param_values.client_id = clientIds.playground;
-			}
-
 			states = _states;
 			return true;
 		} catch (err) {
