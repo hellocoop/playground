@@ -544,10 +544,6 @@
 			}
 			if (queryParams?.length) {
 				for (const param of queryParams) {
-					if (param === 'custom' && type == 'request') {
-						url.search += queryParamValues[param];
-						continue;
-					}
 					const query_param_value = queryParamValues[param];
 					if (query_param_value) {
 						url.searchParams.set(param, query_param_value);
@@ -557,7 +553,10 @@
 			if (protocolParams?.length) {
 				for (const param of protocolParams) {
 					if (param === 'custom' && type == 'request') {
-						url.search += protocolParamValues[param];
+						const custom = new URLSearchParams(protocolParamValues[param]);
+						for (const [key, value] of custom) {
+							url.searchParams.set(key, value);
+						}
 						continue;
 					}
 					const protocol_param_value = protocolParamValues[param];
