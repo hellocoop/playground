@@ -124,7 +124,7 @@
 			scopes.custom = [...scopes.custom, ..._custom_scopes];
 			scopes.claims = [...scopes.claims, ..._standard_scopes, ..._custom_scopes];
 			protocolParams.params.passkeys = states.protocol_param_values.passkeys = 'global';
-			queryParams.params.account = ['personal', 'managed']
+			queryParams.params.account = ['personal', 'managed'];
 		}
 
 		if (
@@ -228,7 +228,7 @@
 		invite_playground_query_params: ['inviter', 'client_id', 'initiate_login_uri', 'return_uri'],
 		query_param_values: {
 			...queryParams.params,
-			account: 'personal',
+			account: 'personal'
 		},
 		protocol_param_values: {
 			...protocolParams.params,
