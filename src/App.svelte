@@ -183,6 +183,7 @@
 			code_verifier: '',
 			response_mode: ['fragment', 'query'],
 			state: '',
+			prompt: ['login', 'consent'],
 			login_hint: '',
 			custom: '',
 			scope: ''
@@ -233,7 +234,8 @@
 			nonce: makeNonce(),
 			redirect_uri: window.location.origin + '/',
 			response_mode: 'fragment',
-			response_type: 'id_token'
+			response_type: 'id_token',
+			login_hint: 'login'
 		},
 		dropdowns: {
 			scopeParam: true,
