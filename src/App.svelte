@@ -183,7 +183,7 @@
 			code_verifier: '',
 			response_mode: ['fragment', 'query'],
 			state: '',
-			prompt: ['login', 'consent'],
+			prompt: ['consent', 'login'],
 			login_hint: '',
 			custom: '',
 			scope: ''
@@ -235,7 +235,7 @@
 			redirect_uri: window.location.origin + '/',
 			response_mode: 'fragment',
 			response_type: 'id_token',
-			prompt: 'login'
+			prompt: 'consent'
 		},
 		dropdowns: {
 			scopeParam: true,
