@@ -228,7 +228,7 @@
 		invite_playground_query_params: ['inviter', 'client_id', 'initiate_login_uri', 'return_uri'],
 		query_param_values: {
 			...queryParams.params,
-			account: 'personal'
+			account: 'managed'
 		},
 		protocol_param_values: {
 			...protocolParams.params,
