@@ -57,7 +57,6 @@
 		'wordpress',
 		'yahoo',
 		'email',
-		'phone',
 		'ethereum',
 		'qrcode',
 		'passkey'
