@@ -186,8 +186,8 @@
 			state: '',
 			prompt: ['consent', 'login'],
 			login_hint: '',
-			custom: '',
-			scope: ''
+			scope: '',
+			custom: ''
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
 	};
@@ -1075,7 +1075,14 @@
 							<ul class="space-y-2 mt-2" transition:slide|local>
 								{#each Object.entries(protocolParams.params) as [param, value]}
 									{@const required = protocolParams.required.includes(param)}
-									<li class="flex items-center relative">
+									{#if param === 'custom'}
+										<span class="pt-0.5 block" />
+									{/if}
+									<li
+										class="flex items-center relative {param === 'custom'
+											? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
+											: ''}"
+									>
 										<div class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center">
 											{#if param !== 'code_verifier'}
 												<input
