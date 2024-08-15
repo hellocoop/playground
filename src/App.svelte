@@ -254,7 +254,7 @@
 		selected_authorization_server: 'https://wallet.hello.coop/authorize',
 		custom_authorization_servers: [betaAuthzServer],
 		// update_scope: false,
-		scopes: ['openid'],
+		scopes: ['openid', 'profile'],
 		custom_scopes: [],
 		...defaultQueryParamStates,
 		invite_query_param_values: {
