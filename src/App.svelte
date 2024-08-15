@@ -163,6 +163,8 @@
 		greenfield: 'app_GreenfieldFitnessDemoApp_s9z'
 	};
 
+	const betaAuthzServer = 'https://wallet.hello-beta.net/authorize';
+
 	// const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
 
 	let errorNotification = null;
@@ -317,7 +319,18 @@
 			protocolParams = new URLSearchParams(window.location.search);
 			result.authorize = window.location.search;
 		}
+
+		const isBetaMode = window.location.hash.includes('beta');
+		if (isBetaMode) {
+			states.custom_authorization_servers = [
+				...new Set([...states.custom_authorization_servers, betaAuthzServer])
+			];
+			states.selected_authorization_server = betaAuthzServer;
+			states.dropdowns.authzServer = true;
+		}
+
 		cleanURL();
+
 		const id_token = protocolParams.get('id_token');
 		const loginHint = protocolParams.get('login_hint');
 		const code = protocolParams.get('code');
@@ -577,18 +590,14 @@
 			if (custom_authorization_server.length) {
 				url = new URL(custom_authorization_server);
 			}
-			if (
-				!['https://wallet.hello.coop/authorize', ...states.custom_authorization_servers].includes(
-					url.href
-				)
-			) {
-				states.custom_authorization_servers = [...states.custom_authorization_servers, url.href];
-				states.selected_authorization_server = url.href;
-				custom_authorization_server = '';
-			}
+			states.custom_authorization_servers = [
+				...new Set([...states.custom_authorization_servers, url.href])
+			];
+			states.selected_authorization_server = url.href;
+			custom_authorization_server = '';
 
 			//save custom scope
-			states.custom_scopes = [...states.custom_scopes, custom_scope];
+			states.custom_scopes = [...new Set([...states.custom_scopes, custom_scope])];
 			custom_scope = '';
 		} catch {
 			// console.error('Custom auth server endpoint not saved locally: Invalid URL')
