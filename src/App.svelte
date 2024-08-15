@@ -252,9 +252,9 @@
 	//default values, also binds to user input
 	let states = {
 		selected_authorization_server: 'https://wallet.hello.coop/authorize',
-		custom_authorization_servers: [],
+		custom_authorization_servers: [betaAuthzServer],
 		// update_scope: false,
-		scopes: ['openid'],
+		scopes: ['openid', 'profile'],
 		custom_scopes: [],
 		...defaultQueryParamStates,
 		invite_query_param_values: {
@@ -311,15 +311,6 @@
 	async function processFragmentOrQuery() {
 		if (!window.location.hash && !window.location.search) return;
 
-		let protocolParams;
-		if (window.location.hash) {
-			protocolParams = new URLSearchParams(window.location.hash.substring(1));
-			result.authorize = window.location.hash;
-		} else if (window.location.search) {
-			protocolParams = new URLSearchParams(window.location.search);
-			result.authorize = window.location.search;
-		}
-
 		const isBetaMode = window.location.hash.includes('beta');
 		if (isBetaMode) {
 			states.custom_authorization_servers = [
@@ -327,6 +318,15 @@
 			];
 			states.selected_authorization_server = betaAuthzServer;
 			states.dropdowns.authzServer = true;
+		}
+
+		let protocolParams;
+		if (window.location.hash && !isBetaMode) {
+			protocolParams = new URLSearchParams(window.location.hash.substring(1));
+			result.authorize = window.location.hash;
+		} else if (window.location.search) {
+			protocolParams = new URLSearchParams(window.location.search);
+			result.authorize = window.location.search;
 		}
 
 		cleanURL();
