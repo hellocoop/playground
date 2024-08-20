@@ -1082,6 +1082,7 @@
 										</div>
 
 										<div class="w-1/2 md:w-3/4">
+											<!-- checkbox -->
 											{#if param === 'prompt'}
 												<div
 													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
@@ -1099,33 +1100,40 @@
 															/>
 															<label
 																for={ele}
-																class="text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
 																>{ele}</label
 															>
 														</div>
 													{/each}
 												</div>
 											{:else if Array.isArray(value)}
+												<!-- radio -->
 												<div
 													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
-													class:opacity-60={!states.protocol_params.includes(param) &&
-														param !== 'response_mode'}
+													class:opacity-60={(!states.protocol_params.includes(param) &&
+														param !== 'response_mode') ||
+														(param === 'response_mode' &&
+															!states.protocol_params.includes('response_mode'))}
 												>
 													{#each value as ele}
-														<button
-															on:click={() => (states.protocol_param_values[param] = ele)}
-															disabled={param === 'response_mode' &&
-																!states.protocol_params.includes('response_mode')}
-															class="{states.protocol_param_values[param] === ele
-																? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
-																: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
-								"
-														>
-															{ele}
-														</button>
+														<div class="h-full w-1/2 flex items-center justify-center">
+															<input
+																type="radio"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.protocol_param_values[param]}
+															/>
+															<label
+																for={ele}
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
+															>
+														</div>
 													{/each}
 												</div>
 											{:else}
+												<!-- text input -->
 												<div
 													class="flex flex-col w-full items-start"
 													class:opacity-60={!states.protocol_params.includes(param) &&
@@ -1230,17 +1238,22 @@
 														param !== 'response_mode'}
 												>
 													{#each value as ele}
-														<button
-															on:click={() => (states.query_param_values[param] = ele)}
-															disabled={param === 'response_mode' &&
-																!states.query_params.includes('response_mode')}
-															class="{states.query_param_values[param] === ele
-																? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
-																: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
-								"
-														>
-															{ele}
-														</button>
+														<div class="h-full w-1/2 flex items-center justify-center">
+															<input
+																type="checkbox"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.protocol_param_values[param]}
+																disabled={param === 'response_mode' &&
+																	!states.query_params.includes('response_mode')}
+															/>
+															<label
+																for={ele}
+																class="text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
+															>
+														</div>
 													{/each}
 												</div>
 											{:else}
