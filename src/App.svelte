@@ -572,11 +572,12 @@
 						continue;
 					}
 					const protocol_param_value = protocolParamValues[param];
-					if (Array.isArray(protocol_param_value)) {
-						if (protocol_param_value.length)
-							url.searchParams.set(param, protocol_param_value.join(' '));
-					} else {
-						url.searchParams.set(param, protocol_param_value);
+					const isArray = Array.isArray(protocol_param_value);
+					if (isArray ? protocol_param_value.length : protocol_param_value) {
+						url.searchParams.set(
+							param,
+							isArray ? protocol_param_value.join(' ') : protocol_param_value
+						);
 					}
 					//boolean states
 					if (type == 'invite' && (param == 'manage' || param == 'localhost_invite')) {
@@ -1248,17 +1249,15 @@
 													{#each value as ele}
 														<div class="h-full w-1/2 flex items-center justify-center">
 															<input
-																type="checkbox"
+																type="radio"
 																id={ele}
 																class="peer hidden"
 																value={ele}
-																bind:group={states.protocol_param_values[param]}
-																disabled={param === 'response_mode' &&
-																	!states.query_params.includes('response_mode')}
+																bind:group={states.query_param_values[param]}
 															/>
 															<label
 																for={ele}
-																class="text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
 																>{ele}</label
 															>
 														</div>
