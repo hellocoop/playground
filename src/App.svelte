@@ -212,7 +212,6 @@
 	};
 
 	let custom_authorization_server = '';
-	let custom_scope = '';
 
 	const result = {
 		authorize: null,
@@ -253,9 +252,8 @@
 	let states = {
 		selected_authorization_server: 'https://wallet.hello.coop/authorize',
 		custom_authorization_servers: [betaAuthzServer],
-		// update_scope: false,
 		scopes: ['openid', 'profile'],
-		custom_scopes: [],
+		custom_scope: '',
 		...defaultQueryParamStates,
 		invite_query_param_values: {
 			...inviteQueryParams.params,
@@ -595,10 +593,6 @@
 			];
 			states.selected_authorization_server = url.href;
 			custom_authorization_server = '';
-
-			//save custom scope
-			states.custom_scopes = [...new Set([...states.custom_scopes, custom_scope])];
-			custom_scope = '';
 		} catch {
 			// console.error('Custom auth server endpoint not saved locally: Invalid URL')
 		} finally {
@@ -947,19 +941,6 @@
 									/>
 								</svg>
 							</button>
-
-							<!-- {#if states.dropdowns.scopeParam}
-								<div class="px-1">
-									<input
-										type="checkbox"
-										class="text-charcoal form-checkbox dark:text-gray-800"
-										name="update-scope"
-										id="update-scope"
-										bind:checked={states.update_scope}
-									/>
-									<label for="update-scope" class="ml-2">update</label>
-								</div>
-							{/if} -->
 						</div>
 						{#if states.dropdowns.scopeParam}
 							<div class="mt-2" transition:slide|local>
@@ -967,35 +948,6 @@
 									<ul class="space-y-2 mt-2 w-44">
 										{#each scopes.standard as scope}
 											{@const required = scopes.required.includes(scope)}
-											<!-- {@const disabled =
-												states.update_scope && !['openid', ...updateScopes].includes(scope)}
-											{@const error =
-												states.update_scope &&
-												updateScopes.includes(scope) &&
-												states.scopes.filter((i) => i.startsWith('update_')).length > 1} -->
-											<!-- <li
-												class="flex items-center"
-												class:opacity-50={disabled}
-												class:pointer-events-none={disabled}
-												class:text-red-500={required && !states.scopes.includes(scope)}
-											>
-												<input
-													type="checkbox"
-													class="text-charcoal form-checkbox dark:text-gray-800"
-													name={scope}
-													id={scope}
-													value={states.update_scope && updateScopes.includes(scope)
-														? 'update_' + scope
-														: scope}
-													bind:group={states.scopes}
-												/>
-												<label for={scope} class="ml-2" class:text-red-500={error}
-													>{states.update_scope && updateScopes.includes(scope)
-														? 'update_' + scope
-														: scope}
-													{required ? '*' : ''}</label
-												>
-											</li> -->
 											<li
 												class="flex items-center"
 												class:text-red-500={required && !states.scopes.includes(scope)}
@@ -1017,23 +969,6 @@
 									</ul>
 									<ul class="space-y-2 mt-2 truncate">
 										{#each scopes.custom as scope}
-											<!-- <li
-												class="flex items-center truncate pl-1"
-												class:text-red-500={required && !states.scopes.includes(scope)}
-												class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
-												class:pointer-events-none={states.update_scope &&
-													!updateScopes.includes(scope)}
-											>
-												<input
-													type="checkbox"
-													class="text-charcoal form-checkbox dark:text-gray-800"
-													name={scope}
-													id={scope}
-													value={scope}
-													bind:group={states.scopes}
-												/>
-												<label for={scope} class="ml-2 truncate italic">{scope}</label>
-											</li> -->
 											<li class="flex items-center truncate pl-1">
 												<input
 													type="checkbox"
@@ -1047,22 +982,23 @@
 											</li>
 										{/each}
 
-										<!-- <li
-											class="flex items-center pl-1"
-											class:opacity-50={states.update_scope && !updateScopes.includes(custom_scope)}
-											class:pointer-events-none={states.update_scope && !updateScopes.includes(custom_scope)}
-										>
-											<input type="checkbox" bind:group={states.scopes} value={custom_scope} class="text-charcoal form-checkbox dark:text-gray-800" />
+										<li class="flex items-center pl-1">
+											<input
+												type="checkbox"
+												bind:group={states.scopes}
+												value={states.custom_scope}
+												class="text-charcoal form-checkbox dark:text-gray-800"
+											/>
 											<input
 												type="text"
-												class="h-6 px-2 ml-2 w-32 form-input italic"
+												class="h-6 px-2 ml-2 w-24 mr-10 form-input italic"
 												autocomplete="off"
 												autocorrect="off"
 												autocapitalize="off"
 												spellcheck="false"
-												bind:value={custom_scope}
+												bind:value={states.custom_scope}
 											/>
-										</li> -->
+										</li>
 									</ul>
 								</div>
 							</div>
