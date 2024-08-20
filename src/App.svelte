@@ -792,6 +792,9 @@
 	</div>
 	<span class="md:w-1/3 flex justify-center flex-shrink-0">
 		<img src="logo.svg" alt="Hellō Playground" />
+		{#if localStorage.plausible_ignore}
+			<span class="absolute text-xs font-mono ml-60 -mt-1 text-green-500">devMode</span>
+		{/if}
 	</span>
 	<div class="w-1/3 flex justify-end space-x-4">
 		<ul class="hidden lg:flex space-x-4">
@@ -899,6 +902,16 @@
 				<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2"
 					>Authorization Request</span
 				>
+				{#if localStorage.plausible_ignore}
+					<button
+						on:click={() => {
+							localStorage.removeItem('plausible_ignore');
+							window.location.reload();
+						}}
+						class="absolute -top-3 right-24 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
+						>Public</button
+					>
+				{/if}
 				<button
 					on:click={resetAll}
 					class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
