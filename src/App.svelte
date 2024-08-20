@@ -237,7 +237,7 @@
 			redirect_uri: window.location.origin + '/',
 			response_mode: 'fragment',
 			response_type: 'id_token',
-			prompt: 'consent'
+			prompt: ['consent']
 		},
 		dropdowns: {
 			scopeParam: true,
@@ -564,7 +564,10 @@
 						continue;
 					}
 					const protocol_param_value = protocolParamValues[param];
-					if (protocol_param_value) {
+					if (Array.isArray(protocol_param_value)) {
+						if (protocol_param_value.length)
+							url.searchParams.set(param, protocol_param_value.join(' '));
+					} else {
 						url.searchParams.set(param, protocol_param_value);
 					}
 					//boolean states
@@ -1079,9 +1082,32 @@
 										</div>
 
 										<div class="w-1/2 md:w-3/4">
-											{#if Array.isArray(value)}
+											{#if param === 'prompt'}
 												<div
-													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class:opacity-60={!states.protocol_params.includes(param) &&
+														param !== 'response_mode'}
+												>
+													{#each value as ele}
+														<div class="h-full w-1/2 flex items-center justify-center">
+															<input
+																type="checkbox"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.protocol_param_values[param]}
+															/>
+															<label
+																for={ele}
+																class="text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
+															>
+														</div>
+													{/each}
+												</div>
+											{:else if Array.isArray(value)}
+												<div
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
 													class:opacity-60={!states.protocol_params.includes(param) &&
 														param !== 'response_mode'}
 												>
@@ -1105,24 +1131,6 @@
 													class:opacity-60={!states.protocol_params.includes(param) &&
 														param !== 'code_challenge'}
 												>
-													<!-- {#if param === "client_id"}
-														<div class="mb-0.5">
-														<button
-															on:click={() =>
-															(states.protocol_param_values.client_id =
-																clientIds.playground)}
-															class="text-xs xl:text-sm hover:underline"
-															>Playground</button
-														>
-														<button
-															on:click={() =>
-															(states.protocol_param_values.client_id =
-																clientIds.greenfield)}
-															class="text-xs xl:text-sm hover:underline xl:ml-2"
-															>GreenfieldFitness</button
-														>
-														</div>
-													{/if} -->
 													<input
 														type="text"
 														name={param}
@@ -1217,7 +1225,7 @@
 										<div class="w-1/2 md:w-3/4">
 											{#if Array.isArray(value)}
 												<div
-													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
 													class:opacity-60={!states.query_params.includes(param) &&
 														param !== 'response_mode'}
 												>
