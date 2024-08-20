@@ -2,6 +2,7 @@
 	import { onMount, tick } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import makePKCE from './utils/pkce.js';
+	import { createCssVariablesTheme } from 'shiki/core';
 	import { createHighlighterCore } from 'shiki';
 	import getWasm from 'shiki/wasm'; //TBD: does not work without importin this
 
@@ -86,8 +87,15 @@
 	}
 
 	onMount(async () => {
+		const theme = createCssVariablesTheme({
+			name: 'css-variables',
+			variablePrefix: '--shiki-',
+			variableDefaults: {},
+			fontStyle: true
+		});
+
 		highlighter = await createHighlighterCore({
-			themes: [import('shiki/themes/github-dark.mjs'), import('shiki/themes/github-light.mjs')],
+			themes: [theme],
 			langs: [import('shiki/langs/json.mjs'), import('shiki/langs/http.mjs')],
 			loadWasm: getWasm //TBD: does not work without importin this
 		});
@@ -731,7 +739,7 @@
 		if (!highlighter) return '...';
 		const html = highlighter.codeToHtml(content, {
 			lang,
-			themes: { light: 'github-light', dark: 'github-dark' }
+			theme: 'css-variables'
 		});
 		return html;
 	};
@@ -1404,7 +1412,7 @@
 						</div>
 						{#if states.dropdowns.requestURL}
 							<div
-								class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
+								class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
 								transition:slide|local
 							>
 								<button
@@ -1730,7 +1738,7 @@
 				<div class="max-w-lg mx-auto">
 					{#if canInvite}
 						<div
-							class="overflow-x-auto bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6"
+							class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mb-6"
 						>
 							<h2 class="inline-flex items-center">
 								<span>Invite URL</span>
@@ -1781,7 +1789,7 @@
 					<h1 class="font-semibold text-lg">Invite</h1>
 					<div class="flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 mt-2">
 						<div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
-							<div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mt-2 mb-6">
+							<div class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 mb-6">
 								<h2 class="inline-flex items-center">
 									<span>Invite URL</span>
 									<button on:click={() => copy('inviteURL', inviteURL)}>
@@ -1932,14 +1940,6 @@
 {/if}
 
 <style>
-	@media (prefers-color-scheme: dark) {
-		:global(.shiki),
-		:global(.shiki span) {
-			color: var(--shiki-dark) !important;
-			background-color: var(--shiki-dark-bg) !important;
-		}
-	}
-
 	:global(.json-container pre) {
 		padding: 14px;
 		overflow-x: auto;
