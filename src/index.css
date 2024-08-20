@@ -1,5 +1,6 @@
 @tailwind base;
 
+/* hello.dev nextra default colors */
 :root {
 	--shiki-color-text: #414141;
 	--shiki-color-background: transparent;
@@ -28,6 +29,7 @@
 		--shiki-token-link: #ffab70;
 	}
 }
+/* hello.dev nextra default colors */
 
 html,
 body {
