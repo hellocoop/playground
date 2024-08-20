@@ -799,7 +799,7 @@
 	<span class="md:w-1/3 flex justify-center flex-shrink-0">
 		<img src="logo.svg" alt="Hellō Playground" />
 		{#if localStorage.plausible_ignore}
-			<span class="absolute text-xs font-mono ml-60 -mt-1 text-green-500">devMode</span>
+			<span class="absolute text-xs font-mono ml-60 -mt-1 text-green-500">devM0de</span>
 		{/if}
 	</span>
 	<div class="w-1/3 flex justify-end space-x-4">
