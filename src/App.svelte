@@ -2,6 +2,7 @@
 	import { onMount, tick } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import makePKCE from './utils/pkce.js';
+	import { createCssVariablesTheme } from 'shiki/core';
 	import { createHighlighterCore } from 'shiki';
 	import getWasm from 'shiki/wasm'; //TBD: does not work without importin this
 
@@ -86,8 +87,15 @@
 	}
 
 	onMount(async () => {
+		const theme = createCssVariablesTheme({
+			name: 'css-variables',
+			variablePrefix: '--shiki-',
+			variableDefaults: {},
+			fontStyle: true
+		});
+
 		highlighter = await createHighlighterCore({
-			themes: [import('shiki/themes/github-dark.mjs'), import('shiki/themes/github-light.mjs')],
+			themes: [theme],
 			langs: [import('shiki/langs/json.mjs'), import('shiki/langs/http.mjs')],
 			loadWasm: getWasm //TBD: does not work without importin this
 		});
@@ -212,7 +220,6 @@
 	};
 
 	let custom_authorization_server = '';
-	let custom_scope = '';
 
 	const result = {
 		authorize: null,
@@ -238,7 +245,7 @@
 			redirect_uri: window.location.origin + '/',
 			response_mode: 'fragment',
 			response_type: 'id_token',
-			prompt: 'consent'
+			prompt: ['consent']
 		},
 		dropdowns: {
 			scopeParam: true,
@@ -253,9 +260,8 @@
 	let states = {
 		selected_authorization_server: 'https://wallet.hello.coop/authorize',
 		custom_authorization_servers: [betaAuthzServer],
-		// update_scope: false,
 		scopes: ['openid', 'profile'],
-		custom_scopes: [],
+		custom_scope: '',
 		...defaultQueryParamStates,
 		invite_query_param_values: {
 			...inviteQueryParams.params,
@@ -566,8 +572,12 @@
 						continue;
 					}
 					const protocol_param_value = protocolParamValues[param];
-					if (protocol_param_value) {
-						url.searchParams.set(param, protocol_param_value);
+					const isArray = Array.isArray(protocol_param_value);
+					if (isArray ? protocol_param_value.length : protocol_param_value) {
+						url.searchParams.set(
+							param,
+							isArray ? protocol_param_value.join(' ') : protocol_param_value
+						);
 					}
 					//boolean states
 					if (type == 'invite' && (param == 'manage' || param == 'localhost_invite')) {
@@ -595,10 +605,6 @@
 			];
 			states.selected_authorization_server = url.href;
 			custom_authorization_server = '';
-
-			//save custom scope
-			states.custom_scopes = [...new Set([...states.custom_scopes, custom_scope])];
-			custom_scope = '';
 		} catch {
 			// console.error('Custom auth server endpoint not saved locally: Invalid URL')
 		} finally {
@@ -734,7 +740,7 @@
 		if (!highlighter) return '...';
 		const html = highlighter.codeToHtml(content, {
 			lang,
-			themes: { light: 'github-light', dark: 'github-dark' }
+			theme: 'css-variables'
 		});
 		return html;
 	};
@@ -792,6 +798,9 @@
 	</div>
 	<span class="md:w-1/3 flex justify-center flex-shrink-0">
 		<img src="logo.svg" alt="Hellō Playground" />
+		{#if localStorage.plausible_ignore}
+			<span class="absolute text-xs font-mono ml-60 -mt-1 text-green-500">devM0de</span>
+		{/if}
 	</span>
 	<div class="w-1/3 flex justify-end space-x-4">
 		<ul class="hidden lg:flex space-x-4">
@@ -899,6 +908,16 @@
 				<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2"
 					>Authorization Request</span
 				>
+				{#if localStorage.plausible_ignore}
+					<button
+						on:click={() => {
+							localStorage.removeItem('plausible_ignore');
+							window.location.reload();
+						}}
+						class="absolute -top-3 right-24 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
+						>Public</button
+					>
+				{/if}
 				<button
 					on:click={resetAll}
 					class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
@@ -934,19 +953,6 @@
 									/>
 								</svg>
 							</button>
-
-							<!-- {#if states.dropdowns.scopeParam}
-								<div class="px-1">
-									<input
-										type="checkbox"
-										class="text-charcoal form-checkbox dark:text-gray-800"
-										name="update-scope"
-										id="update-scope"
-										bind:checked={states.update_scope}
-									/>
-									<label for="update-scope" class="ml-2">update</label>
-								</div>
-							{/if} -->
 						</div>
 						{#if states.dropdowns.scopeParam}
 							<div class="mt-2" transition:slide|local>
@@ -954,35 +960,6 @@
 									<ul class="space-y-2 mt-2 w-44">
 										{#each scopes.standard as scope}
 											{@const required = scopes.required.includes(scope)}
-											<!-- {@const disabled =
-												states.update_scope && !['openid', ...updateScopes].includes(scope)}
-											{@const error =
-												states.update_scope &&
-												updateScopes.includes(scope) &&
-												states.scopes.filter((i) => i.startsWith('update_')).length > 1} -->
-											<!-- <li
-												class="flex items-center"
-												class:opacity-50={disabled}
-												class:pointer-events-none={disabled}
-												class:text-red-500={required && !states.scopes.includes(scope)}
-											>
-												<input
-													type="checkbox"
-													class="text-charcoal form-checkbox dark:text-gray-800"
-													name={scope}
-													id={scope}
-													value={states.update_scope && updateScopes.includes(scope)
-														? 'update_' + scope
-														: scope}
-													bind:group={states.scopes}
-												/>
-												<label for={scope} class="ml-2" class:text-red-500={error}
-													>{states.update_scope && updateScopes.includes(scope)
-														? 'update_' + scope
-														: scope}
-													{required ? '*' : ''}</label
-												>
-											</li> -->
 											<li
 												class="flex items-center"
 												class:text-red-500={required && !states.scopes.includes(scope)}
@@ -1004,23 +981,6 @@
 									</ul>
 									<ul class="space-y-2 mt-2 truncate">
 										{#each scopes.custom as scope}
-											<!-- <li
-												class="flex items-center truncate pl-1"
-												class:text-red-500={required && !states.scopes.includes(scope)}
-												class:opacity-50={states.update_scope && !updateScopes.includes(scope)}
-												class:pointer-events-none={states.update_scope &&
-													!updateScopes.includes(scope)}
-											>
-												<input
-													type="checkbox"
-													class="text-charcoal form-checkbox dark:text-gray-800"
-													name={scope}
-													id={scope}
-													value={scope}
-													bind:group={states.scopes}
-												/>
-												<label for={scope} class="ml-2 truncate italic">{scope}</label>
-											</li> -->
 											<li class="flex items-center truncate pl-1">
 												<input
 													type="checkbox"
@@ -1034,22 +994,23 @@
 											</li>
 										{/each}
 
-										<!-- <li
-											class="flex items-center pl-1"
-											class:opacity-50={states.update_scope && !updateScopes.includes(custom_scope)}
-											class:pointer-events-none={states.update_scope && !updateScopes.includes(custom_scope)}
-										>
-											<input type="checkbox" bind:group={states.scopes} value={custom_scope} class="text-charcoal form-checkbox dark:text-gray-800" />
+										<li class="flex items-center pl-1">
+											<input
+												type="checkbox"
+												bind:group={states.scopes}
+												value={states.custom_scope}
+												class="text-charcoal form-checkbox dark:text-gray-800"
+											/>
 											<input
 												type="text"
-												class="h-6 px-2 ml-2 w-32 form-input italic"
+												class="h-6 px-2 ml-2 w-24 mr-10 form-input italic"
 												autocomplete="off"
 												autocorrect="off"
 												autocapitalize="off"
 												spellcheck="false"
-												bind:value={custom_scope}
+												bind:value={states.custom_scope}
 											/>
-										</li> -->
+										</li>
 									</ul>
 								</div>
 							</div>
@@ -1130,50 +1091,63 @@
 										</div>
 
 										<div class="w-1/2 md:w-3/4">
-											{#if Array.isArray(value)}
+											<!-- checkbox -->
+											{#if param === 'prompt'}
 												<div
-													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
 													class:opacity-60={!states.protocol_params.includes(param) &&
 														param !== 'response_mode'}
 												>
 													{#each value as ele}
-														<button
-															on:click={() => (states.protocol_param_values[param] = ele)}
-															disabled={param === 'response_mode' &&
-																!states.protocol_params.includes('response_mode')}
-															class="{states.protocol_param_values[param] === ele
-																? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
-																: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
-								"
-														>
-															{ele}
-														</button>
+														<div class="h-full w-1/2 flex items-center justify-center">
+															<input
+																type="checkbox"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.protocol_param_values[param]}
+															/>
+															<label
+																for={ele}
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
+															>
+														</div>
+													{/each}
+												</div>
+											{:else if Array.isArray(value)}
+												<!-- radio -->
+												<div
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class:opacity-60={(!states.protocol_params.includes(param) &&
+														param !== 'response_mode') ||
+														(param === 'response_mode' &&
+															!states.protocol_params.includes('response_mode'))}
+												>
+													{#each value as ele}
+														<div class="h-full w-1/2 flex items-center justify-center">
+															<input
+																type="radio"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.protocol_param_values[param]}
+															/>
+															<label
+																for={ele}
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
+															>
+														</div>
 													{/each}
 												</div>
 											{:else}
+												<!-- text input -->
 												<div
 													class="flex flex-col w-full items-start"
 													class:opacity-60={!states.protocol_params.includes(param) &&
 														param !== 'code_challenge'}
 												>
-													<!-- {#if param === "client_id"}
-														<div class="mb-0.5">
-														<button
-															on:click={() =>
-															(states.protocol_param_values.client_id =
-																clientIds.playground)}
-															class="text-xs xl:text-sm hover:underline"
-															>Playground</button
-														>
-														<button
-															on:click={() =>
-															(states.protocol_param_values.client_id =
-																clientIds.greenfield)}
-															class="text-xs xl:text-sm hover:underline xl:ml-2"
-															>GreenfieldFitness</button
-														>
-														</div>
-													{/if} -->
 													<input
 														type="text"
 														name={param}
@@ -1268,22 +1242,25 @@
 										<div class="w-1/2 md:w-3/4">
 											{#if Array.isArray(value)}
 												<div
-													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-0.5 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
 													class:opacity-60={!states.query_params.includes(param) &&
 														param !== 'response_mode'}
 												>
 													{#each value as ele}
-														<button
-															on:click={() => (states.query_param_values[param] = ele)}
-															disabled={param === 'response_mode' &&
-																!states.query_params.includes('response_mode')}
-															class="{states.query_param_values[param] === ele
-																? 'bg-charcoal text-white dark:text-gray border border-charcoal dark:border-gray-800'
-																: 'hover:border hover:border-charcoal dark:hover:border-[#808080] disabled:cursor-not-allowed disabled:hover:border-none disabled:border-none border border-white dark:border-[#151515]'} w-full xl:w-1/2 h-full
-								"
-														>
-															{ele}
-														</button>
+														<div class="h-full w-1/2 flex items-center justify-center">
+															<input
+																type="radio"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.query_param_values[param]}
+															/>
+															<label
+																for={ele}
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
+															>
+														</div>
 													{/each}
 												</div>
 											{:else}
@@ -1434,7 +1411,7 @@
 						</div>
 						{#if states.dropdowns.requestURL}
 							<div
-								class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
+								class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
 								transition:slide|local
 							>
 								<button
@@ -1760,7 +1737,7 @@
 				<div class="max-w-lg mx-auto">
 					{#if canInvite}
 						<div
-							class="overflow-x-auto bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mb-6"
+							class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mb-6"
 						>
 							<h2 class="inline-flex items-center">
 								<span>Invite URL</span>
@@ -1811,7 +1788,7 @@
 					<h1 class="font-semibold text-lg">Invite</h1>
 					<div class="flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 mt-2">
 						<div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
-							<div class="bg-gray-200 dark:bg-charcoal rounded-sm p-4 break-words mt-2 mb-6">
+							<div class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 mb-6">
 								<h2 class="inline-flex items-center">
 									<span>Invite URL</span>
 									<button on:click={() => copy('inviteURL', inviteURL)}>
@@ -1962,14 +1939,6 @@
 {/if}
 
 <style>
-	@media (prefers-color-scheme: dark) {
-		:global(.shiki),
-		:global(.shiki span) {
-			color: var(--shiki-dark) !important;
-			background-color: var(--shiki-dark-bg) !important;
-		}
-	}
-
 	:global(.json-container pre) {
 		padding: 14px;
 		overflow-x: auto;
