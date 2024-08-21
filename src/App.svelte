@@ -883,7 +883,7 @@
 
 {#if errorNotification}
 	<div class="bg-red-500 p-2.5 text-center text-white flex items-center justify-center" out:slide>
-		<span class="capitalize text-sm">{errorNotification}</span>
+		<span class="text-sm">{errorNotification}</span>
 		<button class="absolute right-4" on:click={() => (errorNotification = null)}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
