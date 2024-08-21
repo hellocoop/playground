@@ -365,7 +365,7 @@
 				window.location.href = _requestUrl;
 			} catch (err) {
 				console.error(err);
-				errorNotification = 'Invalid Issuer URL';
+				errorNotification = 'Error fetching ' + iss + '/.well-known/openid-configuration';
 			}
 		}
 		if (initiate_login) {
