@@ -994,7 +994,7 @@
 											</li>
 										{/each}
 
-										<li class="flex items-center pl-1">
+										<li class="flex items-center pl-1 pb-2">
 											<input
 												type="checkbox"
 												bind:group={states.scopes}
