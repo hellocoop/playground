@@ -1094,12 +1094,12 @@
 											<!-- checkbox -->
 											{#if param === 'prompt'}
 												<div
-													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class="xl:h-9 p-1 space-y-1 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
 													class:opacity-60={!states.protocol_params.includes(param) &&
 														param !== 'response_mode'}
 												>
 													{#each value as ele}
-														<div class="h-full w-1/2 flex items-center justify-center">
+														<div class="h-full w-full flex items-center justify-center">
 															<input
 																type="checkbox"
 																id={ele}
@@ -1125,7 +1125,7 @@
 															!states.protocol_params.includes('response_mode'))}
 												>
 													{#each value as ele}
-														<div class="h-full w-1/2 flex items-center justify-center">
+														<div class="h-full w-full flex items-center justify-center">
 															<input
 																type="radio"
 																id={ele}
@@ -1247,7 +1247,7 @@
 														param !== 'response_mode'}
 												>
 													{#each value as ele}
-														<div class="h-full w-1/2 flex items-center justify-center">
+														<div class="h-full w-full flex items-center justify-center">
 															<input
 																type="radio"
 																id={ele}
