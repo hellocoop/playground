@@ -9,6 +9,7 @@
 	let readFromLocalStorage = false;
 	let darkMode = false;
 	let highlighter;
+	let isHelloMode = false;
 
 	const scopes = {
 		standard: [
@@ -22,25 +23,27 @@
 			'given_name',
 			'family_name'
 		],
-		// update: ['update_profile', 'update_email', 'update_phone', 'update_picture'],
+		pi_standard: ['preferred_username'],
 		custom: ['ethereum', 'discord', 'twitter', 'github', 'gitlab'],
-		required: ['openid'],
-		claims: [
-			'sub',
-			'name',
-			'nickname',
-			'given_name',
-			'family_name',
-			'email',
-			'phone',
-			'picture',
-			'ethereum',
-			'discord',
-			'twitter',
-			'github',
-			'gitlab'
-		]
+		pi_custom: [
+			// "mastodon",
+			// "instagram",
+			// "bio",
+			// "banner",
+			'recovery',
+			'verified_name',
+			'existing_name',
+			'existing_username'
+		],
+		required: ['openid']
 	};
+	scopes.claims = [
+		'sub',
+		...scopes.standard,
+		...scopes.pi_standard,
+		...scopes.custom,
+		...scopes.pi_custom
+	];
 
 	const possibleSlugs = [
 		'apple',
@@ -61,8 +64,8 @@
 		'ethereum',
 		'qrcode',
 		'passkey'
-		// 'managed'
 	];
+	const pi_possibleSlugs = ['managed'];
 
 	let invalidProviderHintSlug = null;
 	let debounceTimer;
@@ -75,7 +78,7 @@
 				const providerHintsArr = states.query_param_values?.provider_hint?.split(' ');
 				const invalidSlugs = providerHintsArr
 					.map((i) => i.replace('--', ''))
-					.filter((i) => !possibleSlugs.includes(i) && i);
+					.filter((i) => ![...possibleSlugs, ...(isHelloMode ?  pi_possibleSlugs : [])].includes(i) && i);
 
 				if (invalidSlugs?.length) {
 					invalidProviderHintSlug = Array.from(invalidSlugs);
@@ -105,34 +108,15 @@
 			const _states = JSON.stringify(states);
 			localStorage.setItem('states', _states);
 		}
+
+		isHelloMode = !!localStorage.plausible_ignore;
+
 		readFromLocalStorage = true;
 
 		processFragmentOrQuery();
 		updateFavicon();
 
 		sendEvent();
-
-		if (localStorage.plausible_ignore == 'true') {
-			const _standard_scopes = ['preferred_username'];
-			const _custom_scopes = [
-				// "twitter",
-				// "github",
-				// "gitlab",
-				// "mastodon",
-				// "instagram",
-				// "bio",
-				// "banner",
-				'recovery',
-				'verified_name',
-				'existing_name',
-				'existing_username'
-			];
-			scopes.standard = [...scopes.standard, ..._standard_scopes];
-			scopes.custom = [...scopes.custom, ..._custom_scopes];
-			scopes.claims = [...scopes.claims, ..._standard_scopes, ..._custom_scopes];
-			protocolParams.params.passkeys = states.protocol_param_values.passkeys = 'global';
-			queryParams.params.account = ['personal', 'managed'];
-		}
 
 		if (
 			!['https://wallet.hello.coop/authorize', ...states.custom_authorization_servers].includes(
@@ -181,6 +165,9 @@
 		params: {
 			provider_hint: ''
 		},
+		pi_params: {
+			account: ['personal', 'managed']
+		},
 		required: []
 	};
 	const protocolParams = {
@@ -197,6 +184,9 @@
 			login_hint: '',
 			scope: '',
 			custom: ''
+		},
+		pi_params: {
+			passkeys: 'global'
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
 	};
@@ -245,7 +235,8 @@
 			redirect_uri: window.location.origin + '/',
 			response_mode: 'fragment',
 			response_type: 'id_token',
-			prompt: ['consent']
+			prompt: ['consent'],
+			passkeys: 'global'
 		},
 		dropdowns: {
 			scopeParam: true,
@@ -365,7 +356,7 @@
 				window.location.href = _requestUrl;
 			} catch (err) {
 				console.error(err);
-				errorNotification = 'Invalid Issuer URL';
+				errorNotification = 'Error fetching ' + iss + '/.well-known/openid-configuration';
 			}
 		}
 		if (initiate_login) {
@@ -704,7 +695,7 @@
 	});
 
 	async function sendEvent() {
-		if (localStorage.getItem('plausible_ignore') == 'true') {
+		if (isHelloMode) {
 			console.info('Ignoring Event: localStorage flag');
 			return;
 		}
@@ -798,9 +789,6 @@
 	</div>
 	<span class="md:w-1/3 flex justify-center flex-shrink-0">
 		<img src="logo.svg" alt="Hellō Playground" />
-		{#if localStorage.plausible_ignore}
-			<span class="absolute text-xs font-mono ml-60 -mt-1 text-green-500">devM0de</span>
-		{/if}
 	</span>
 	<div class="w-1/3 flex justify-end space-x-4">
 		<ul class="hidden lg:flex space-x-4">
@@ -883,7 +871,7 @@
 
 {#if errorNotification}
 	<div class="bg-red-500 p-2.5 text-center text-white flex items-center justify-center" out:slide>
-		<span class="capitalize text-sm">{errorNotification}</span>
+		<span class="text-sm">{errorNotification}</span>
 		<button class="absolute right-4" on:click={() => (errorNotification = null)}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -909,18 +897,40 @@
 					>Authorization Request</span
 				>
 				{#if localStorage.plausible_ignore}
-					<button
-						on:click={() => {
-							localStorage.removeItem('plausible_ignore');
-							window.location.reload();
-						}}
-						class="absolute -top-3 right-24 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
-						>Public</button
-					>
+					<div class="flex items-center absolute absolute -top-3.5 right-24">
+						<div>
+							<input
+								id="mode-hello"
+								value={true}
+								type="radio"
+								class="peer hidden"
+								bind:group={isHelloMode}
+							/>
+							<label
+								for="mode-hello"
+								class="cursor-pointer select-none rounded-l-full px-3 py-0.5 rounded-xl border-l border-y border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white"
+								>Hellō</label
+							>
+						</div>
+						<div>
+							<input
+								id="mode-public"
+								value={false}
+								type="radio"
+								class="peer hidden"
+								bind:group={isHelloMode}
+							/>
+							<label
+								for="mode-public"
+								class="cursor-pointer select-none rounded-r-full px-3 py-0.5 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white"
+								>Public</label
+							>
+						</div>
+					</div>
 				{/if}
 				<button
 					on:click={resetAll}
-					class="absolute -top-3 right-4 bg-red-500 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
+					class="absolute -top-3 right-4 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
 					>Reset</button
 				>
 
@@ -958,7 +968,7 @@
 							<div class="mt-2" transition:slide|local>
 								<div class="flex gap-x-4 pl-1">
 									<ul class="space-y-2 mt-2 w-44">
-										{#each scopes.standard as scope}
+										{#each scopes.standard.concat(isHelloMode ? scopes.pi_standard : []) as scope}
 											{@const required = scopes.required.includes(scope)}
 											<li
 												class="flex items-center"
@@ -980,7 +990,7 @@
 										{/each}
 									</ul>
 									<ul class="space-y-2 mt-2 truncate">
-										{#each scopes.custom as scope}
+										{#each scopes.custom.concat(isHelloMode ? scopes.pi_custom : []) as scope}
 											<li class="flex items-center truncate pl-1">
 												<input
 													type="checkbox"
@@ -1042,7 +1052,7 @@
 						</button>
 						{#if states.dropdowns.protocolParams}
 							<ul class="space-y-2 mt-2" transition:slide|local>
-								{#each Object.entries(protocolParams.params) as [param, value]}
+								{#each Object.entries( { ...protocolParams.params, ...(isHelloMode ? protocolParams.pi_params : {}) } ) as [param, value]}
 									{@const required = protocolParams.required.includes(param)}
 									{#if param === 'custom'}
 										<span class="pt-0.5 block" />
@@ -1094,12 +1104,12 @@
 											<!-- checkbox -->
 											{#if param === 'prompt'}
 												<div
-													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class="xl:h-9 p-1 space-y-1 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
 													class:opacity-60={!states.protocol_params.includes(param) &&
 														param !== 'response_mode'}
 												>
 													{#each value as ele}
-														<div class="h-full w-1/2 flex items-center justify-center">
+														<div class="h-full w-full flex items-center justify-center">
 															<input
 																type="checkbox"
 																id={ele}
@@ -1125,7 +1135,7 @@
 															!states.protocol_params.includes('response_mode'))}
 												>
 													{#each value as ele}
-														<div class="h-full w-1/2 flex items-center justify-center">
+														<div class="h-full w-full flex items-center justify-center">
 															<input
 																type="radio"
 																id={ele}
@@ -1192,7 +1202,7 @@
 						</button>
 						{#if states.dropdowns.queryParams}
 							<ul class="space-y-2 mt-2" transition:slide|local>
-								{#each Object.entries(queryParams.params) as [param, value]}
+								{#each Object.entries( { ...queryParams.params, ...(isHelloMode ? queryParams.pi_params : {}) } ) as [param, value]}
 									{@const required = queryParams.required.includes(param)}
 									<li
 										class="flex {param === 'provider_hint'
@@ -1247,7 +1257,7 @@
 														param !== 'response_mode'}
 												>
 													{#each value as ele}
-														<div class="h-full w-1/2 flex items-center justify-center">
+														<div class="h-full w-full flex items-center justify-center">
 															<input
 																type="radio"
 																id={ele}
@@ -1293,7 +1303,7 @@
 													{/if}
 													<p class="text-xs mt-1.5">
 														<span class="opacity-80"
-															>{possibleSlugs
+															>{possibleSlugs.concat(isHelloMode ? pi_possibleSlugs : [])
 																.filter((i) => !['google', 'email', 'passkey'].includes(i))
 																.join(' ')}</span
 														><br />
@@ -1782,133 +1792,6 @@
 					</p>
 				</div>
 			</section>
-
-			<!-- {#if (result.introspect?.sub || states.invite_query_param_values.inviter) && localStorage.plausible_ignore == 'true'}
-				<section class="border border-charcoal dark:border-gray-800 rounded-sm w-full p-4">
-					<h1 class="font-semibold text-lg">Invite</h1>
-					<div class="flex items-start flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 mt-2">
-						<div class="w-full lg:w-1/4 lg:max-w-sm lg:min-w-[18rem]">
-							<div class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 mb-6">
-								<h2 class="inline-flex items-center">
-									<span>Invite URL</span>
-									<button on:click={() => copy('inviteURL', inviteURL)}>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="h-5 ml-1 stroke-2 hover:stroke-3"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-											/>
-										</svg>
-									</button>
-								</h2>
-								<span
-									class="mt-2 block text-sm whitespace-pre-line"
-									class:flash={copyTooltip.inviteURL}
-								>
-									{inviteURL}
-								</span>
-							</div>
-
-							<button
-								on:click={inviteWithHello}
-								class="hello-btn-black-and-static w-full hidden lg:flex"
-								class:hello-btn-loader={inviteWithHelloAjax}
-								disabled={inviteWithHelloAjax}
-								class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Invite with Hellō</button
-							>
-						</div>
-						<div class="w-full lg:w-1/2 lg:max-w-xl lg:min-w-[18rem] mt-4 pl-1">
-							<h2>Query Params (* required)</h2>
-							<div class="mt-2">
-								<ul class="space-y-2 mt-2">
-									{#each Object.entries(inviteQueryParams.params) as [param, value]}
-										{@const isString = typeof value == 'string'}
-										{@const required = inviteQueryParams.required.includes(param)}
-										<li class="flex items-center relative">
-											<div
-												class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[12rem] flex items-center"
-												class:mt-6={param === 'client_id'}
-											>
-												<input
-													type="checkbox"
-													bind:group={states.invite_query_params}
-													class="text-charcoal form-checkbox dark:text-gray-800"
-													name={param}
-													id={'invite/' + param}
-													value={param}
-												/>
-												<label
-													for={'invite/' + param}
-													class="ml-2"
-													class:text-red-500={//required
-													required &&
-														(!states.invite_query_params.includes(param) ||
-															//if checked and empty field
-															!states.invite_query_param_values[param])}
-												>
-													{param}
-													{required ? '*' : ''}
-												</label>
-											</div>
-
-											<div class="w-1/2 md:w-3/4">
-												<div
-													class="flex flex-col w-full items-start"
-													class:opacity-60={!states.invite_query_params.includes(param)}
-												>
-													{#if param === 'client_id'}
-														<div class="mb-0.5">
-															<button
-																on:click={() =>
-																	(states.invite_query_param_values.client_id = clientIds.playground)}
-																class="text-xs xl:text-sm hover:underline">Playground</button
-															>
-															<button
-																on:click={() =>
-																	(states.invite_query_param_values.client_id = clientIds.greenfield)}
-																class="text-xs xl:text-sm hover:underline xl:ml-2"
-																>GreenfieldFitness</button
-															>
-														</div>
-													{/if}
-													{#if isString}
-														<input
-															type="text"
-															name={param}
-															class="h-8 w-full form-input"
-															autocomplete="off"
-															autocorrect="off"
-															autocapitalize="off"
-															spellcheck="false"
-															placeholder={param === 'prompt' ? 'Subscribe to Blue Fox' : ''}
-															bind:value={states.invite_query_param_values[param]}
-														/>
-													{:else}
-														{states.invite_query_params.includes(param)}
-													{/if}
-												</div>
-											</div>
-										</li>
-									{/each}
-								</ul>
-							</div>
-						</div>
-						<button
-							on:click={inviteWithHello}
-							class="hello-btn-black-and-static w-full lg:hidden"
-							class:hello-btn-loader={inviteWithHelloAjax}
-							disabled={inviteWithHelloAjax}
-							class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Invite with Hellō</button
-						>
-					</div>
-				</section>
-			{/if} -->
 
 			<section class="py-6">
 				<a
