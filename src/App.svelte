@@ -78,7 +78,9 @@
 				const providerHintsArr = states.query_param_values?.provider_hint?.split(' ');
 				const invalidSlugs = providerHintsArr
 					.map((i) => i.replace('--', ''))
-					.filter((i) => ![...possibleSlugs, ...(isHelloMode ?  pi_possibleSlugs : [])].includes(i) && i);
+					.filter(
+						(i) => ![...possibleSlugs, ...(isHelloMode ? pi_possibleSlugs : [])].includes(i) && i
+					);
 
 				if (invalidSlugs?.length) {
 					invalidProviderHintSlug = Array.from(invalidSlugs);
@@ -338,8 +340,9 @@
 			errorNotification = error?.replaceAll('_', ' ');
 		}
 		if (iss) {
+			const openidConfig = new URL('.well-known/openid-configuration', iss);
 			try {
-				const res = await fetch(iss + '/.well-known/openid-configuration');
+				const res = await fetch(openidConfig.href);
 				const { authorization_endpoint } = await res.json();
 				let _requestUrl = makeRequestURL({
 					server: authorization_endpoint,
@@ -356,7 +359,7 @@
 				window.location.href = _requestUrl;
 			} catch (err) {
 				console.error(err);
-				errorNotification = 'Error fetching ' + iss + '/.well-known/openid-configuration';
+				errorNotification = 'Error fetching ' + openidConfig.href;
 			}
 		}
 		if (initiate_login) {
@@ -897,7 +900,7 @@
 					>Authorization Request</span
 				>
 				{#if localStorage.plausible_ignore}
-					<div class="flex items-center absolute absolute -top-3.5 right-24">
+					<div class="flex items-center absolute absolute -top-3.5 right-18">
 						<div>
 							<input
 								id="mode-hello"
@@ -909,7 +912,7 @@
 							<label
 								for="mode-hello"
 								class="cursor-pointer select-none rounded-l-full px-3 py-0.5 rounded-xl border-l border-y border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white"
-								>Hellō</label
+								><span class="hidden xs:inline">Hell</span>ō</label
 							>
 						</div>
 						<div>
@@ -923,14 +926,14 @@
 							<label
 								for="mode-public"
 								class="cursor-pointer select-none rounded-r-full px-3 py-0.5 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white"
-								>Public</label
+								>P<span class="hidden xs:inline">ublic</span></label
 							>
 						</div>
 					</div>
 				{/if}
 				<button
 					on:click={resetAll}
-					class="absolute -top-3 right-4 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
+					class="absolute -top-3 right-1 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
 					>Reset</button
 				>
 
@@ -1303,7 +1306,8 @@
 													{/if}
 													<p class="text-xs mt-1.5">
 														<span class="opacity-80"
-															>{possibleSlugs.concat(isHelloMode ? pi_possibleSlugs : [])
+															>{possibleSlugs
+																.concat(isHelloMode ? pi_possibleSlugs : [])
 																.filter((i) => !['google', 'email', 'passkey'].includes(i))
 																.join(' ')}</span
 														><br />
