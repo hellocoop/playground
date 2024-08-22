@@ -157,6 +157,12 @@
 		greenfield: 'app_GreenfieldFitnessDemoApp_s9z'
 	};
 
+	const opendidConfigEndpoint = '.well-known/openid-configuration';
+	const helloIssuers = [
+		'https://issuer.hello.coop',
+		'https://issuer.hello-staging.net',
+		'https://issuer.hello-beta.net'
+	];
 	const betaAuthzServer = 'https://wallet.hello-beta.net/authorize';
 
 	// const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
@@ -340,27 +346,34 @@
 			errorNotification = error?.replaceAll('_', ' ');
 		}
 		if (iss) {
-			const openidConfig = new URL('.well-known/openid-configuration', iss);
-			try {
-				const res = await fetch(openidConfig.href);
-				const { authorization_endpoint } = await res.json();
-				let _requestUrl = makeRequestURL({
-					server: authorization_endpoint,
-					scopes: states.scopes,
-					queryParams: states.query_params,
-					queryParamValues: states.query_param_values,
-					protocolParams: states.protocol_params,
-					protocolParamValues: states.protocol_param_values,
-					type: 'request'
-				});
-				if (loginHint) {
-					_requestUrl += '&login_hint=' + loginHint;
+			let authorization_endpoint;
+			if (helloIssuers.includes(iss)) {
+				const wallet = iss.replace('issuer', 'wallet');
+				authorization_endpoint = new URL('/authorize', wallet).href;
+			} else {
+				const openidConfig = new URL(opendidConfigEndpoint, iss);
+				try {
+					const res = await fetch(openidConfig.href);
+					const json = await res.json();
+					authorization_endpoint = json.authorization_endpoint;
+				} catch (err) {
+					console.error(err);
+					errorNotification = 'Error fetching ' + openidConfig.href;
 				}
-				window.location.href = _requestUrl;
-			} catch (err) {
-				console.error(err);
-				errorNotification = 'Error fetching ' + openidConfig.href;
 			}
+			let _requestUrl = makeRequestURL({
+				server: authorization_endpoint,
+				scopes: states.scopes,
+				queryParams: states.query_params,
+				queryParamValues: states.query_param_values,
+				protocolParams: states.protocol_params,
+				protocolParamValues: states.protocol_param_values,
+				type: 'request'
+			});
+			if (loginHint) {
+				_requestUrl += '&login_hint=' + loginHint;
+			}
+			window.location.href = _requestUrl;
 		}
 		if (initiate_login) {
 			await tick(); //wait for requestURL to compute
