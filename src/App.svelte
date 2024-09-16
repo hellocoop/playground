@@ -1440,7 +1440,7 @@
 							<div class="relative">
 								<button
 									on:click={() => copy('requestURL', requestURL)}
-									class="absolute z-50 right-2.5 top-2.5 w-8 h-8 flex items-center justify-center rounded-md bg-charcoal border border-[#808080] shadow-xl"
+									class="absolute z-50 right-2.5 top-2.5 w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-charcoal border border-[#808080] shadow-xl"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
