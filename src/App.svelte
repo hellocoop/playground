@@ -1437,17 +1437,14 @@
 							</button>
 						</div>
 						{#if states.dropdowns.requestURL}
-							<div
-								class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
-								transition:slide|local
-							>
+							<div class="relative">
 								<button
 									on:click={() => copy('requestURL', requestURL)}
-									class="absolute right-4 top-4"
+									class="absolute z-50 right-2.5 top-2.5 w-8 h-8 flex items-center justify-center rounded-md bg-charcoal border border-[#808080] shadow-xl"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
-										class="h-5 ml-1 stroke-2 hover:stroke-3"
+										class="h-5 stroke hover:stroke-2"
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
@@ -1459,12 +1456,17 @@
 										/>
 									</svg>
 								</button>
-								<span
-									class="url-container block text-sm whitespace-pre-line"
-									class:flash={copyTooltip.requestURL}
+								<div
+									class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
+									transition:slide|local
 								>
-									{@html highlight('http', requestURL)}
-								</span>
+									<span
+										class="url-container block text-sm whitespace-pre-line"
+										class:flash={copyTooltip.requestURL}
+									>
+										{@html highlight('http', requestURL)}
+									</span>
+								</div>
 							</div>
 						{/if}
 
