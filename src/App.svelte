@@ -157,14 +157,6 @@
 		greenfield: 'app_GreenfieldFitnessDemoApp_s9z'
 	};
 
-	const opendidConfigEndpoint = '.well-known/openid-configuration';
-	const helloIssuers = [
-		'https://issuer.hello.coop',
-		'https://issuer.hello-staging.net',
-		'https://issuer.hello-beta.net',
-		'https://issuer.hello-dev.net',
-		'https://issuer.hello-local.net'
-	];
 	const betaAuthzServer = 'https://wallet.hello-beta.net/authorize';
 
 	// const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
@@ -351,33 +343,21 @@
 		const error = protocolParams.get('error');
 		if (error) {
 			errorNotification = error?.replaceAll('_', ' ');
+			//tbd show error description?
 		}
-		if (iss) {
-			let authorization_endpoint;
-			if (helloIssuers.includes(iss)) {
-				const wallet = iss.replace('issuer', 'wallet');
-				authorization_endpoint = new URL('/authorize', wallet).href;
-			} else {
-				const openidConfig = new URL(opendidConfigEndpoint, iss);
-				try {
-					const res = await fetch(openidConfig.href);
-					const json = await res.json();
-					authorization_endpoint = json.authorization_endpoint;
-				} catch (err) {
-					console.error(err);
-					errorNotification = 'Error fetching ' + openidConfig.href;
-				}
-			}
+		if (iss && iss.startsWith('https://issuer.hello')) {
+			const wallet = iss.replace('issuer', 'wallet');
+			const authorization_endpoint = new URL('/authorize', wallet).href;
 
 			//reset all params and settings
 			resetAll();
 
 			//add issuer authz endpoint to existing authz servers
 			states.custom_authorization_servers = [
-				...states.custom_authorization_servers,
-				authorization_endpoint
+				...new Set([...states.custom_authorization_servers, authorization_endpoint.toLowerCase()]) //dedupe
 			];
 			states.selected_authorization_server = authorization_endpoint;
+
 			let _requestUrl = makeRequestURL({
 				server: authorization_endpoint,
 				scopes: states.scopes,
@@ -625,7 +605,7 @@
 				url = new URL(custom_authorization_server);
 			}
 			states.custom_authorization_servers = [
-				...new Set([...states.custom_authorization_servers, url.href])
+				...new Set([...states.custom_authorization_servers, url.href.toLowerCase()]) //dedupe
 			];
 			states.selected_authorization_server = url.href;
 			custom_authorization_server = '';
@@ -1126,7 +1106,11 @@
 														states.protocol_params.includes('response_mode') &&
 														states.protocol_param_values.response_mode === 'query' &&
 														states.protocol_params.includes('response_type') &&
-														states.protocol_param_values.response_type === 'id_token')}
+														states.protocol_param_values.response_type === 'id_token') ||
+													//login_hint should start with mailto:
+													(param === 'login_hint' &&
+														states.protocol_params.includes('login_hint') &&
+														!states.protocol_param_values.login_hint.startsWith('mailto:'))}
 											>
 												{param}
 												{required ? '*' : ''}
@@ -1193,6 +1177,7 @@
 												>
 													<input
 														type="text"
+														placeholder={param === 'login_hint' ? 'mailto:name@example.com' : ''}
 														name={param}
 														class="h-6 px-2 w-full form-input"
 														autocomplete="off"
