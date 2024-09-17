@@ -163,7 +163,7 @@
 		'https://issuer.hello-staging.net',
 		'https://issuer.hello-beta.net',
 		'https://issuer.hello-dev.net',
-		'https://issuer.hello-local.net',
+		'https://issuer.hello-local.net'
 	];
 	const betaAuthzServer = 'https://wallet.hello-beta.net/authorize';
 
@@ -276,7 +276,7 @@
 			initiate_login_uri: 'https://playground.hello.dev/',
 			return_uri: 'https://playground.hello.dev/'
 		}
-	}
+	};
 
 	//binds to user input
 	let states = {
@@ -368,13 +368,16 @@
 					errorNotification = 'Error fetching ' + openidConfig.href;
 				}
 			}
-			
+
 			//reset all params and settings
 			resetAll();
 
 			//add issuer authz endpoint to existing authz servers
-			states.custom_authorization_servers = [...states.custom_authorization_servers, authorization_endpoint]
-			states.selected_authorization_server = authorization_endpoint
+			states.custom_authorization_servers = [
+				...states.custom_authorization_servers,
+				authorization_endpoint
+			];
+			states.selected_authorization_server = authorization_endpoint;
 			let _requestUrl = makeRequestURL({
 				server: authorization_endpoint,
 				scopes: states.scopes,
@@ -749,7 +752,7 @@
 
 	const resetAll = () => {
 		localStorage.removeItem('states');
-		states = {...defaultStates}
+		states = { ...defaultStates };
 	};
 
 	$: canInvite =
