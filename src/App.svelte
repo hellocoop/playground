@@ -1106,7 +1106,11 @@
 														states.protocol_params.includes('response_mode') &&
 														states.protocol_param_values.response_mode === 'query' &&
 														states.protocol_params.includes('response_type') &&
-														states.protocol_param_values.response_type === 'id_token')}
+														states.protocol_param_values.response_type === 'id_token') ||
+													//login_hint should start with mailto:
+													(param === 'login_hint' &&
+														states.protocol_params.includes('login_hint') &&
+														!states.protocol_param_values.login_hint.startsWith('mailto:'))}
 											>
 												{param}
 												{required ? '*' : ''}
@@ -1173,6 +1177,7 @@
 												>
 													<input
 														type="text"
+														placeholder={param === 'login_hint' ? 'mailto:name@example.com' : ''}
 														name={param}
 														class="h-6 px-2 w-full form-input"
 														autocomplete="off"
