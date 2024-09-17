@@ -605,7 +605,7 @@
 				url = new URL(custom_authorization_server);
 			}
 			states.custom_authorization_servers = [
-				...new Set([...states.custom_authorization_servers, url.href])
+				...new Set([...states.custom_authorization_servers, url.href]) //dedupe
 			];
 			states.selected_authorization_server = url.href;
 			custom_authorization_server = '';
