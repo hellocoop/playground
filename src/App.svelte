@@ -354,7 +354,7 @@
 
 			//add issuer authz endpoint to existing authz servers
 			states.custom_authorization_servers = [
-				...new Set([...states.custom_authorization_servers, authorization_endpoint]) //dedupe
+				...new Set([...states.custom_authorization_servers, authorization_endpoint.toLowerCase()]) //dedupe
 			];
 			states.selected_authorization_server = authorization_endpoint;
 
@@ -605,7 +605,7 @@
 				url = new URL(custom_authorization_server);
 			}
 			states.custom_authorization_servers = [
-				...new Set([...states.custom_authorization_servers, url.href]) //dedupe
+				...new Set([...states.custom_authorization_servers, url.href.toLowerCase()]) //dedupe
 			];
 			states.selected_authorization_server = url.href;
 			custom_authorization_server = '';
