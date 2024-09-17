@@ -157,14 +157,6 @@
 		greenfield: 'app_GreenfieldFitnessDemoApp_s9z'
 	};
 
-	const opendidConfigEndpoint = '.well-known/openid-configuration';
-	const helloIssuers = [
-		'https://issuer.hello.coop',
-		'https://issuer.hello-staging.net',
-		'https://issuer.hello-beta.net',
-		'https://issuer.hello-dev.net',
-		'https://issuer.hello-local.net'
-	];
 	const betaAuthzServer = 'https://wallet.hello-beta.net/authorize';
 
 	// const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
@@ -351,33 +343,21 @@
 		const error = protocolParams.get('error');
 		if (error) {
 			errorNotification = error?.replaceAll('_', ' ');
+			//tbd show error description?
 		}
-		if (iss) {
-			let authorization_endpoint;
-			if (helloIssuers.includes(iss)) {
-				const wallet = iss.replace('issuer', 'wallet');
-				authorization_endpoint = new URL('/authorize', wallet).href;
-			} else {
-				const openidConfig = new URL(opendidConfigEndpoint, iss);
-				try {
-					const res = await fetch(openidConfig.href);
-					const json = await res.json();
-					authorization_endpoint = json.authorization_endpoint;
-				} catch (err) {
-					console.error(err);
-					errorNotification = 'Error fetching ' + openidConfig.href;
-				}
-			}
+		if (iss && iss.startsWith('https://issuer.hello')) {
+			const wallet = iss.replace('issuer', 'wallet');
+			const authorization_endpoint = new URL('/authorize', wallet).href;
 
 			//reset all params and settings
 			resetAll();
 
 			//add issuer authz endpoint to existing authz servers
 			states.custom_authorization_servers = [
-				...states.custom_authorization_servers,
-				authorization_endpoint
+				...new Set([...states.custom_authorization_servers, authorization_endpoint]) //dedupe
 			];
 			states.selected_authorization_server = authorization_endpoint;
+
 			let _requestUrl = makeRequestURL({
 				server: authorization_endpoint,
 				scopes: states.scopes,
