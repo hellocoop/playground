@@ -836,7 +836,11 @@
 			<div class="bg-charcoal lg:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]">
 				<ul class="flex flex-col gap-y-3 pb-4 text-base">
 					<li class="nav-link relative sm:hidden">
-						<a href="https://hello.dev" target="_blank" class="inline-flex items-center font-medium">
+						<a
+							href="https://hello.dev"
+							target="_blank"
+							class="inline-flex items-center font-medium"
+						>
 							hello.dev
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -1047,7 +1051,8 @@
 						<div class="break-inside-avoid-column">
 							<button
 								class="inline-flex items-center space-x-2"
-								on:click={() => (states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
+								on:click={() =>
+									(states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
 							>
 								<h1 class="font-semibold text-lg inline-block">Protocol Params</h1>
 								<svg
@@ -1480,7 +1485,8 @@
 								class="hello-btn-black-and-static w-full flex mt-4"
 								class:hello-btn-loader={continueWithHelloAjax}
 								disabled={continueWithHelloAjax}
-								class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
+								class:hello-btn-hover-flare={darkMode}
+								>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
 							>
 						</div>
 					</div>
@@ -1546,7 +1552,8 @@
 
 								{#if dropdown.authorize}
 									<p class="p-4 break-words">
-										<span class:flash={copyTooltip.authorize} class="text-sm">{result.authorize}</span
+										<span class:flash={copyTooltip.authorize} class="text-sm"
+											>{result.authorize}</span
 										>
 									</p>
 								{/if}
