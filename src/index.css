@@ -31,12 +31,6 @@
 }
 /* hello.dev nextra default colors */
 
-html,
-body {
-	min-width: 320px;
-	overflow-x: auto;
-}
-
 pre[class*='language-'] {
 	@apply m-0;
 }
