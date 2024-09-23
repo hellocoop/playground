@@ -13,26 +13,70 @@
 		/>
 		<script src="https://cdn.hello.coop/js/hello-dev-wc-footer.js" defer=""></script>
 
-		<style>
+		<style type="text/css">
 			html,
 			body {
-				height: 100%;
-				overflow: hidden;
+				min-width: 320px;
+				overflow-x: auto;
+				overflow-y: auto;
+			}
+
+			.spinner {
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				height: 40px;
+				width: 40px;
+				margin: -26px 0 0 -26px;
+				box-sizing: content-box;
+				animation: rotation 1s infinite linear;
+				border-width: 6px;
+				border-style: solid;
+				border-radius: 100%;
+			}
+
+			#spinner {
+				height: 3.2rem;
+				width: 3.2rem;
+				animation: rotation 1s linear infinite;
+			}
+
+			@keyframes rotation {
+				from {
+					transform: rotate(0deg);
+				}
+
+				to {
+					transform: rotate(360deg);
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
-				body {
-					background-color: #151515;
-					color: #d4d4d4;
+				:root {
 					color-scheme: dark;
+				}
+
+				body {
+					color: #d4d4d4;
+					background: #151515;
+				}
+
+				.spinner {
+					border-color: rgba(116, 116, 116, 0.3);
+					border-top-color: rgb(116, 116, 116);
 				}
 			}
 
 			@media (prefers-color-scheme: light) {
 				body {
-					background-color: white;
 					color: #303030;
+					background: white;
 					color-scheme: light;
+				}
+
+				.spinner {
+					border-color: rgba(75, 75, 75, 0.3);
+					border-top-color: rgb(75, 75, 75);
 				}
 			}
 		</style>
