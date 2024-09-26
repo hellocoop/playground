@@ -2,7 +2,8 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="icon" href="light-favicon.png" />
+		<link href="dark-favicon.png" rel="icon" media="(prefers-color-scheme: light)" />
+		<link href="light-favicon.png" rel="icon" media="(prefers-color-scheme: dark)" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="theme-color" content="#303030" />
 		<title>Hellō Playground</title>
@@ -83,7 +84,8 @@
 	</head>
 
 	<body>
-		<div id="app" class="h-full flex flex-col"></div>
+		<div id="load-spinner" class="spinner"></div>
+		<div id="app" class="h-full flex-col" style="display: none"></div>
 		<script type="module" src="/src/main.js"></script>
 	</body>
 	<script>

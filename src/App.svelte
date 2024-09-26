@@ -91,8 +91,26 @@
 		}
 	}
 
-	let showSpinner = true;
 	onMount(async () => {
+		if (!getStatesFromLocalStorage()) {
+			//states not found in local storage, save default states to local storage
+			const _states = JSON.stringify(states);
+			localStorage.setItem('states', _states);
+		}
+		isHelloMode = !!localStorage.plausible_ignore;
+		readFromLocalStorage = true;
+
+		processFragmentOrQuery();
+		sendPlausibleEvent();
+
+		if (
+			!['https://wallet.hello.coop/authorize', ...states.custom_authorization_servers].includes(
+				states.selected_authorization_server
+			)
+		) {
+			custom_authorization_server = states.selected_authorization_server;
+		}
+
 		const theme = createCssVariablesTheme({
 			name: 'css-variables',
 			variablePrefix: '--shiki-',
@@ -103,31 +121,8 @@
 		highlighter = await createHighlighterCore({
 			themes: [theme],
 			langs: [import('shiki/langs/json.mjs'), import('shiki/langs/http.mjs')],
-			loadWasm: getWasm //TBD: does not work without importin this
+			loadWasm: getWasm //TBD: does not work without importing this
 		});
-
-		if (!getStatesFromLocalStorage()) {
-			//states not found in local storage, save default states to local storage
-			const _states = JSON.stringify(states);
-			localStorage.setItem('states', _states);
-		}
-
-		isHelloMode = !!localStorage.plausible_ignore;
-
-		readFromLocalStorage = true;
-
-		processFragmentOrQuery();
-		updateFavicon();
-
-		sendEvent();
-
-		if (
-			!['https://wallet.hello.coop/authorize', ...states.custom_authorization_servers].includes(
-				states.selected_authorization_server
-			)
-		) {
-			custom_authorization_server = states.selected_authorization_server;
-		}
 
 		if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
 			darkMode = true;
@@ -139,7 +134,9 @@
 				darkMode = false;
 			}
 		});
-		showSpinner = false;
+
+		document.getElementById('load-spinner')?.remove(); //remove spinner
+		document.getElementById('app').style.display = 'flex'; //show content
 	});
 
 	const navLinks = [
@@ -299,20 +296,6 @@
 
 	//detect chanes in state -> save to local storage
 	$: states, saveStatesToLocalStorage();
-
-	function updateFavicon() {
-		const ref = document.querySelector("link[rel='icon']");
-		if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-			ref.href = 'dark-favicon.png';
-		}
-		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
-			if (event.matches) {
-				ref.href = 'light-favicon.png';
-			} else {
-				ref.href = 'dark-favicon.png';
-			}
-		});
-	}
 
 	async function processFragmentOrQuery() {
 		if (!window.location.hash && !window.location.search) return;
@@ -709,7 +692,7 @@
 		type: 'invite'
 	});
 
-	async function sendEvent() {
+	async function sendPlausibleEvent() {
 		if (isHelloMode) {
 			console.info('Ignoring Event: localStorage flag');
 			return;
@@ -760,61 +743,106 @@
 	}}
 />
 
-{#if !showSpinner}
-	<header
-		class="text-white dark:text-gray flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg"
-	>
-		<div class="w-1/3 inline-flex items-center">
-			<button on:click={() => (mobileMenu = !mobileMenu)} class="lg:hidden mr-2 group">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="stroke-2 group-hover:stroke-3"
-						d="M4 6h16M4 12h16M4 18h16"
-					/>
-				</svg>
-			</button>
-			<a
-				href="https://hello.dev"
-				target="_blank"
-				class="hidden sm:inline-flex items-center relative nav-link"
+<header
+	class="text-white dark:text-gray flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg"
+>
+	<div class="w-1/3 inline-flex items-center">
+		<button on:click={() => (mobileMenu = !mobileMenu)} class="lg:hidden mr-2 group">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-6 w-6"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
 			>
-				<span>hello.dev</span>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-4 ml-1 mt-0.5 opacity-80 flex-shrink-0"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-					/>
-				</svg>
-			</a>
-		</div>
-		<span class="md:w-1/3 flex justify-center flex-shrink-0">
-			<img src="logo.svg" alt="Hellō Playground" />
-		</span>
-		<div class="w-1/3 flex justify-end space-x-4">
-			<ul class="hidden lg:flex space-x-4">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="stroke-2 group-hover:stroke-3"
+					d="M4 6h16M4 12h16M4 18h16"
+				/>
+			</svg>
+		</button>
+		<a
+			href="https://hello.dev"
+			target="_blank"
+			class="hidden sm:inline-flex items-center relative nav-link"
+		>
+			<span>hello.dev</span>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-4 ml-1 mt-0.5 opacity-80 flex-shrink-0"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+				/>
+			</svg>
+		</a>
+	</div>
+	<span class="md:w-1/3 flex justify-center flex-shrink-0">
+		<img src="logo.svg" alt="Hellō Playground" />
+	</span>
+	<div class="w-1/3 flex justify-end space-x-4">
+		<ul class="hidden lg:flex space-x-4">
+			{#each navLinks as { text, link }}
+				<li class="nav-link text-sm font-normal relative">
+					<a href={link} target="_blank" class="inline-flex items-center">
+						{text}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-3 ml-1 mt-0.5 opacity-80"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+							/>
+						</svg>
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</div>
+
+	{#if mobileMenu}
+		<div class="bg-charcoal lg:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]">
+			<ul class="flex flex-col gap-y-3 pb-4 text-base">
+				<li class="nav-link relative sm:hidden">
+					<a href="https://hello.dev" target="_blank" class="inline-flex items-center font-medium">
+						hello.dev
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 ml-1 mt-0.5 opacity-80"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+							/>
+						</svg>
+					</a>
+				</li>
 				{#each navLinks as { text, link }}
-					<li class="nav-link text-sm font-normal relative">
-						<a href={link} target="_blank" class="inline-flex items-center">
+					<li class="nav-link relative">
+						<a href={link} target="_blank" class="inline-flex items-center font-medium">
 							{text}
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								class="h-3 ml-1 mt-0.5 opacity-80"
+								class="h-4 ml-1 mt-0.5 opacity-80"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
@@ -832,528 +860,552 @@
 			</ul>
 		</div>
 
-		{#if mobileMenu}
-			<div class="bg-charcoal lg:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]">
-				<ul class="flex flex-col gap-y-3 pb-4 text-base">
-					<li class="nav-link relative sm:hidden">
-						<a
-							href="https://hello.dev"
-							target="_blank"
-							class="inline-flex items-center font-medium"
+		<div
+			on:click={() => (mobileMenu = false)}
+			class="lg:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
+		/>
+	{/if}
+</header>
+
+{#if errorNotification}
+	<div class="bg-red-500 p-2.5 text-center text-white flex items-center justify-center" out:slide>
+		<span class="text-sm">{errorNotification}</span>
+		<button class="absolute right-4" on:click={() => (errorNotification = null)}>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="2"
+				stroke="currentColor"
+				class="w-5 h-5"
+			>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+			</svg>
+		</button>
+	</div>
+{/if}
+
+{#if highlighter}
+	<main class="flex-1 overflow-y-auto">
+		<div class="py-6 px-4 space-y-6">
+			<section
+				class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
+			>
+				<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2"
+					>Authorization Request</span
+				>
+				{#if localStorage.plausible_ignore}
+					<div class="flex items-center absolute absolute -top-3.5 right-18">
+						<div>
+							<input
+								id="mode-hello"
+								value={true}
+								type="radio"
+								class="peer hidden"
+								bind:group={isHelloMode}
+							/>
+							<label
+								for="mode-hello"
+								class="cursor-pointer select-none rounded-l-full px-3 py-0.5 rounded-xl border-l border-y border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white"
+								><span class="hidden xs:inline">Hell</span>ō</label
+							>
+						</div>
+						<div>
+							<input
+								id="mode-public"
+								value={false}
+								type="radio"
+								class="peer hidden"
+								bind:group={isHelloMode}
+							/>
+							<label
+								for="mode-public"
+								class="cursor-pointer select-none rounded-r-full px-3 py-0.5 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white"
+								>P<span class="hidden xs:inline">ublic</span></label
+							>
+						</div>
+					</div>
+				{/if}
+				<button
+					on:click={resetAll}
+					class="absolute -top-3 right-1 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
+					>Reset</button
+				>
+
+				<div class="columns-1 md:columns-2 xl:columns-3 4xl:columns-4 gap-x-12 space-y-6">
+					<!-- Scope Param -->
+					<div
+						class="break-inside-avoid-column"
+						class:opacity-50={states.protocol_params.includes('scope')}
+						class:pointer-events-none={states.protocol_params.includes('scope')}
+					>
+						<div class="space-x-6 inline-flex justify-between items-center">
+							<button
+								class="inline-flex items-center space-x-2"
+								on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}
+							>
+								<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="3"
+									stroke="currentColor"
+									class="w-4 h-4"
+									class:rotate-180={states.dropdowns.scopeParam}
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="m19.5 8.25-7.5 7.5-7.5-7.5"
+									/>
+								</svg>
+							</button>
+						</div>
+						{#if states.dropdowns.scopeParam}
+							<div class="mt-2" transition:slide|local>
+								<div class="flex gap-x-4 pl-1">
+									<ul class="space-y-2 mt-2 w-44">
+										{#each scopes.standard.concat(isHelloMode ? scopes.pi_standard : []) as scope}
+											{@const required = scopes.required.includes(scope)}
+											<li
+												class="flex items-center"
+												class:text-red-500={required && !states.scopes.includes(scope)}
+											>
+												<input
+													type="checkbox"
+													class="text-charcoal form-checkbox dark:text-gray-800"
+													name={scope}
+													id={scope}
+													value={scope}
+													bind:group={states.scopes}
+												/>
+												<label for={scope} class="ml-2"
+													>{scope}
+													{required ? '*' : ''}</label
+												>
+											</li>
+										{/each}
+									</ul>
+									<ul class="space-y-2 mt-2 truncate">
+										{#each scopes.custom.concat(isHelloMode ? scopes.pi_custom : []) as scope}
+											<li class="flex items-center truncate pl-1">
+												<input
+													type="checkbox"
+													class="text-charcoal form-checkbox dark:text-gray-800"
+													name={scope}
+													id={scope}
+													value={scope}
+													bind:group={states.scopes}
+												/>
+												<label for={scope} class="ml-2 truncate italic">{scope}</label>
+											</li>
+										{/each}
+
+										<li class="flex items-center pl-1 pb-2">
+											<input
+												type="checkbox"
+												bind:group={states.scopes}
+												value={states.custom_scope}
+												class="text-charcoal form-checkbox dark:text-gray-800"
+											/>
+											<input
+												type="text"
+												class="h-6 px-2 ml-2 w-24 mr-10 form-input italic"
+												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
+												bind:value={states.custom_scope}
+											/>
+										</li>
+									</ul>
+								</div>
+							</div>
+						{/if}
+					</div>
+
+					<!-- Protocol Params -->
+					<div class="break-inside-avoid-column">
+						<button
+							class="inline-flex items-center space-x-2"
+							on:click={() => (states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
 						>
-							hello.dev
+							<h1 class="font-semibold text-lg inline-block">Protocol Params</h1>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								class="h-4 ml-1 mt-0.5 opacity-80"
 								fill="none"
 								viewBox="0 0 24 24"
+								stroke-width="3"
 								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.protocolParams}
 							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
-									stroke-width="2"
-									d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
 								/>
 							</svg>
-						</a>
-					</li>
-					{#each navLinks as { text, link }}
-						<li class="nav-link relative">
-							<a href={link} target="_blank" class="inline-flex items-center font-medium">
-								{text}
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									class="h-4 ml-1 mt-0.5 opacity-80"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-									/>
-								</svg>
-							</a>
-						</li>
-					{/each}
-				</ul>
-			</div>
-
-			<div
-				on:click={() => (mobileMenu = false)}
-				class="lg:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
-			/>
-		{/if}
-	</header>
-
-	{#if errorNotification}
-		<div class="bg-red-500 p-2.5 text-center text-white flex items-center justify-center" out:slide>
-			<span class="text-sm">{errorNotification}</span>
-			<button class="absolute right-4" on:click={() => (errorNotification = null)}>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="2"
-					stroke="currentColor"
-					class="w-5 h-5"
-				>
-					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-				</svg>
-			</button>
-		</div>
-	{/if}
-
-	{#if highlighter}
-		<main class="flex-1 overflow-y-auto">
-			<div class="py-6 px-4 space-y-6">
-				<section
-					class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
-				>
-					<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2"
-						>Authorization Request</span
-					>
-					{#if localStorage.plausible_ignore}
-						<div class="flex items-center absolute absolute -top-3.5 right-18">
-							<div>
-								<input
-									id="mode-hello"
-									value={true}
-									type="radio"
-									class="peer hidden"
-									bind:group={isHelloMode}
-								/>
-								<label
-									for="mode-hello"
-									class="cursor-pointer select-none rounded-l-full px-3 py-0.5 rounded-xl border-l border-y border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white"
-									><span class="hidden xs:inline">Hell</span>ō</label
-								>
-							</div>
-							<div>
-								<input
-									id="mode-public"
-									value={false}
-									type="radio"
-									class="peer hidden"
-									bind:group={isHelloMode}
-								/>
-								<label
-									for="mode-public"
-									class="cursor-pointer select-none rounded-r-full px-3 py-0.5 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white"
-									>P<span class="hidden xs:inline">ublic</span></label
-								>
-							</div>
-						</div>
-					{/if}
-					<button
-						on:click={resetAll}
-						class="absolute -top-3 right-1 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
-						>Reset</button
-					>
-
-					<div class="columns-1 md:columns-2 xl:columns-3 4xl:columns-4 gap-x-12 space-y-6">
-						<!-- Scope Param -->
-						<div
-							class="break-inside-avoid-column"
-							class:opacity-50={states.protocol_params.includes('scope')}
-							class:pointer-events-none={states.protocol_params.includes('scope')}
-						>
-							<div class="space-x-6 inline-flex justify-between items-center">
-								<button
-									class="inline-flex items-center space-x-2"
-									on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}
-								>
-									<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke-width="3"
-										stroke="currentColor"
-										class="w-4 h-4"
-										class:rotate-180={states.dropdowns.scopeParam}
+						</button>
+						{#if states.dropdowns.protocolParams}
+							<ul class="space-y-2 mt-2" transition:slide|local>
+								{#each Object.entries( { ...protocolParams.params, ...(isHelloMode ? protocolParams.pi_params : {}) } ) as [param, value]}
+									{@const required = protocolParams.required.includes(param)}
+									{#if param === 'custom'}
+										<span class="pt-0.5 block" />
+									{/if}
+									<li
+										class="flex items-center relative {param === 'custom'
+											? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
+											: ''}"
 									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="m19.5 8.25-7.5 7.5-7.5-7.5"
-										/>
-									</svg>
-								</button>
-							</div>
-							{#if states.dropdowns.scopeParam}
-								<div class="mt-2" transition:slide|local>
-									<div class="flex gap-x-4 pl-1">
-										<ul class="space-y-2 mt-2 w-44">
-											{#each scopes.standard.concat(isHelloMode ? scopes.pi_standard : []) as scope}
-												{@const required = scopes.required.includes(scope)}
-												<li
-													class="flex items-center"
-													class:text-red-500={required && !states.scopes.includes(scope)}
-												>
-													<input
-														type="checkbox"
-														class="text-charcoal form-checkbox dark:text-gray-800"
-														name={scope}
-														id={scope}
-														value={scope}
-														bind:group={states.scopes}
-													/>
-													<label for={scope} class="ml-2"
-														>{scope}
-														{required ? '*' : ''}</label
-													>
-												</li>
-											{/each}
-										</ul>
-										<ul class="space-y-2 mt-2 truncate">
-											{#each scopes.custom.concat(isHelloMode ? scopes.pi_custom : []) as scope}
-												<li class="flex items-center truncate pl-1">
-													<input
-														type="checkbox"
-														class="text-charcoal form-checkbox dark:text-gray-800"
-														name={scope}
-														id={scope}
-														value={scope}
-														bind:group={states.scopes}
-													/>
-													<label for={scope} class="ml-2 truncate italic">{scope}</label>
-												</li>
-											{/each}
-
-											<li class="flex items-center pl-1 pb-2">
+										<div class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center">
+											{#if param !== 'code_verifier'}
 												<input
 													type="checkbox"
-													bind:group={states.scopes}
-													value={states.custom_scope}
-													class="text-charcoal form-checkbox dark:text-gray-800"
-												/>
-												<input
-													type="text"
-													class="h-6 px-2 ml-2 w-24 mr-10 form-input italic"
-													autocomplete="off"
-													autocorrect="off"
-													autocapitalize="off"
-													spellcheck="false"
-													bind:value={states.custom_scope}
-												/>
-											</li>
-										</ul>
-									</div>
-								</div>
-							{/if}
-						</div>
-
-						<!-- Protocol Params -->
-						<div class="break-inside-avoid-column">
-							<button
-								class="inline-flex items-center space-x-2"
-								on:click={() =>
-									(states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
-							>
-								<h1 class="font-semibold text-lg inline-block">Protocol Params</h1>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="3"
-									stroke="currentColor"
-									class="w-4 h-4"
-									class:rotate-180={states.dropdowns.protocolParams}
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="m19.5 8.25-7.5 7.5-7.5-7.5"
-									/>
-								</svg>
-							</button>
-							{#if states.dropdowns.protocolParams}
-								<ul class="space-y-2 mt-2" transition:slide|local>
-									{#each Object.entries( { ...protocolParams.params, ...(isHelloMode ? protocolParams.pi_params : {}) } ) as [param, value]}
-										{@const required = protocolParams.required.includes(param)}
-										{#if param === 'custom'}
-											<span class="pt-0.5 block" />
-										{/if}
-										<li
-											class="flex items-center relative {param === 'custom'
-												? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
-												: ''}"
-										>
-											<div class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center">
-												{#if param !== 'code_verifier'}
-													<input
-														type="checkbox"
-														bind:group={states.protocol_params}
-														on:change={(e) => handleCheckboxInput(e, param)}
-														class="text-charcoal form-checkbox dark:text-gray-800"
-														name={param}
-														id={param}
-														value={param}
-													/>
-												{:else}
-													<span class="w-4" />
-												{/if}
-												<label
-													for={param}
-													class="ml-2"
-													class:text-red-500={//required
-													(required &&
-														(!states.protocol_params.includes(param) ||
-															//if checked and empty field
-															!states.protocol_param_values[param])) ||
-														//response_type: code but not code_challenge unchecked
-														(param === 'code_challenge' &&
-															states.protocol_param_values.response_type === 'code' &&
-															!states.protocol_params.includes('code_challenge')) ||
-														//response_type: id_token and response_mode: query
-														(param === 'response_mode' &&
-															states.protocol_params.includes('response_mode') &&
-															states.protocol_param_values.response_mode === 'query' &&
-															states.protocol_params.includes('response_type') &&
-															states.protocol_param_values.response_type === 'id_token') ||
-														//login_hint should start with mailto:
-														(param === 'login_hint' &&
-															states.protocol_params.includes('login_hint') &&
-															!states.protocol_param_values.login_hint.startsWith('mailto:'))}
-												>
-													{param}
-													{required ? '*' : ''}
-												</label>
-											</div>
-
-											<div class="w-1/2 md:w-3/4">
-												<!-- checkbox -->
-												{#if param === 'prompt'}
-													<div
-														class="xl:h-9 p-1 space-y-1 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
-														class:opacity-60={!states.protocol_params.includes(param) &&
-															param !== 'response_mode'}
-													>
-														{#each value as ele}
-															<div class="h-full w-full flex items-center justify-center">
-																<input
-																	type="checkbox"
-																	id={ele}
-																	class="peer hidden"
-																	value={ele}
-																	bind:group={states.protocol_param_values[param]}
-																/>
-																<label
-																	for={ele}
-																	class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
-																	>{ele}</label
-																>
-															</div>
-														{/each}
-													</div>
-												{:else if Array.isArray(value)}
-													<!-- radio -->
-													<div
-														class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
-														class:opacity-60={(!states.protocol_params.includes(param) &&
-															param !== 'response_mode') ||
-															(param === 'response_mode' &&
-																!states.protocol_params.includes('response_mode'))}
-													>
-														{#each value as ele}
-															<div class="h-full w-full flex items-center justify-center">
-																<input
-																	type="radio"
-																	id={ele}
-																	class="peer hidden"
-																	value={ele}
-																	bind:group={states.protocol_param_values[param]}
-																/>
-																<label
-																	for={ele}
-																	class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
-																	>{ele}</label
-																>
-															</div>
-														{/each}
-													</div>
-												{:else}
-													<!-- text input -->
-													<div
-														class="flex flex-col w-full items-start"
-														class:opacity-60={!states.protocol_params.includes(param) &&
-															param !== 'code_challenge'}
-													>
-														<input
-															type="text"
-															placeholder={param === 'login_hint' ? 'mailto:name@example.com' : ''}
-															name={param}
-															class="h-6 px-2 w-full form-input"
-															autocomplete="off"
-															autocorrect="off"
-															autocapitalize="off"
-															spellcheck="false"
-															bind:value={states.protocol_param_values[param]}
-														/>
-													</div>
-												{/if}
-											</div>
-										</li>
-									{/each}
-								</ul>
-							{/if}
-						</div>
-
-						<!-- Query Params -->
-						<div class="break-inside-avoid-column">
-							<button
-								class="inline-flex items-center space-x-2"
-								on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
-							>
-								<h1 class="font-semibold text-lg inline-block">Custom Params</h1>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="3"
-									stroke="currentColor"
-									class="w-4 h-4"
-									class:rotate-180={states.dropdowns.queryParams}
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="m19.5 8.25-7.5 7.5-7.5-7.5"
-									/>
-								</svg>
-							</button>
-							{#if states.dropdowns.queryParams}
-								<ul class="space-y-2 mt-2" transition:slide|local>
-									{#each Object.entries( { ...queryParams.params, ...(isHelloMode ? queryParams.pi_params : {}) } ) as [param, value]}
-										{@const required = queryParams.required.includes(param)}
-										<li
-											class="flex {param === 'provider_hint'
-												? 'items-start'
-												: 'items-center'} relative"
-											class:pb-2={param === 'custom'}
-											class:pt-2={param === 'provider_hint'}
-										>
-											<div
-												class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
-												class:mt-6={param === 'client_id'}
-												class:mt-1={param === 'provider_hint'}
-											>
-												<input
-													type="checkbox"
-													bind:group={states.query_params}
+													bind:group={states.protocol_params}
 													on:change={(e) => handleCheckboxInput(e, param)}
 													class="text-charcoal form-checkbox dark:text-gray-800"
 													name={param}
 													id={param}
 													value={param}
 												/>
-												<label
-													for={param}
-													class="ml-2"
-													class:text-red-500={//required
-													(required &&
-														(!states.query_params.includes(param) ||
-															//if checked and empty field
-															!states.query_param_values[param])) ||
-														//response_type: code but not code_challenge unchecked
-														(param === 'code_challenge' &&
-															states.query_param_values.response_type === 'code' &&
-															!states.query_params.includes('code_challenge')) ||
-														//response_type: id_token and response_mode: query
-														(param === 'response_mode' &&
-															states.query_params.includes('response_mode') &&
-															states.query_param_values.response_mode === 'query' &&
-															states.query_params.includes('response_type') &&
-															states.query_param_values.response_type === 'id_token')}
+											{:else}
+												<span class="w-4" />
+											{/if}
+											<label
+												for={param}
+												class="ml-2"
+												class:text-red-500={//required
+												(required &&
+													(!states.protocol_params.includes(param) ||
+														//if checked and empty field
+														!states.protocol_param_values[param])) ||
+													//response_type: code but not code_challenge unchecked
+													(param === 'code_challenge' &&
+														states.protocol_param_values.response_type === 'code' &&
+														!states.protocol_params.includes('code_challenge')) ||
+													//response_type: id_token and response_mode: query
+													(param === 'response_mode' &&
+														states.protocol_params.includes('response_mode') &&
+														states.protocol_param_values.response_mode === 'query' &&
+														states.protocol_params.includes('response_type') &&
+														states.protocol_param_values.response_type === 'id_token') ||
+													//login_hint should start with mailto:
+													(param === 'login_hint' &&
+														states.protocol_params.includes('login_hint') &&
+														!states.protocol_param_values.login_hint.startsWith('mailto:'))}
+											>
+												{param}
+												{required ? '*' : ''}
+											</label>
+										</div>
+
+										<div class="w-1/2 md:w-3/4">
+											<!-- checkbox -->
+											{#if param === 'prompt'}
+												<div
+													class="xl:h-9 p-1 space-y-1 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class:opacity-60={!states.protocol_params.includes(param) &&
+														param !== 'response_mode'}
 												>
-													{param}
-													{required ? '*' : ''}
-												</label>
-											</div>
-
-											<div class="w-1/2 md:w-3/4">
-												{#if Array.isArray(value)}
-													<div
-														class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
-														class:opacity-60={!states.query_params.includes(param) &&
-															param !== 'response_mode'}
-													>
-														{#each value as ele}
-															<div class="h-full w-full flex items-center justify-center">
-																<input
-																	type="radio"
-																	id={ele}
-																	class="peer hidden"
-																	value={ele}
-																	bind:group={states.query_param_values[param]}
-																/>
-																<label
-																	for={ele}
-																	class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
-																	>{ele}</label
-																>
-															</div>
-														{/each}
-													</div>
-												{:else}
-													<div
-														class="flex flex-col w-full items-start"
-														class:opacity-60={!states.query_params.includes(param) &&
-															param !== 'code_challenge'}
-													>
-														<input
-															type="text"
-															name={param}
-															class="h-6 px-2 w-full form-input"
-															autocomplete="off"
-															autocorrect="off"
-															autocapitalize="off"
-															spellcheck="false"
-															bind:value={states.query_param_values[param]}
-														/>
-													</div>
-
-													{#if param === 'provider_hint'}
-														{#if Array.isArray(invalidProviderHintSlug)}
-															<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
-																{#if invalidProviderHintSlug.length > 1}
-																	{invalidProviderHintSlug.join(', ')} are unsupported values
-																{:else}
-																	{invalidProviderHintSlug} is an unsupported value
-																{/if}
-															</p>
-														{/if}
-														<p class="text-xs mt-1.5">
-															<span class="opacity-80"
-																>{possibleSlugs
-																	.concat(isHelloMode ? pi_possibleSlugs : [])
-																	.filter((i) => !['google', 'email', 'passkey'].includes(i))
-																	.join(' ')}</span
-															><br />
-															<span class="opacity-80"
-																>apple-- microsoft-- google-- email-- passkey--</span
+													{#each value as ele}
+														<div class="h-full w-full flex items-center justify-center">
+															<input
+																type="checkbox"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.protocol_param_values[param]}
+															/>
+															<label
+																for={ele}
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
 															>
+														</div>
+													{/each}
+												</div>
+											{:else if Array.isArray(value)}
+												<!-- radio -->
+												<div
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class:opacity-60={(!states.protocol_params.includes(param) &&
+														param !== 'response_mode') ||
+														(param === 'response_mode' &&
+															!states.protocol_params.includes('response_mode'))}
+												>
+													{#each value as ele}
+														<div class="h-full w-full flex items-center justify-center">
+															<input
+																type="radio"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.protocol_param_values[param]}
+															/>
+															<label
+																for={ele}
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
+															>
+														</div>
+													{/each}
+												</div>
+											{:else}
+												<!-- text input -->
+												<div
+													class="flex flex-col w-full items-start"
+													class:opacity-60={!states.protocol_params.includes(param) &&
+														param !== 'code_challenge'}
+												>
+													<input
+														type="text"
+														placeholder={param === 'login_hint' ? 'mailto:name@example.com' : ''}
+														name={param}
+														class="h-6 px-2 w-full form-input"
+														autocomplete="off"
+														autocorrect="off"
+														autocapitalize="off"
+														spellcheck="false"
+														bind:value={states.protocol_param_values[param]}
+													/>
+												</div>
+											{/if}
+										</div>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+
+					<!-- Query Params -->
+					<div class="break-inside-avoid-column">
+						<button
+							class="inline-flex items-center space-x-2"
+							on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
+						>
+							<h1 class="font-semibold text-lg inline-block">Custom Params</h1>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.queryParams}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
+						{#if states.dropdowns.queryParams}
+							<ul class="space-y-2 mt-2" transition:slide|local>
+								{#each Object.entries( { ...queryParams.params, ...(isHelloMode ? queryParams.pi_params : {}) } ) as [param, value]}
+									{@const required = queryParams.required.includes(param)}
+									<li
+										class="flex {param === 'provider_hint'
+											? 'items-start'
+											: 'items-center'} relative"
+										class:pb-2={param === 'custom'}
+										class:pt-2={param === 'provider_hint'}
+									>
+										<div
+											class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
+											class:mt-6={param === 'client_id'}
+											class:mt-1={param === 'provider_hint'}
+										>
+											<input
+												type="checkbox"
+												bind:group={states.query_params}
+												on:change={(e) => handleCheckboxInput(e, param)}
+												class="text-charcoal form-checkbox dark:text-gray-800"
+												name={param}
+												id={param}
+												value={param}
+											/>
+											<label
+												for={param}
+												class="ml-2"
+												class:text-red-500={//required
+												(required &&
+													(!states.query_params.includes(param) ||
+														//if checked and empty field
+														!states.query_param_values[param])) ||
+													//response_type: code but not code_challenge unchecked
+													(param === 'code_challenge' &&
+														states.query_param_values.response_type === 'code' &&
+														!states.query_params.includes('code_challenge')) ||
+													//response_type: id_token and response_mode: query
+													(param === 'response_mode' &&
+														states.query_params.includes('response_mode') &&
+														states.query_param_values.response_mode === 'query' &&
+														states.query_params.includes('response_type') &&
+														states.query_param_values.response_type === 'id_token')}
+											>
+												{param}
+												{required ? '*' : ''}
+											</label>
+										</div>
+
+										<div class="w-1/2 md:w-3/4">
+											{#if Array.isArray(value)}
+												<div
+													class="xl:h-9 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+													class:opacity-60={!states.query_params.includes(param) &&
+														param !== 'response_mode'}
+												>
+													{#each value as ele}
+														<div class="h-full w-full flex items-center justify-center">
+															<input
+																type="radio"
+																id={ele}
+																class="peer hidden"
+																value={ele}
+																bind:group={states.query_param_values[param]}
+															/>
+															<label
+																for={ele}
+																class="leading-[27px] text-charcoal dark:text-[#d4d4d4] peer-checked:text-white peer-checked:dark:text-[#d4d4d4] peer-checked:bg-charcoal text-center cursor-pointer select-none w-full h-full peer-checked:ring-1 ring-charcoal dark:ring-gray-800"
+																>{ele}</label
+															>
+														</div>
+													{/each}
+												</div>
+											{:else}
+												<div
+													class="flex flex-col w-full items-start"
+													class:opacity-60={!states.query_params.includes(param) &&
+														param !== 'code_challenge'}
+												>
+													<input
+														type="text"
+														name={param}
+														class="h-6 px-2 w-full form-input"
+														autocomplete="off"
+														autocorrect="off"
+														autocapitalize="off"
+														spellcheck="false"
+														bind:value={states.query_param_values[param]}
+													/>
+												</div>
+
+												{#if param === 'provider_hint'}
+													{#if Array.isArray(invalidProviderHintSlug)}
+														<p class="text-xs mt-1.5 text-red-500" transition:slide|local>
+															{#if invalidProviderHintSlug.length > 1}
+																{invalidProviderHintSlug.join(', ')} are unsupported values
+															{:else}
+																{invalidProviderHintSlug} is an unsupported value
+															{/if}
 														</p>
 													{/if}
+													<p class="text-xs mt-1.5">
+														<span class="opacity-80"
+															>{possibleSlugs
+																.concat(isHelloMode ? pi_possibleSlugs : [])
+																.filter((i) => !['google', 'email', 'passkey'].includes(i))
+																.join(' ')}</span
+														><br />
+														<span class="opacity-80"
+															>apple-- microsoft-- google-- email-- passkey--</span
+														>
+													</p>
 												{/if}
-											</div>
-										</li>
-									{/each}
-								</ul>
-							{/if}
-						</div>
+											{/if}
+										</div>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
 
-						<!-- Authorization Server -->
-						<div class="break-inside-avoid-column">
+					<!-- Authorization Server -->
+					<div class="break-inside-avoid-column">
+						<button
+							class="inline-flex items-center space-x-2"
+							on:click={() => (states.dropdowns.authzServer = !states.dropdowns.authzServer)}
+						>
+							<h1 class="font-semibold text-lg">Authorization Server</h1>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="3"
+								stroke="currentColor"
+								class="w-4 h-4"
+								class:rotate-180={states.dropdowns.authzServer}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m19.5 8.25-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+						</button>
+
+						{#if states.dropdowns.authzServer}
+							<ul class="space-y-2 mt-2" transition:slide|local>
+								<li class="flex items-center">
+									<input
+										type="radio"
+										name="authorization_server"
+										value="https://wallet.hello.coop/authorize"
+										id="wallet/authorize"
+										class="text-charcoal form-radio dark:text-gray-800"
+										bind:group={states.selected_authorization_server}
+									/>
+									<label for="wallet/authorize" class="ml-2 w-full">
+										https://wallet.hello.coop/authorize
+									</label>
+								</li>
+								{#each states.custom_authorization_servers as server}
+									<li class="flex items-center">
+										<input
+											type="radio"
+											name="authorization_server"
+											value={server}
+											id={server}
+											class="text-charcoal form-radio dark:text-gray-800"
+											bind:group={states.selected_authorization_server}
+										/>
+										<label for={server} class="ml-2 w-full break-all">{server}</label>
+									</li>
+								{/each}
+								<li class="flex items-center">
+									<input
+										type="radio"
+										name="authorization_server"
+										value={custom_authorization_server}
+										class="text-charcoal form-radio dark:text-gray-800"
+										id="custom-authorization-server"
+										bind:group={states.selected_authorization_server}
+									/>
+									<input
+										bind:value={custom_authorization_server}
+										on:input={(e) => (states.selected_authorization_server = e.target.value)}
+										type="url"
+										name="custom"
+										class="h-8 ml-2 w-full text-charcoal form-input"
+										placeholder="eg http://example.com:9000/"
+									/>
+								</li>
+							</ul>
+						{/if}
+					</div>
+
+					<!-- Request URL -->
+					<div class="break-inside-avoid-column">
+						<div class="flex items-center">
 							<button
 								class="inline-flex items-center space-x-2"
-								on:click={() => (states.dropdowns.authzServer = !states.dropdowns.authzServer)}
+								on:click={() => (states.dropdowns.requestURL = !states.dropdowns.requestURL)}
 							>
-								<h1 class="font-semibold text-lg">Authorization Server</h1>
+								<h1 class="font-semibold text-lg">Request URL</h1>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
@@ -1361,7 +1413,7 @@
 									stroke-width="3"
 									stroke="currentColor"
 									class="w-4 h-4"
-									class:rotate-180={states.dropdowns.authzServer}
+									class:rotate-180={states.dropdowns.requestURL}
 								>
 									<path
 										stroke-linecap="round"
@@ -1370,156 +1422,135 @@
 									/>
 								</svg>
 							</button>
-
-							{#if states.dropdowns.authzServer}
-								<ul class="space-y-2 mt-2" transition:slide|local>
-									<li class="flex items-center">
-										<input
-											type="radio"
-											name="authorization_server"
-											value="https://wallet.hello.coop/authorize"
-											id="wallet/authorize"
-											class="text-charcoal form-radio dark:text-gray-800"
-											bind:group={states.selected_authorization_server}
-										/>
-										<label for="wallet/authorize" class="ml-2 w-full">
-											https://wallet.hello.coop/authorize
-										</label>
-									</li>
-									{#each states.custom_authorization_servers as server}
-										<li class="flex items-center">
-											<input
-												type="radio"
-												name="authorization_server"
-												value={server}
-												id={server}
-												class="text-charcoal form-radio dark:text-gray-800"
-												bind:group={states.selected_authorization_server}
-											/>
-											<label for={server} class="ml-2 w-full break-all">{server}</label>
-										</li>
-									{/each}
-									<li class="flex items-center">
-										<input
-											type="radio"
-											name="authorization_server"
-											value={custom_authorization_server}
-											class="text-charcoal form-radio dark:text-gray-800"
-											id="custom-authorization-server"
-											bind:group={states.selected_authorization_server}
-										/>
-										<input
-											bind:value={custom_authorization_server}
-											on:input={(e) => (states.selected_authorization_server = e.target.value)}
-											type="url"
-											name="custom"
-											class="h-8 ml-2 w-full text-charcoal form-input"
-											placeholder="eg http://example.com:9000/"
-										/>
-									</li>
-								</ul>
-							{/if}
 						</div>
-
-						<!-- Request URL -->
-						<div class="break-inside-avoid-column">
-							<div class="flex items-center">
+						{#if states.dropdowns.requestURL}
+							<div class="relative">
 								<button
-									class="inline-flex items-center space-x-2"
-									on:click={() => (states.dropdowns.requestURL = !states.dropdowns.requestURL)}
+									on:click={() => copy('requestURL', requestURL)}
+									class="absolute z-50 right-2.5 top-2.5 w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-charcoal border border-[#808080] shadow-xl"
 								>
-									<h1 class="font-semibold text-lg">Request URL</h1>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 stroke hover:stroke-2"
 										fill="none"
 										viewBox="0 0 24 24"
-										stroke-width="3"
 										stroke="currentColor"
-										class="w-4 h-4"
-										class:rotate-180={states.dropdowns.requestURL}
 									>
 										<path
 											stroke-linecap="round"
 											stroke-linejoin="round"
-											d="m19.5 8.25-7.5 7.5-7.5-7.5"
+											d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
 										/>
 									</svg>
 								</button>
+								<div
+									class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
+									transition:slide|local
+								>
+									<span
+										class="url-container block text-sm whitespace-pre-line"
+										class:flash={copyTooltip.requestURL}
+									>
+										{@html highlight('http', requestURL)}
+									</span>
+								</div>
 							</div>
-							{#if states.dropdowns.requestURL}
-								<div class="relative">
-									<button
-										on:click={() => copy('requestURL', requestURL)}
-										class="absolute z-50 right-2.5 top-2.5 w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-charcoal border border-[#808080] shadow-xl"
+						{/if}
+
+						<button
+							on:click={continueWithHello}
+							class="hello-btn-black-and-static w-full flex mt-4"
+							class:hello-btn-loader={continueWithHelloAjax}
+							disabled={continueWithHelloAjax}
+							class:hello-btn-hover-flare={darkMode}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
+						>
+					</div>
+				</div>
+			</section>
+
+			<section
+				class="relative w-auto border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800 {result.authorize
+					? ''
+					: 'h-72 flex items-center justify-center'}"
+			>
+				<span class="absolute -top-3 left-4 bg-white dark:bg-[#151515] px-2 -mx-2"
+					>Authorization Response</span
+				>
+				{#if !result.authorize}
+					<span class="opacity-80">Nothing to see here yet</span>
+				{:else}
+					<div class="space-y-4">
+						<section class="btn group">
+							<button
+								on:click={() => (dropdown.authorize = !dropdown.authorize)}
+								class="py-2 w-full flex justify-between items-center px-4"
+							>
+								<div class="flex flex-col items-start text-left">
+									<span class="font-semibold text-lg" style="word-break: break-word;"
+										>{new URL('/authorize', states.selected_authorization_server)}</span
 									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="h-5 stroke hover:stroke-2"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
+									<div class="inline-flex items-center">
+										<span>Response</span>
+										<button
+											on:click={() => {
+												if (!result.authorize) return;
+												dropdown.authorize = false;
+												copy('authorize', JSON.stringify(result.authorize));
+											}}
 										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-											/>
-										</svg>
-									</button>
-									<div
-										class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
-										transition:slide|local
-									>
-										<span
-											class="url-container block text-sm whitespace-pre-line"
-											class:flash={copyTooltip.requestURL}
-										>
-											{@html highlight('http', requestURL)}
-										</span>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												class="h-5 ml-1 stroke-2 hover:stroke-3"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+												/>
+											</svg>
+										</button>
 									</div>
 								</div>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="stroke-2 group-hover:stroke-3 h-5 transform"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									class:rotate-180={dropdown.authorize}
+								>
+									<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+								</svg>
+							</button>
+
+							{#if dropdown.authorize}
+								<p class="p-4 break-words">
+									<span class:flash={copyTooltip.authorize} class="text-sm">{result.authorize}</span
+									>
+								</p>
 							{/if}
+						</section>
 
-							<button
-								on:click={continueWithHello}
-								class="hello-btn-black-and-static w-full flex mt-4"
-								class:hello-btn-loader={continueWithHelloAjax}
-								disabled={continueWithHelloAjax}
-								class:hello-btn-hover-flare={darkMode}
-								>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
-							>
-						</div>
-					</div>
-				</section>
-
-				<section
-					class="relative w-auto border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800 {result.authorize
-						? ''
-						: 'h-72 flex items-center justify-center'}"
-				>
-					<span class="absolute -top-3 left-4 bg-white dark:bg-[#151515] px-2 -mx-2"
-						>Authorization Response</span
-					>
-					{#if !result.authorize}
-						<span class="opacity-80">Nothing to see here yet</span>
-					{:else}
-						<div class="space-y-4">
+						{#if result.token !== null}
 							<section class="btn group">
 								<button
-									on:click={() => (dropdown.authorize = !dropdown.authorize)}
+									on:click={() => (dropdown.token = !dropdown.token)}
 									class="py-2 w-full flex justify-between items-center px-4"
 								>
 									<div class="flex flex-col items-start text-left">
 										<span class="font-semibold text-lg" style="word-break: break-word;"
-											>{new URL('/authorize', states.selected_authorization_server)}</span
+											>{new URL('/oauth/token', states.selected_authorization_server)}</span
 										>
 										<div class="inline-flex items-center">
 											<span>Response</span>
 											<button
 												on:click={() => {
-													if (!result.authorize) return;
-													dropdown.authorize = false;
-													copy('authorize', JSON.stringify(result.authorize));
+													if (!result.token) return;
+													dropdown.token = false;
+													copy('token', JSON.stringify(result.token));
 												}}
 											>
 												<svg
@@ -1544,315 +1575,256 @@
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
-										class:rotate-180={dropdown.authorize}
+										class:rotate-180={dropdown.token}
 									>
 										<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
 									</svg>
 								</button>
-
-								{#if dropdown.authorize}
-									<p class="p-4 break-words">
-										<span class:flash={copyTooltip.authorize} class="text-sm"
-											>{result.authorize}</span
-										>
-									</p>
+								{#if dropdown.token}
+									<span class:flash={copyTooltip.token} class="text-sm json-container">
+										{@html highlight('json', JSON.stringify(result.token, null, 2))}
+									</span>
 								{/if}
 							</section>
-
-							{#if result.token !== null}
-								<section class="btn group">
-									<button
-										on:click={() => (dropdown.token = !dropdown.token)}
-										class="py-2 w-full flex justify-between items-center px-4"
-									>
-										<div class="flex flex-col items-start text-left">
-											<span class="font-semibold text-lg" style="word-break: break-word;"
-												>{new URL('/oauth/token', states.selected_authorization_server)}</span
-											>
-											<div class="inline-flex items-center">
-												<span>Response</span>
-												<button
-													on:click={() => {
-														if (!result.token) return;
-														dropdown.token = false;
-														copy('token', JSON.stringify(result.token));
-													}}
-												>
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														class="h-5 ml-1 stroke-2 hover:stroke-3"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-														/>
-													</svg>
-												</button>
-											</div>
-										</div>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="stroke-2 group-hover:stroke-3 h-5 transform"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											class:rotate-180={dropdown.token}
-										>
-											<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-										</svg>
-									</button>
-									{#if dropdown.token}
-										<span class:flash={copyTooltip.token} class="text-sm json-container">
-											{@html highlight('json', JSON.stringify(result.token, null, 2))}
-										</span>
-									{/if}
-								</section>
-							{/if}
-
-							{#if result.userinfo !== null}
-								<section class="btn group">
-									<button
-										on:click={() => (dropdown.userinfo = !dropdown.userinfo)}
-										class="py-2 w-full flex justify-between items-center px-4"
-									>
-										<div class="flex flex-col items-start text-left">
-											<span class="font-semibold text-lg" style="word-break: break-word;"
-												>{new URL('/oauth/userinfo', states.selected_authorization_server)}</span
-											>
-											<div class="inline-flex items-center">
-												<span>Response</span>
-												<button
-													on:click={() => {
-														if (!result.token) return;
-														dropdown.userinfo = false;
-														copy('userinfo', JSON.stringify(result.userinfo));
-													}}
-												>
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														class="h-5 ml-1 stroke-2 hover:stroke-3"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-														/>
-													</svg>
-												</button>
-											</div>
-										</div>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="stroke-2 group-hover:stroke-3 h-5 transform"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											class:rotate-180={dropdown.userinfo}
-										>
-											<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-										</svg>
-									</button>
-									{#if dropdown.userinfo}
-										<span class:flash={copyTooltip.userinfo} class="text-sm json-container">
-											{@html highlight('json', JSON.stringify(result.userinfo, null, 2))}
-										</span>
-									{/if}
-								</section>
-							{/if}
-
-							{#if result.introspect !== null}
-								<section class="btn group">
-									<button
-										on:click={() => (dropdown.introspect = !dropdown.introspect)}
-										class="py-2 w-full flex justify-between items-center px-4"
-									>
-										<div class="flex flex-col items-start text-left">
-											<span class="font-semibold text-lg" style="word-break: break-word;"
-												>{new URL('/oauth/introspect', states.selected_authorization_server)}</span
-											>
-											<div class="inline-flex items-center">
-												<span>Response</span>
-												<button
-													on:click={() => {
-														if (!result.introspect) return;
-														dropdown.introspect = false;
-														copy('introspect', JSON.stringify(result.introspect));
-													}}
-												>
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														class="h-5 ml-1 stroke-2 hover:stroke-3"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-														/>
-													</svg>
-												</button>
-											</div>
-										</div>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="stroke-2 group-hover:stroke-3 h-5 transform"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											class:rotate-180={dropdown.introspect}
-										>
-											<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-										</svg>
-									</button>
-									{#if dropdown.introspect}
-										<span class:flash={copyTooltip.introspect} class="text-sm json-container">
-											{@html highlight('json', JSON.stringify(result.introspect, null, 2))}
-										</span>
-									{/if}
-								</section>
-							{/if}
-
-							{#if result.introspect}
-								<section class="btn group">
-									<button
-										on:click={() => (dropdown.claims = !dropdown.claims)}
-										class="h-12 w-full flex justify-between items-center px-4"
-									>
-										<span class="font-semibold text-lg">Claims</span>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="stroke-2 group-hover:stroke-3 h-5 transform"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											class:rotate-180={dropdown.claims}
-										>
-											<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-										</svg>
-									</button>
-									{#if dropdown.claims}
-										<ul
-											class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50 overflow-x-auto"
-										>
-											{#each scopes.claims.filter((i) => result.introspect[i]) as claim}
-												{@const isString = typeof result.introspect[claim] == 'string'}
-												<li class="py-4 flex items-center">
-													<div class="w-1/4 md:w-1/3 flex-shrink-0">{claim}</div>
-													<div>
-														{#if claim === 'picture' && result.introspect[claim]}
-															<!-- svelte-ignore a11y-img-redundant-alt -->
-															<img
-																src={result.introspect[claim]}
-																class="h-10 w-10 rounded-full object-fit"
-																alt="Picture claim"
-															/>
-														{:else if isString}
-															{result.introspect[claim]}
-														{:else}
-															<pre>{JSON.stringify(result.introspect[claim], null, 2)}</pre>
-														{/if}
-													</div>
-												</li>
-											{/each}
-										</ul>
-									{/if}
-								</section>
-							{/if}
-						</div>
-					{/if}
-				</section>
-
-				<section
-					class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
-				>
-					<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2">Invite Request</span>
-					<div class="max-w-lg mx-auto">
-						{#if canInvite}
-							<div
-								class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mb-6"
-							>
-								<h2 class="inline-flex items-center">
-									<span>Invite URL</span>
-									<button on:click={() => copy('invitePlaygroundURL', invitePlaygroundURL)}>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="h-5 ml-1 stroke-2 hover:stroke-3"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-											/>
-										</svg>
-									</button>
-								</h2>
-								<span
-									class="url-container mt-2 block text-sm whitespace-pre-line"
-									class:flash={copyTooltip.invitePlaygroundURL}
-								>
-									{@html highlight('http', invitePlaygroundURL)}
-								</span>
-							</div>
 						{/if}
 
-						<button
-							on:click={invitePlaygroundWithHello}
-							class="hello-btn-black-and-static w-full disabled:opacity-30"
-							class:hello-btn-loader={invitePlaygroundWithHelloAjax}
-							disabled={invitePlaygroundWithHelloAjax || !canInvite}
-							class:hello-btn-hover-flare={darkMode}>Invite others to Playground</button
-						>
-						<p class="text-sm text-center mt-4 opacity-80">
-							{#if canInvite}
-								Use this to test sending invitations
-							{:else}
-								To invite others, your must provide the<br />`name` and `email` claims
-							{/if}
-						</p>
-					</div>
-				</section>
+						{#if result.userinfo !== null}
+							<section class="btn group">
+								<button
+									on:click={() => (dropdown.userinfo = !dropdown.userinfo)}
+									class="py-2 w-full flex justify-between items-center px-4"
+								>
+									<div class="flex flex-col items-start text-left">
+										<span class="font-semibold text-lg" style="word-break: break-word;"
+											>{new URL('/oauth/userinfo', states.selected_authorization_server)}</span
+										>
+										<div class="inline-flex items-center">
+											<span>Response</span>
+											<button
+												on:click={() => {
+													if (!result.token) return;
+													dropdown.userinfo = false;
+													copy('userinfo', JSON.stringify(result.userinfo));
+												}}
+											>
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													class="h-5 ml-1 stroke-2 hover:stroke-3"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+													/>
+												</svg>
+											</button>
+										</div>
+									</div>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="stroke-2 group-hover:stroke-3 h-5 transform"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										class:rotate-180={dropdown.userinfo}
+									>
+										<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+									</svg>
+								</button>
+								{#if dropdown.userinfo}
+									<span class:flash={copyTooltip.userinfo} class="text-sm json-container">
+										{@html highlight('json', JSON.stringify(result.userinfo, null, 2))}
+									</span>
+								{/if}
+							</section>
+						{/if}
 
-				<section class="py-6">
-					<a
-						href="https://github.com/hellocoop/playground/issues/new"
-						target="_blank"
-						class="inline-flex items-center hover:underline"
-					>
-						<span>File an issue on GitHub</span>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-3 ml-1"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
+						{#if result.introspect !== null}
+							<section class="btn group">
+								<button
+									on:click={() => (dropdown.introspect = !dropdown.introspect)}
+									class="py-2 w-full flex justify-between items-center px-4"
+								>
+									<div class="flex flex-col items-start text-left">
+										<span class="font-semibold text-lg" style="word-break: break-word;"
+											>{new URL('/oauth/introspect', states.selected_authorization_server)}</span
+										>
+										<div class="inline-flex items-center">
+											<span>Response</span>
+											<button
+												on:click={() => {
+													if (!result.introspect) return;
+													dropdown.introspect = false;
+													copy('introspect', JSON.stringify(result.introspect));
+												}}
+											>
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													class="h-5 ml-1 stroke-2 hover:stroke-3"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+													/>
+												</svg>
+											</button>
+										</div>
+									</div>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="stroke-2 group-hover:stroke-3 h-5 transform"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										class:rotate-180={dropdown.introspect}
+									>
+										<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+									</svg>
+								</button>
+								{#if dropdown.introspect}
+									<span class:flash={copyTooltip.introspect} class="text-sm json-container">
+										{@html highlight('json', JSON.stringify(result.introspect, null, 2))}
+									</span>
+								{/if}
+							</section>
+						{/if}
+
+						{#if result.introspect}
+							<section class="btn group">
+								<button
+									on:click={() => (dropdown.claims = !dropdown.claims)}
+									class="h-12 w-full flex justify-between items-center px-4"
+								>
+									<span class="font-semibold text-lg">Claims</span>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="stroke-2 group-hover:stroke-3 h-5 transform"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										class:rotate-180={dropdown.claims}
+									>
+										<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+									</svg>
+								</button>
+								{#if dropdown.claims}
+									<ul
+										class="flex flex-col px-4 divide-y divide-black/50 dark:divide-white/50 overflow-x-auto"
+									>
+										{#each scopes.claims.filter((i) => result.introspect[i]) as claim}
+											{@const isString = typeof result.introspect[claim] == 'string'}
+											<li class="py-4 flex items-center">
+												<div class="w-1/4 md:w-1/3 flex-shrink-0">{claim}</div>
+												<div>
+													{#if claim === 'picture' && result.introspect[claim]}
+														<!-- svelte-ignore a11y-img-redundant-alt -->
+														<img
+															src={result.introspect[claim]}
+															class="h-10 w-10 rounded-full object-fit"
+															alt="Picture claim"
+														/>
+													{:else if isString}
+														{result.introspect[claim]}
+													{:else}
+														<pre>{JSON.stringify(result.introspect[claim], null, 2)}</pre>
+													{/if}
+												</div>
+											</li>
+										{/each}
+									</ul>
+								{/if}
+							</section>
+						{/if}
+					</div>
+				{/if}
+			</section>
+
+			<section
+				class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
+			>
+				<span class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2">Invite Request</span>
+				<div class="max-w-lg mx-auto">
+					{#if canInvite}
+						<div
+							class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mb-6"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-							/>
-						</svg>
-					</a>
-				</section>
-			</div>
-			<wc-footer />
-		</main>
-	{/if}
-{:else}
-	<div class="spinner" />
+							<h2 class="inline-flex items-center">
+								<span>Invite URL</span>
+								<button on:click={() => copy('invitePlaygroundURL', invitePlaygroundURL)}>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 ml-1 stroke-2 hover:stroke-3"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+										/>
+									</svg>
+								</button>
+							</h2>
+							<span
+								class="url-container mt-2 block text-sm whitespace-pre-line"
+								class:flash={copyTooltip.invitePlaygroundURL}
+							>
+								{@html highlight('http', invitePlaygroundURL)}
+							</span>
+						</div>
+					{/if}
+
+					<button
+						on:click={invitePlaygroundWithHello}
+						class="hello-btn-black-and-static w-full disabled:opacity-30"
+						class:hello-btn-loader={invitePlaygroundWithHelloAjax}
+						disabled={invitePlaygroundWithHelloAjax || !canInvite}
+						class:hello-btn-hover-flare={darkMode}>Invite others to Playground</button
+					>
+					<p class="text-sm text-center mt-4 opacity-80">
+						{#if canInvite}
+							Use this to test sending invitations
+						{:else}
+							To invite others, your must provide the<br />`name` and `email` claims
+						{/if}
+					</p>
+				</div>
+			</section>
+
+			<section class="py-6">
+				<a
+					href="https://github.com/hellocoop/playground/issues/new"
+					target="_blank"
+					class="inline-flex items-center hover:underline"
+				>
+					<span>File an issue on GitHub</span>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-3 ml-1"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+						/>
+					</svg>
+				</a>
+			</section>
+		</div>
+		<wc-footer />
+	</main>
 {/if}
 
 <style>
