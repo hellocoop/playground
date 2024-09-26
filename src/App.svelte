@@ -92,6 +92,25 @@
 	}
 
 	onMount(async () => {
+		if (!getStatesFromLocalStorage()) {
+			//states not found in local storage, save default states to local storage
+			const _states = JSON.stringify(states);
+			localStorage.setItem('states', _states);
+		}
+		isHelloMode = !!localStorage.plausible_ignore;
+		readFromLocalStorage = true;
+
+		processFragmentOrQuery();
+		sendPlausibleEvent();
+
+		if (
+			!['https://wallet.hello.coop/authorize', ...states.custom_authorization_servers].includes(
+				states.selected_authorization_server
+			)
+		) {
+			custom_authorization_server = states.selected_authorization_server;
+		}
+
 		const theme = createCssVariablesTheme({
 			name: 'css-variables',
 			variablePrefix: '--shiki-',
@@ -102,31 +121,8 @@
 		highlighter = await createHighlighterCore({
 			themes: [theme],
 			langs: [import('shiki/langs/json.mjs'), import('shiki/langs/http.mjs')],
-			loadWasm: getWasm //TBD: does not work without importin this
+			loadWasm: getWasm //TBD: does not work without importing this
 		});
-
-		if (!getStatesFromLocalStorage()) {
-			//states not found in local storage, save default states to local storage
-			const _states = JSON.stringify(states);
-			localStorage.setItem('states', _states);
-		}
-
-		isHelloMode = !!localStorage.plausible_ignore;
-
-		readFromLocalStorage = true;
-
-		processFragmentOrQuery();
-		updateFavicon();
-
-		sendEvent();
-
-		if (
-			!['https://wallet.hello.coop/authorize', ...states.custom_authorization_servers].includes(
-				states.selected_authorization_server
-			)
-		) {
-			custom_authorization_server = states.selected_authorization_server;
-		}
 
 		if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
 			darkMode = true;
@@ -300,20 +296,6 @@
 
 	//detect chanes in state -> save to local storage
 	$: states, saveStatesToLocalStorage();
-
-	function updateFavicon() {
-		const ref = document.querySelector("link[rel='icon']");
-		if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-			ref.href = 'dark-favicon.png';
-		}
-		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
-			if (event.matches) {
-				ref.href = 'light-favicon.png';
-			} else {
-				ref.href = 'dark-favicon.png';
-			}
-		});
-	}
 
 	async function processFragmentOrQuery() {
 		if (!window.location.hash && !window.location.search) return;
@@ -710,7 +692,7 @@
 		type: 'invite'
 	});
 
-	async function sendEvent() {
+	async function sendPlausibleEvent() {
 		if (isHelloMode) {
 			console.info('Ignoring Event: localStorage flag');
 			return;
