@@ -60,6 +60,7 @@
 		'line',
 		'wordpress',
 		'yahoo',
+		'zoho',
 		'email',
 		'ethereum',
 		'qrcode',
