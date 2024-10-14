@@ -165,9 +165,7 @@
 
 	const queryParams = {
 		params: {
-			provider_hint: ''
-		},
-		pi_params: {
+			provider_hint: '',
 			account: ['personal', 'managed']
 		},
 		required: []
