@@ -182,6 +182,7 @@
 			state: '',
 			prompt: ['consent', 'login'],
 			login_hint: '',
+			domain_hint: '',
 			scope: '',
 			custom: ''
 		},
@@ -189,6 +190,10 @@
 			passkeys: 'global'
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
+	};
+	const protocolParamsPlaceholders = {
+		login_hint: 'name@example.com',
+		domain_hint: 'example.com'
 	};
 
 	const inviteQueryParams = {
@@ -1091,10 +1096,13 @@
 														states.protocol_param_values.response_mode === 'query' &&
 														states.protocol_params.includes('response_type') &&
 														states.protocol_param_values.response_type === 'id_token') ||
-													//login_hint should start with mailto:
+													//if both domain_hint and login_hint are checked (only one is valid at a time)
 													(param === 'login_hint' &&
 														states.protocol_params.includes('login_hint') &&
-														!states.protocol_param_values.login_hint.startsWith('mailto:'))}
+														states.protocol_params.includes('domain_hint')) ||
+													(param === 'domain_hint' &&
+														states.protocol_params.includes('domain_hint') &&
+														states.protocol_params.includes('login_hint'))}
 											>
 												{param}
 												{required ? '*' : ''}
@@ -1161,7 +1169,7 @@
 												>
 													<input
 														type="text"
-														placeholder={param === 'login_hint' ? 'mailto:name@example.com' : ''}
+														placeholder={protocolParamsPlaceholders[param]}
 														name={param}
 														class="h-6 px-2 w-full form-input"
 														autocomplete="off"
