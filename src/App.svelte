@@ -182,12 +182,12 @@
 			state: '',
 			prompt: ['consent', 'login'],
 			login_hint: '',
-			domain_hint: '',
 			scope: '',
 			custom: ''
 		},
 		pi_params: {
-			passkeys: 'global'
+			passkeys: 'global',
+			domain_hint: ''
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
 	};
