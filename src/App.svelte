@@ -165,7 +165,8 @@
 
 	const queryParams = {
 		params: {
-			provider_hint: ''
+			provider_hint: '',
+			domain_hint: ''
 		},
 		required: []
 	};
@@ -181,7 +182,6 @@
 			state: '',
 			prompt: ['consent', 'login'],
 			login_hint: '',
-			domain_hint: '',
 			scope: '',
 			custom: ''
 		},
@@ -1057,9 +1057,7 @@
 										<span class="pt-0.5 block" />
 									{/if}
 									<li
-										class="flex {param === 'domain_hint'
-											? 'items-start'
-											: 'items-center'} relative {param === 'custom'
+										class="flex items-center relative {param === 'custom'
 											? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
 											: ''}"
 									>
@@ -1099,15 +1097,9 @@
 													//if both domain_hint and login_hint are checked (only one is valid at a time)
 													(param === 'login_hint' &&
 														states.protocol_params.includes('login_hint') &&
-														states.protocol_params.includes('domain_hint') &&
+														states.query_params.includes('domain_hint') &&
 														!['personal', 'managed'].includes(
-															states.protocol_param_values.domain_hint
-														)) ||
-													(param === 'domain_hint' &&
-														states.protocol_params.includes('domain_hint') &&
-														states.protocol_params.includes('login_hint') &&
-														!['personal', 'managed'].includes(
-															states.protocol_param_values.domain_hint
+															states.query_param_values.domain_hint
 														))}
 											>
 												{param}
@@ -1225,7 +1217,7 @@
 								{#each Object.entries( { ...queryParams.params, ...(isHelloMode ? queryParams.pi_params : {}) } ) as [param, value]}
 									{@const required = queryParams.required.includes(param)}
 									<li
-										class="flex {param === 'provider_hint'
+										class="flex {['provider_hint', 'domain_hint'].includes(param)
 											? 'items-start'
 											: 'items-center'} relative"
 										class:pb-2={param === 'custom'}
@@ -1261,7 +1253,15 @@
 														states.query_params.includes('response_mode') &&
 														states.query_param_values.response_mode === 'query' &&
 														states.query_params.includes('response_type') &&
-														states.query_param_values.response_type === 'id_token')}
+														states.query_param_values.response_type === 'id_token') ||
+													//login_hint and domain_hint can both be provided if domain_hint is not a domain (IE it is personal or managed)
+													//if both domain_hint and login_hint are checked (only one is valid at a time)
+													(param === 'domain_hint' &&
+														states.query_params.includes('domain_hint') &&
+														states.protocol_params.includes('login_hint') &&
+														!['personal', 'managed'].includes(
+															states.query_param_values.domain_hint
+														))}
 											>
 												{param}
 												{required ? '*' : ''}
@@ -1331,6 +1331,8 @@
 															>apple-- microsoft-- google-- email-- passkey--</span
 														>
 													</p>
+												{:else if param === 'domain_hint'}
+													<p class="text-xs mt-1.5 opacity-80">personal managed domain.example</p>
 												{/if}
 											{/if}
 										</div>
