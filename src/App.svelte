@@ -166,7 +166,11 @@
 	const queryParams = {
 		params: {
 			provider_hint: '',
-			domain_hint: ''
+			domain_hint: '',
+			custom: ''
+		},
+		pi_params: {
+			passkeys: 'global'
 		},
 		required: []
 	};
@@ -182,11 +186,7 @@
 			state: '',
 			prompt: ['consent', 'login'],
 			login_hint: '',
-			scope: '',
-			custom: ''
-		},
-		pi_params: {
-			passkeys: 'global'
+			scope: ''
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
 	};
@@ -546,6 +546,13 @@
 			}
 			if (queryParams?.length) {
 				for (const param of queryParams) {
+					if (param === 'custom' && type == 'request') {
+						const custom = new URLSearchParams(queryParamValues[param]);
+						for (const [key, value] of custom) {
+							url.searchParams.set(key, value);
+						}
+						continue;
+					}
 					const query_param_value = queryParamValues[param];
 					if (query_param_value) {
 						url.searchParams.set(param, query_param_value);
@@ -554,13 +561,6 @@
 			}
 			if (protocolParams?.length) {
 				for (const param of protocolParams) {
-					if (param === 'custom' && type == 'request') {
-						const custom = new URLSearchParams(protocolParamValues[param]);
-						for (const [key, value] of custom) {
-							url.searchParams.set(key, value);
-						}
-						continue;
-					}
 					const protocol_param_value = protocolParamValues[param];
 					const isArray = Array.isArray(protocol_param_value);
 					if (isArray ? protocol_param_value.length : protocol_param_value) {
@@ -940,29 +940,46 @@
 						class:opacity-50={states.protocol_params.includes('scope')}
 						class:pointer-events-none={states.protocol_params.includes('scope')}
 					>
-						<div class="space-x-6 inline-flex justify-between items-center">
-							<button
-								class="inline-flex items-center space-x-2"
-								on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}
-							>
-								<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
+						<div class="inline-flex items-center space-x-2">
+							<div class="space-x-6 inline-flex justify-between items-center">
+								<button
+									class="inline-flex items-center space-x-2"
+									on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}
+								>
+									<h1 class="font-semibold text-lg inline-block">Scope Parameter</h1>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="3"
+										stroke="currentColor"
+										class="w-4 h-4"
+										class:rotate-180={states.dropdowns.scopeParam}
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="m19.5 8.25-7.5 7.5-7.5-7.5"
+										/>
+									</svg>
+								</button>
+							</div>
+							<a href="https://www.hello.dev/docs/scopes/" target="_blank">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
 									viewBox="0 0 24 24"
-									stroke-width="3"
-									stroke="currentColor"
-									class="w-4 h-4"
-									class:rotate-180={states.dropdowns.scopeParam}
+									fill="currentColor"
+									style="height: 1.1rem"
 								>
 									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="m19.5 8.25-7.5 7.5-7.5-7.5"
+										fill-rule="evenodd"
+										d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+										clip-rule="evenodd"
 									/>
 								</svg>
-							</button>
+							</a>
 						</div>
+
 						{#if states.dropdowns.scopeParam}
 							<div class="mt-2" transition:slide|local>
 								<div class="flex gap-x-4 pl-1">
@@ -1028,39 +1045,53 @@
 
 					<!-- Protocol Params -->
 					<div class="break-inside-avoid-column">
-						<button
-							class="inline-flex items-center space-x-2"
-							on:click={() => (states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
-						>
-							<h1 class="font-semibold text-lg inline-block">Protocol Params</h1>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="3"
-								stroke="currentColor"
-								class="w-4 h-4"
-								class:rotate-180={states.dropdowns.protocolParams}
+						<div class="inline-flex items-center space-x-2">
+							<button
+								class="inline-flex items-center space-x-2"
+								on:click={() =>
+									(states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
 							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m19.5 8.25-7.5 7.5-7.5-7.5"
-								/>
-							</svg>
-						</button>
+								<h1 class="font-semibold text-lg inline-block">Protocol Parameters</h1>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="3"
+									stroke="currentColor"
+									class="w-4 h-4"
+									class:rotate-180={states.dropdowns.protocolParams}
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="m19.5 8.25-7.5 7.5-7.5-7.5"
+									/>
+								</svg>
+							</button>
+							<a
+								href="https://www.hello.dev/docs/oidc/request/#openid-connect-parameters"
+								target="_blank"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									style="height: 1.1rem"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							</a>
+						</div>
+
 						{#if states.dropdowns.protocolParams}
 							<ul class="space-y-2 mt-2" transition:slide|local>
 								{#each Object.entries( { ...protocolParams.params, ...(isHelloMode ? protocolParams.pi_params : {}) } ) as [param, value]}
 									{@const required = protocolParams.required.includes(param)}
-									{#if param === 'custom'}
-										<span class="pt-0.5 block" />
-									{/if}
-									<li
-										class="flex items-center relative {param === 'custom'
-											? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
-											: ''}"
-									>
+									<li class="flex items-center relative">
 										<div class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center">
 											{#if param !== 'code_verifier'}
 												<input
@@ -1189,37 +1220,60 @@
 						{/if}
 					</div>
 
+					<br />
+
 					<!-- Query Params -->
 					<div class="break-inside-avoid-column">
-						<button
-							class="inline-flex items-center space-x-2"
-							on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
-						>
-							<h1 class="font-semibold text-lg inline-block">Custom Params</h1>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="3"
-								stroke="currentColor"
-								class="w-4 h-4"
-								class:rotate-180={states.dropdowns.queryParams}
+						<div class="inline-flex items-center space-x-2">
+							<button
+								class="inline-flex items-center space-x-2"
+								on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
 							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m19.5 8.25-7.5 7.5-7.5-7.5"
-								/>
-							</svg>
-						</button>
+								<h1 class="font-semibold text-lg inline-block">Hellō Parameters</h1>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="3"
+									stroke="currentColor"
+									class="w-4 h-4"
+									class:rotate-180={states.dropdowns.queryParams}
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="m19.5 8.25-7.5 7.5-7.5-7.5"
+									/>
+								</svg>
+							</button>
+							<a href="https://www.hello.dev/docs/oidc/request/#hellō-parameters" target="_blank">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									style="height: 1.1rem"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							</a>
+						</div>
 						{#if states.dropdowns.queryParams}
 							<ul class="space-y-2 mt-2" transition:slide|local>
 								{#each Object.entries( { ...queryParams.params, ...(isHelloMode ? queryParams.pi_params : {}) } ) as [param, value]}
 									{@const required = queryParams.required.includes(param)}
+									{#if param === 'custom'}
+										<span class="pt-0.5 block" />
+									{/if}
 									<li
 										class="flex {['provider_hint', 'domain_hint'].includes(param)
 											? 'items-start'
-											: 'items-center'} relative"
+											: 'items-center'} {param === 'custom'
+											? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
+											: ''} relative"
 										class:pb-2={param === 'custom'}
 										class:pt-2={param === 'provider_hint'}
 									>
@@ -1332,7 +1386,10 @@
 														>
 													</p>
 												{:else if param === 'domain_hint'}
-													<p class="text-xs mt-1.5 opacity-80">personal managed domain.example</p>
+													<p class="text-xs mt-1.5 opacity-80">
+														personal <span class="opacity-60">or</span> managed
+														<span class="opacity-60">or</span> domain.example
+													</p>
 												{/if}
 											{/if}
 										</div>
