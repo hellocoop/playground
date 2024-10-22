@@ -165,8 +165,7 @@
 
 	const queryParams = {
 		params: {
-			provider_hint: '',
-			account: ['personal', 'managed']
+			provider_hint: ''
 		},
 		required: []
 	};
@@ -182,18 +181,17 @@
 			state: '',
 			prompt: ['consent', 'login'],
 			login_hint: '',
+			domain_hint: '',
 			scope: '',
 			custom: ''
 		},
 		pi_params: {
-			passkeys: 'global',
-			domain_hint: ''
+			passkeys: 'global'
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
 	};
 	const protocolParamsPlaceholders = {
-		login_hint: 'name@example.com',
-		domain_hint: 'example.com'
+		login_hint: 'name@example.com'
 	};
 
 	const inviteQueryParams = {
@@ -230,8 +228,7 @@
 		invite_query_params: ['inviter', 'client_id', 'initiate_login_uri', 'return_uri'],
 		invite_playground_query_params: ['inviter', 'client_id', 'initiate_login_uri', 'return_uri'],
 		query_param_values: {
-			...queryParams.params,
-			account: 'managed'
+			...queryParams.params
 		},
 		protocol_param_values: {
 			...protocolParams.params,
@@ -1060,7 +1057,9 @@
 										<span class="pt-0.5 block" />
 									{/if}
 									<li
-										class="flex items-center relative {param === 'custom'
+										class="flex {param === 'domain_hint'
+											? 'items-start'
+											: 'items-center'} relative {param === 'custom'
 											? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
 											: ''}"
 									>
@@ -1096,13 +1095,20 @@
 														states.protocol_param_values.response_mode === 'query' &&
 														states.protocol_params.includes('response_type') &&
 														states.protocol_param_values.response_type === 'id_token') ||
+													//login_hint and domain_hint can both be provided if domain_hint is not a domain (IE it is personal or managed)
 													//if both domain_hint and login_hint are checked (only one is valid at a time)
 													(param === 'login_hint' &&
 														states.protocol_params.includes('login_hint') &&
-														states.protocol_params.includes('domain_hint')) ||
+														states.protocol_params.includes('domain_hint') &&
+														!['personal', 'managed'].includes(
+															states.protocol_param_values.domain_hint
+														)) ||
 													(param === 'domain_hint' &&
 														states.protocol_params.includes('domain_hint') &&
-														states.protocol_params.includes('login_hint'))}
+														states.protocol_params.includes('login_hint') &&
+														!['personal', 'managed'].includes(
+															states.protocol_param_values.domain_hint
+														))}
 											>
 												{param}
 												{required ? '*' : ''}
@@ -1180,6 +1186,10 @@
 													/>
 												</div>
 											{/if}
+
+											{#if param === 'domain_hint'}
+												<p class="text-xs mt-1.5 opacity-80">personal managed domain.example</p>
+											{/if}
 										</div>
 									</li>
 								{/each}
@@ -1224,7 +1234,6 @@
 										<div
 											class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center"
 											class:mt-6={param === 'client_id'}
-											class:mt-1={param === 'provider_hint'}
 										>
 											<input
 												type="checkbox"
