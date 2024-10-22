@@ -1178,6 +1178,10 @@
 													/>
 												</div>
 											{/if}
+
+											{#if param === 'domain_hint'}
+												<p class="text-xs mt-1.5 opacity-80">personal managed domain.example</p>
+											{/if}
 										</div>
 									</li>
 								{/each}
