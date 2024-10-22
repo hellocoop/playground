@@ -166,7 +166,11 @@
 	const queryParams = {
 		params: {
 			provider_hint: '',
-			domain_hint: ''
+			domain_hint: '',
+			custom: ''
+		},
+		pi_params: {
+			passkeys: 'global'
 		},
 		required: []
 	};
@@ -182,11 +186,7 @@
 			state: '',
 			prompt: ['consent', 'login'],
 			login_hint: '',
-			scope: '',
-	
-		},
-		pi_params: {
-			passkeys: 'global'
+			scope: ''
 		},
 		required: ['client_id', 'redirect_uri', 'nonce', 'response_type']
 	};
@@ -546,6 +546,13 @@
 			}
 			if (queryParams?.length) {
 				for (const param of queryParams) {
+					if (param === 'custom' && type == 'request') {
+						const custom = new URLSearchParams(queryParamValues[param]);
+						for (const [key, value] of custom) {
+							url.searchParams.set(key, value);
+						}
+						continue;
+					}
 					const query_param_value = queryParamValues[param];
 					if (query_param_value) {
 						url.searchParams.set(param, query_param_value);
@@ -554,13 +561,6 @@
 			}
 			if (protocolParams?.length) {
 				for (const param of protocolParams) {
-					if (param === 'custom' && type == 'request') {
-						const custom = new URLSearchParams(protocolParamValues[param]);
-						for (const [key, value] of custom) {
-							url.searchParams.set(key, value);
-						}
-						continue;
-					}
 					const protocol_param_value = protocolParamValues[param];
 					const isArray = Array.isArray(protocol_param_value);
 					if (isArray ? protocol_param_value.length : protocol_param_value) {
@@ -1053,14 +1053,7 @@
 							<ul class="space-y-2 mt-2" transition:slide|local>
 								{#each Object.entries( { ...protocolParams.params, ...(isHelloMode ? protocolParams.pi_params : {}) } ) as [param, value]}
 									{@const required = protocolParams.required.includes(param)}
-									{#if param === 'custom'}
-										<span class="pt-0.5 block" />
-									{/if}
-									<li
-										class="flex items-center relative {param === 'custom'
-											? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
-											: ''}"
-									>
+									<li class="flex items-center relative">
 										<div class="w-1/2 md:w-1/4 flex-shrink-0 md:min-w-[10rem] flex items-center">
 											{#if param !== 'code_verifier'}
 												<input
@@ -1189,6 +1182,8 @@
 						{/if}
 					</div>
 
+					<br />
+
 					<!-- Query Params -->
 					<div class="break-inside-avoid-column">
 						<button
@@ -1216,10 +1211,15 @@
 							<ul class="space-y-2 mt-2" transition:slide|local>
 								{#each Object.entries( { ...queryParams.params, ...(isHelloMode ? queryParams.pi_params : {}) } ) as [param, value]}
 									{@const required = queryParams.required.includes(param)}
+									{#if param === 'custom'}
+										<span class="pt-0.5 block" />
+									{/if}
 									<li
 										class="flex {['provider_hint', 'domain_hint'].includes(param)
 											? 'items-start'
-											: 'items-center'} relative"
+											: 'items-center'} {param === 'custom'
+											? 'pt-4 border-t border-charcoal/30 dark:border-white/20'
+											: ''} relative"
 										class:pb-2={param === 'custom'}
 										class:pt-2={param === 'provider_hint'}
 									>
@@ -1333,7 +1333,8 @@
 													</p>
 												{:else if param === 'domain_hint'}
 													<p class="text-xs mt-1.5 opacity-80">
-														personal <span class="opacity-60">or</span> managed <span class="opacity-60">or</span> domain.example
+														personal <span class="opacity-60">or</span> managed
+														<span class="opacity-60">or</span> domain.example
 													</p>
 												{/if}
 											{/if}
