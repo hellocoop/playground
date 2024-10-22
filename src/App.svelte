@@ -183,7 +183,7 @@
 			prompt: ['consent', 'login'],
 			login_hint: '',
 			scope: '',
-			custom: ''
+	
 		},
 		pi_params: {
 			passkeys: 'global'
@@ -945,7 +945,7 @@
 								class="inline-flex items-center space-x-2"
 								on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}
 							>
-								<h1 class="font-semibold text-lg inline-block">Scope Param</h1>
+								<h1 class="font-semibold text-lg inline-block">Scope Parameter</h1>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
@@ -1032,7 +1032,7 @@
 							class="inline-flex items-center space-x-2"
 							on:click={() => (states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
 						>
-							<h1 class="font-semibold text-lg inline-block">Protocol Params</h1>
+							<h1 class="font-semibold text-lg inline-block">Protocol Parameters</h1>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -1195,7 +1195,7 @@
 							class="inline-flex items-center space-x-2"
 							on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
 						>
-							<h1 class="font-semibold text-lg inline-block">Custom Params</h1>
+							<h1 class="font-semibold text-lg inline-block">Hellō Parameters</h1>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -1332,7 +1332,9 @@
 														>
 													</p>
 												{:else if param === 'domain_hint'}
-													<p class="text-xs mt-1.5 opacity-80">personal managed domain.example</p>
+													<p class="text-xs mt-1.5 opacity-80">
+														personal <span class="opacity-60">or</span> managed <span class="opacity-60">or</span> domain.example
+													</p>
 												{/if}
 											{/if}
 										</div>
