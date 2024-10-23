@@ -1074,7 +1074,7 @@
 								</svg>
 							</button>
 							<a
-								use:tippy={{ content: 'Protocol Parameter Docs', placement: 'top' }}
+								use:tippy={{ content: 'Protocol Parameters Docs', placement: 'top' }}
 								href="https://www.hello.dev/docs/oidc/request/#openid-connect-parameters"
 								target="_blank"
 							>
@@ -1249,7 +1249,7 @@
 								</svg>
 							</button>
 							<a
-								use:tippy={{ content: 'Hellō Parameter Docs', placement: 'top' }}
+								use:tippy={{ content: 'Hellō Parameters Docs', placement: 'top' }}
 								href="https://www.hello.dev/docs/oidc/request/#hellō-parameters"
 								target="_blank"
 							>
