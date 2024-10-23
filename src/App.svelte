@@ -1035,7 +1035,7 @@
 											<input
 												type="text"
 												class="h-6 px-2 ml-2 w-24 mr-10 form-input italic"
-												autocomplete="off"
+												autocomplete="none"
 												autocorrect="off"
 												autocapitalize="off"
 												spellcheck="false"
@@ -1207,7 +1207,7 @@
 														placeholder={protocolParamsPlaceholders[param]}
 														name={param}
 														class="h-6 px-2 w-full form-input"
-														autocomplete="off"
+														autocomplete={param === 'login_hint' ? 'email' : 'none'}
 														autocorrect="off"
 														autocapitalize="off"
 														spellcheck="false"
@@ -1362,7 +1362,7 @@
 														type="text"
 														name={param}
 														class="h-6 px-2 w-full form-input"
-														autocomplete="off"
+														autocomplete="none"
 														autocorrect="off"
 														autocapitalize="off"
 														spellcheck="false"
