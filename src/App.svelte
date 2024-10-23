@@ -4,7 +4,8 @@
 	import makePKCE from './utils/pkce.js';
 	import { createCssVariablesTheme } from 'shiki/core';
 	import { createHighlighterCore } from 'shiki';
-	import getWasm from 'shiki/wasm'; //TBD: does not work without importin this
+	import tippy from 'sveltejs-tippy';
+	import getWasm from 'shiki/wasm'; //TBD: does not work without importing this
 
 	let readFromLocalStorage = false;
 	let darkMode = false;
@@ -964,7 +965,11 @@
 									</svg>
 								</button>
 							</div>
-							<a href="https://www.hello.dev/docs/scopes/" target="_blank">
+							<a
+								use:tippy={{ content: 'Scope Parameter Docs', placement: 'top' }}
+								href="https://www.hello.dev/docs/scopes/"
+								target="_blank"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
@@ -1069,6 +1074,7 @@
 								</svg>
 							</button>
 							<a
+								use:tippy={{ content: 'Protocol Parameter Docs', placement: 'top' }}
 								href="https://www.hello.dev/docs/oidc/request/#openid-connect-parameters"
 								target="_blank"
 							>
@@ -1242,7 +1248,11 @@
 									/>
 								</svg>
 							</button>
-							<a href="https://www.hello.dev/docs/oidc/request/#hellō-parameters" target="_blank">
+							<a
+								use:tippy={{ content: 'Hellō Parameter Docs', placement: 'top' }}
+								href="https://www.hello.dev/docs/oidc/request/#hellō-parameters"
+								target="_blank"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
