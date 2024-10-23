@@ -1209,10 +1209,6 @@
 													/>
 												</div>
 											{/if}
-
-											{#if param === 'domain_hint'}
-												<p class="text-xs mt-1.5 opacity-80">personal managed domain.example</p>
-											{/if}
 										</div>
 									</li>
 								{/each}
@@ -1387,8 +1383,7 @@
 													</p>
 												{:else if param === 'domain_hint'}
 													<p class="text-xs mt-1.5 opacity-80">
-														personal <span class="opacity-60">or</span> managed
-														<span class="opacity-60">or</span> domain.example
+														personal | managed | domain.example
 													</p>
 												{/if}
 											{/if}
