@@ -67,7 +67,7 @@
 		'qrcode',
 		'passkey'
 	];
-	const pi_possibleSlugs = ['managed'];
+	const pi_possibleSlugs = [];
 
 	let invalidProviderHintSlug = null;
 	let debounceTimer;
