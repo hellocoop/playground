@@ -324,6 +324,7 @@
 
 		const id_token = protocolParams.get('id_token');
 		const loginHint = protocolParams.get('login_hint');
+		const domainHint = protocolParams.get('domain_hint');
 		const code = protocolParams.get('code');
 		const initiate_login = protocolParams.get('initiate-login');
 		const iss = protocolParams.get('iss');
@@ -357,18 +358,23 @@
 			if (loginHint) {
 				_requestUrl += '&login_hint=' + loginHint;
 			}
+			if (domainHint) {
+				_requestUrl += '&domain_hint=' + domainHint;
+			}
 			window.location.href = _requestUrl;
 		}
 		if (initiate_login) {
 			await tick(); //wait for requestURL to compute
 			const url = new URL(initiate_login);
-			const loginHint = protocolParams.get('login_hint');
 			const existingSearchParams = new URL(requestURL).search;
 			if (existingSearchParams) {
 				url.search = existingSearchParams;
 			}
 			if (loginHint) {
 				url.searchParams.set('login_hint', loginHint);
+			}
+			if (domainHint) {
+				url.searchParams.set('domain_hint', domainHint);
 			}
 			window.location.href = url.href;
 		}
