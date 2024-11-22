@@ -144,7 +144,7 @@
 	const navLinks = [
 		{
 			text: 'Documentation',
-			link: 'https://hello.dev/documentation/'
+			link: 'https://hello.dev/docs/'
 		},
 		{
 			text: 'Console',
