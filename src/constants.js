@@ -18,6 +18,7 @@ const SCOPE_PARAM = {
         'gitlab'
     ],
     REQUIRED: ['openid'],
+    DEFAULT_SELECTED: ['openid', 'profile'],
 
     // Hellō Dev Mode
     HELLO_EXTEND_STANDARD: ['preferred_username'],
@@ -26,36 +27,66 @@ const SCOPE_PARAM = {
 
 const PROTOCOL_PARAM = {
     PARAMS: [
-        'client_id',
-        'nonce',
-        'rediect_uri',
+        {
+            NAME: 'client_id',
+            POSSIBLE_VALUE: ''
+        },
+        {
+            NAME: 'nonce',
+            POSSIBLE_VALUE: ''
+        },
+        {
+            NAME: 'redirect_uri',
+            POSSIBLE_VALUE: ''
+        },
         {
             NAME: 'response_type',
-            POSSIBLE_VALUES: ['code', 'id_token'],
+            POSSIBLE_VALUE: ['code', 'id_token'],
             ONLY_ONE: true
         },
-        'code_challenge',
-        'code_verifier',
+        {
+            NAME: 'code_challenge',
+            POSSIBLE_VALUE: ''
+        },
+        {
+            NAME: 'code_verifier',
+            POSSIBLE_VALUE: ''
+        },
         {
             NAME: 'response_mode',
-            POSSIBLE_VALUES: ['fragment', 'query'],
+            POSSIBLE_VALUE: ['fragment', 'query'],
             ONLY_ONE: true
         },
-        'state',
+        {
+            NAME: 'state',
+            POSSIBLE_VALUE: ''
+        },
         {
             NAME: 'prompt',
-            POSSIBLE_VALUES: ['consent', 'login'],
+            POSSIBLE_VALUE: ['consent', 'login'],
             ONLY_ONE: false
         },
-        'login_hint',
-        'scope'
+        {
+            NAME: 'login_hint',
+            POSSIBLE_VALUE: ''
+        },
+        {
+            NAME: 'scope',
+            POSSIBLE_VALUE: ''
+        }
     ],
     REQUIRED: [
         'client_id',
         'nonce',
         'redirect_uri',
         'response_type'
-    ]
+    ],
+    DEFAULT_SELECTED: {
+        client_id: 'app_HelloDeveloperPlayground_Iq2',
+        nonce: '123',
+        redirect_uri: 'https://playground.hello.dev/',
+        response_type: 'id_token'
+    }
 }
 
 const PROVIDER_HINTS = [
@@ -84,16 +115,16 @@ const HELLO_PARAM = {
     PARAMS: [
         {
             NAME: 'provider_hint',
-            POSSIBLE_VALUES: PROVIDER_HINTS,
+            POSSIBLE_VALUE: PROVIDER_HINTS,
             ONLY_ONE: false
         },
         {
             NAME: 'domain_hint',
-            POSSIBLE_VALUES: ['personal', 'managed', 'domain.example'],
+            POSSIBLE_VALUE: ['personal', 'managed', 'domain.example'],
             ONLY_ONE: true
         }
     ],
-    REQUIRED: []
+    REQUIRED: ''
 }
 
 const PARAMS = {
