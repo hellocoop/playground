@@ -131,9 +131,9 @@
 		</div>
 
 		<div
-			on:click={() => (mobileMenu = false)}
+			onclick={() => (mobileMenu = false)}
 			class="lg:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
-		/>
+		></div>
 	{/if}
 </header>
 

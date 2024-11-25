@@ -1,4 +1,6 @@
 <script>
+	import { run } from 'svelte/legacy';
+
 	import { onMount, tick } from 'svelte';
 	import { slide } from 'svelte/transition';
 	// import makePKCE from './utils/pkce.js';
@@ -10,11 +12,11 @@
 	import Notification from './lib/Notification.svelte'
 
 	let readFromLocalStorage = false;
-	let darkMode = false;
-	let highlighter;
-	let isHelloMode = false;
+	let darkMode = $state(false);
+	let highlighter = $state();
+	let isHelloMode = $state(false);
 
-	const scopes = {
+	const scopes = $state({
 		standard: [
 			'openid',
 			'profile',
@@ -39,7 +41,7 @@
 			'existing_username'
 		],
 		required: ['openid']
-	};
+	});
 	scopes.claims = [
 		'sub',
 		...scopes.standard,
@@ -71,29 +73,9 @@
 	];
 	const pi_possibleSlugs = [];
 
-	let invalidProviderHintSlug = null;
-	let debounceTimer;
+	let invalidProviderHintSlug = $state(null);
+	let debounceTimer = $state();
 
-	$: {
-		//show error if invalid provider_hint
-		if ('provider_hint' in states.query_param_values) {
-			clearTimeout(debounceTimer);
-			debounceTimer = setTimeout(() => {
-				const providerHintsArr = states.query_param_values?.provider_hint?.split(' ');
-				const invalidSlugs = providerHintsArr
-					.map((i) => i.replace('--', ''))
-					.filter(
-						(i) => ![...possibleSlugs, ...(isHelloMode ? pi_possibleSlugs : [])].includes(i) && i
-					);
-
-				if (invalidSlugs?.length) {
-					invalidProviderHintSlug = Array.from(invalidSlugs);
-				} else {
-					invalidProviderHintSlug = null;
-				}
-			}, 250);
-		}
-	}
 
 	onMount(async () => {
 		if (!getStatesFromLocalStorage()) {
@@ -153,7 +135,7 @@
 
 	// const updateScopes = ['name', 'email', 'picture', 'phone', 'profile'];
 
-	let errorNotification = null;
+	let errorNotification = $state(null);
 
 	const queryParams = {
 		params: {
@@ -204,14 +186,14 @@
 		required: ['client_id', 'initiate_login_uri', 'return_uri']
 	};
 
-	let custom_authorization_server = '';
+	let custom_authorization_server = $state('');
 
-	const result = {
+	const result = $state({
 		authorize: null,
 		introspect: null,
 		userinfo: null,
 		token: null
-	};
+	});
 
 	//this is so we can reset query params to original state
 	const defaultQueryParamStates = {
@@ -263,13 +245,13 @@
 	};
 
 	//binds to user input
-	let states = {
+	let states = $state({
 		...defaultStates
-	};
+	});
 
 	let mobileMenu = false;
 
-	const copyTooltip = {
+	const copyTooltip = $state({
 		requestURL: false,
 		inviteURL: false,
 		invitePlaygroundURL: false,
@@ -277,18 +259,9 @@
 		introspect: false,
 		userinfo: false,
 		token: false
-	};
+	});
 
-	$: dropdown = {
-		authorize: result.authorize !== null ? true : false,
-		token: result.token !== null ? true : false,
-		userinfo: result.userinfo !== null ? true : false,
-		introspect: result.introspect !== null ? true : false,
-		claims: result.introspect !== null ? true : false
-	};
 
-	//detect chanes in state -> save to local storage
-	$: states, saveStatesToLocalStorage();
 
 	async function processFragmentOrQuery() {
 		if (!window.location.hash && !window.location.search) return;
@@ -580,7 +553,7 @@
 		}
 	}
 
-	let continueWithHelloAjax = false;
+	let continueWithHelloAjax = $state(false);
 	async function continueWithHello() {
 		try {
 			continueWithHelloAjax = true;
@@ -600,7 +573,7 @@
 		}
 	}
 
-	let invitePlaygroundWithHelloAjax = false;
+	let invitePlaygroundWithHelloAjax = $state(false);
 	function invitePlaygroundWithHello() {
 		invitePlaygroundWithHelloAjax = true;
 		window.location.href = invitePlaygroundURL;
@@ -665,31 +638,8 @@
 		}
 	}
 
-	$: requestURL = makeRequestURL({
-		server: states.selected_authorization_server,
-		scopes: states.scopes,
-		queryParams: states.query_params,
-		queryParamValues: states.query_param_values,
-		protocolParams: states.protocol_params,
-		protocolParamValues: states.protocol_param_values,
-		type: 'request'
-	});
 
-	$: inviteURL = makeRequestURL({
-		server: states.selected_authorization_server,
-		scopes: [],
-		protocolParams: states.invite_query_params,
-		protocolParamValues: states.invite_query_param_values,
-		type: 'invite'
-	});
 
-	$: invitePlaygroundURL = makeRequestURL({
-		server: states.selected_authorization_server,
-		scopes: [],
-		protocolParams: states.invite_playground_query_params,
-		protocolParamValues: states.invite_playground_query_param_values,
-		type: 'invite'
-	});
 
 	async function sendPlausibleEvent() {
 		if (isHelloMode || import.meta.env.DEV) {
@@ -719,10 +669,6 @@
 		states = { ...defaultStates };
 	};
 
-	$: canInvite =
-		states.invite_playground_query_param_values.inviter &&
-		result.introspect?.name &&
-		result.introspect?.email;
 
 	const highlight = (lang, content) => {
 		if (!highlighter) return '...';
@@ -732,10 +678,68 @@
 		});
 		return html;
 	};
+	run(() => {
+		//show error if invalid provider_hint
+		if ('provider_hint' in states.query_param_values) {
+			clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(() => {
+				const providerHintsArr = states.query_param_values?.provider_hint?.split(' ');
+				const invalidSlugs = providerHintsArr
+					.map((i) => i.replace('--', ''))
+					.filter(
+						(i) => ![...possibleSlugs, ...(isHelloMode ? pi_possibleSlugs : [])].includes(i) && i
+					);
+
+				if (invalidSlugs?.length) {
+					invalidProviderHintSlug = Array.from(invalidSlugs);
+				} else {
+					invalidProviderHintSlug = null;
+				}
+			}, 250);
+		}
+	});
+	let dropdown = $derived({
+		authorize: result.authorize !== null ? true : false,
+		token: result.token !== null ? true : false,
+		userinfo: result.userinfo !== null ? true : false,
+		introspect: result.introspect !== null ? true : false,
+		claims: result.introspect !== null ? true : false
+	});
+	//detect chanes in state -> save to local storage
+	run(() => {
+		states, saveStatesToLocalStorage();
+	});
+	let requestURL = $derived(makeRequestURL({
+		server: states.selected_authorization_server,
+		scopes: states.scopes,
+		queryParams: states.query_params,
+		queryParamValues: states.query_param_values,
+		protocolParams: states.protocol_params,
+		protocolParamValues: states.protocol_param_values,
+		type: 'request'
+	}));
+	let inviteURL = $derived(makeRequestURL({
+		server: states.selected_authorization_server,
+		scopes: [],
+		protocolParams: states.invite_query_params,
+		protocolParamValues: states.invite_query_param_values,
+		type: 'invite'
+	}));
+	let invitePlaygroundURL = $derived(makeRequestURL({
+		server: states.selected_authorization_server,
+		scopes: [],
+		protocolParams: states.invite_playground_query_params,
+		protocolParamValues: states.invite_playground_query_param_values,
+		type: 'invite'
+	}));
+	let canInvite =
+		$derived(states.invite_playground_query_param_values.inviter &&
+		result.introspect?.name &&
+		result.introspect?.email);
 </script>
 
 <svelte:window
-	on:keypress={(e) => {
+	onkeypress={(e) => {
 		if (e.key === 'Enter') {
 			continueWithHello();
 		}
@@ -790,7 +794,7 @@
 					</div>
 				{/if}
 				<button
-					on:click={resetAll}
+					onclick={resetAll}
 					class="absolute -top-3 right-1 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
 					>Reset</button
 				>
@@ -806,7 +810,7 @@
 							<div class="space-x-6 inline-flex justify-between items-center">
 								<button
 									class="inline-flex items-center space-x-2"
-									on:click={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}
+									onclick={() => (states.dropdowns.scopeParam = !states.dropdowns.scopeParam)}
 								>
 									<h1 class="font-semibold text-lg inline-block">Scope Parameter</h1>
 									<svg
@@ -914,7 +918,7 @@
 						<div class="inline-flex items-center space-x-2">
 							<button
 								class="inline-flex items-center space-x-2"
-								on:click={() =>
+								onclick={() =>
 									(states.dropdowns.protocolParams = !states.dropdowns.protocolParams)}
 							>
 								<h1 class="font-semibold text-lg inline-block">Protocol Parameters</h1>
@@ -964,14 +968,14 @@
 												<input
 													type="checkbox"
 													bind:group={states.protocol_params}
-													on:change={(e) => handleCheckboxInput(e, param)}
+													onchange={(e) => handleCheckboxInput(e, param)}
 													class="text-charcoal form-checkbox dark:text-gray-800"
 													name={param}
 													id={param}
 													value={param}
 												/>
 											{:else}
-												<span class="w-4" />
+												<span class="w-4"></span>
 											{/if}
 											<label
 												for={param}
@@ -1090,7 +1094,7 @@
 						<div class="inline-flex items-center space-x-2">
 							<button
 								class="inline-flex items-center space-x-2"
-								on:click={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
+								onclick={() => (states.dropdowns.queryParams = !states.dropdowns.queryParams)}
 							>
 								<h1 class="font-semibold text-lg inline-block">Hellō Parameters</h1>
 								<svg
@@ -1151,7 +1155,7 @@
 											<input
 												type="checkbox"
 												bind:group={states.query_params}
-												on:change={(e) => handleCheckboxInput(e, param)}
+												onchange={(e) => handleCheckboxInput(e, param)}
 												class="text-charcoal form-checkbox dark:text-gray-800"
 												name={param}
 												id={param}
@@ -1269,7 +1273,7 @@
 					<div class="break-inside-avoid-column">
 						<button
 							class="inline-flex items-center space-x-2"
-							on:click={() => (states.dropdowns.authzServer = !states.dropdowns.authzServer)}
+							onclick={() => (states.dropdowns.authzServer = !states.dropdowns.authzServer)}
 						>
 							<h1 class="font-semibold text-lg">Authorization Server</h1>
 							<svg
@@ -1328,7 +1332,7 @@
 									/>
 									<input
 										bind:value={custom_authorization_server}
-										on:input={(e) => (states.selected_authorization_server = e.target.value)}
+										oninput={(e) => (states.selected_authorization_server = e.target.value)}
 										type="url"
 										name="custom"
 										class="h-8 ml-2 w-full text-charcoal form-input"
@@ -1344,7 +1348,7 @@
 						<div class="flex items-center">
 							<button
 								class="inline-flex items-center space-x-2"
-								on:click={() => (states.dropdowns.requestURL = !states.dropdowns.requestURL)}
+								onclick={() => (states.dropdowns.requestURL = !states.dropdowns.requestURL)}
 							>
 								<h1 class="font-semibold text-lg">Request URL</h1>
 								<svg
@@ -1399,7 +1403,7 @@
 						{/if}
 
 						<button
-							on:click={continueWithHello}
+							onclick={continueWithHello}
 							class="hello-btn-black-and-static w-full flex mt-4"
 							class:hello-btn-loader={continueWithHelloAjax}
 							disabled={continueWithHelloAjax}
@@ -1423,7 +1427,7 @@
 					<div class="space-y-4">
 						<section class="btn group">
 							<button
-								on:click={() => (dropdown.authorize = !dropdown.authorize)}
+								onclick={() => (dropdown.authorize = !dropdown.authorize)}
 								class="py-2 w-full flex justify-between items-center px-4"
 							>
 								<div class="flex flex-col items-start text-left">
@@ -1478,7 +1482,7 @@
 						{#if result.token !== null}
 							<section class="btn group">
 								<button
-									on:click={() => (dropdown.token = !dropdown.token)}
+									onclick={() => (dropdown.token = !dropdown.token)}
 									class="py-2 w-full flex justify-between items-center px-4"
 								>
 									<div class="flex flex-col items-start text-left">
@@ -1532,7 +1536,7 @@
 						{#if result.userinfo !== null}
 							<section class="btn group">
 								<button
-									on:click={() => (dropdown.userinfo = !dropdown.userinfo)}
+									onclick={() => (dropdown.userinfo = !dropdown.userinfo)}
 									class="py-2 w-full flex justify-between items-center px-4"
 								>
 									<div class="flex flex-col items-start text-left">
@@ -1586,7 +1590,7 @@
 						{#if result.introspect !== null}
 							<section class="btn group">
 								<button
-									on:click={() => (dropdown.introspect = !dropdown.introspect)}
+									onclick={() => (dropdown.introspect = !dropdown.introspect)}
 									class="py-2 w-full flex justify-between items-center px-4"
 								>
 									<div class="flex flex-col items-start text-left">
@@ -1640,7 +1644,7 @@
 						{#if result.introspect}
 							<section class="btn group">
 								<button
-									on:click={() => (dropdown.claims = !dropdown.claims)}
+									onclick={() => (dropdown.claims = !dropdown.claims)}
 									class="h-12 w-full flex justify-between items-center px-4"
 								>
 									<span class="font-semibold text-lg">Claims</span>
@@ -1665,7 +1669,7 @@
 												<div class="w-1/4 md:w-1/3 flex-shrink-0">{claim}</div>
 												<div>
 													{#if claim === 'picture' && result.introspect[claim]}
-														<!-- svelte-ignore a11y-img-redundant-alt -->
+														<!-- svelte-ignore a11y_img_redundant_alt -->
 														<img
 															src={result.introspect[claim]}
 															class="h-10 w-10 rounded-full object-fit"
@@ -1724,7 +1728,7 @@
 					{/if}
 
 					<button
-						on:click={invitePlaygroundWithHello}
+						onclick={invitePlaygroundWithHello}
 						class="hello-btn-black-and-static w-full disabled:opacity-30"
 						class:hello-btn-loader={invitePlaygroundWithHelloAjax}
 						disabled={invitePlaygroundWithHelloAjax || !canInvite}
@@ -1764,7 +1768,7 @@
 				</a>
 			</section>
 		</div>
-		<wc-footer />
+		<wc-footer></wc-footer>
 	</main>
 {/if}
 
