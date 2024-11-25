@@ -41,7 +41,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'response_type',
-            POSSIBLE_VALUE: ['code', 'id_token'],
+            POSSIBLE_VALUE: ['id_token', 'code'],
             ONLY_ONE: true
         },
         {
@@ -84,7 +84,7 @@ const PROTOCOL_PARAM = {
     DEFAULT_SELECTED: {
         client_id: 'app_HelloDeveloperPlayground_Iq2',
         nonce: '123',
-        redirect_uri: 'https://playground.hello.dev/',
+        redirect_uri: 'http://localhost:5173/',
         response_type: 'id_token'
     }
 }
