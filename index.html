@@ -1,94 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<link href="dark-favicon.png" rel="icon" media="(prefers-color-scheme: light)" />
-		<link href="light-favicon.png" rel="icon" media="(prefers-color-scheme: dark)" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="theme-color" content="#303030" />
-		<title>Hellō Playground</title>
-		<link rel="stylesheet" type="text/css" href="https://cdn.hello.coop/css/hello-button.css" />
-		<link
-			rel="stylesheet"
-			href="https://unpkg.com/prism-themes@1.6.0/themes/prism-duotone-dark.css"
-		/>
-		<script src="https://cdn.hello.coop/js/hello-dev-wc-footer.js" defer=""></script>
 
-		<style type="text/css">
-			html,
-			body {
-				min-width: 320px;
-				overflow-x: auto;
-				overflow-y: auto;
-			}
+<head>
+  <meta charset="UTF-8" />
+  <link href="dark-favicon.png" rel="icon" media="(prefers-color-scheme: light)" />
+  <link href="light-favicon.png" rel="icon" media="(prefers-color-scheme: dark)" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#303030" />
+  <title>Hellō Playground</title>
+  <link rel="stylesheet" type="text/css" href="https://cdn.hello.coop/css/hello-button.css" />
+  <link rel="stylesheet" href="https://unpkg.com/prism-themes@1.6.0/themes/prism-duotone-dark.css" />
+  <script src="https://cdn.hello.coop/js/hello-dev-wc-footer.js" defer></script>
+  <style type="text/css">
+    html,
+    body {
+      min-width: 320px;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+    .spinner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      height: 40px;
+      width: 40px;
+      margin: -26px 0 0 -26px;
+      box-sizing: content-box;
+      animation: rotation 1s infinite linear;
+      border-width: 6px;
+      border-style: solid;
+      border-radius: 100%;
+    }
+    #spinner {
+      height: 3.2rem;
+      width: 3.2rem;
+      animation: rotation 1s linear infinite;
+    }
+    @keyframes rotation {
+      from {
+        transform: rotate(0deg);
+      }
 
-			.spinner {
-				position: absolute;
-				left: 50%;
-				top: 50%;
-				height: 40px;
-				width: 40px;
-				margin: -26px 0 0 -26px;
-				box-sizing: content-box;
-				animation: rotation 1s infinite linear;
-				border-width: 6px;
-				border-style: solid;
-				border-radius: 100%;
-			}
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        color: #d4d4d4;
+        background: #151515;
+      }
+      .spinner {
+        border-color: rgba(116, 116, 116, 0.3);
+        border-top-color: rgb(116, 116, 116);
+      }
+    }
+    @media (prefers-color-scheme: light) {
+      body {
+        color: #303030;
+        background: white;
+        color-scheme: light;
+      }
+      .spinner {
+        border-color: rgba(75, 75, 75, 0.3);
+        border-top-color: rgb(75, 75, 75);
+      }
+    }
+  </style>
+</head>
 
-			#spinner {
-				height: 3.2rem;
-				width: 3.2rem;
-				animation: rotation 1s linear infinite;
-			}
-
-			@keyframes rotation {
-				from {
-					transform: rotate(0deg);
-				}
-
-				to {
-					transform: rotate(360deg);
-				}
-			}
-
-			@media (prefers-color-scheme: dark) {
-				:root {
-					color-scheme: dark;
-				}
-
-				body {
-					color: #d4d4d4;
-					background: #151515;
-				}
-
-				.spinner {
-					border-color: rgba(116, 116, 116, 0.3);
-					border-top-color: rgb(116, 116, 116);
-				}
-			}
-
-			@media (prefers-color-scheme: light) {
-				body {
-					color: #303030;
-					background: white;
-					color-scheme: light;
-				}
-
-				.spinner {
-					border-color: rgba(75, 75, 75, 0.3);
-					border-top-color: rgb(75, 75, 75);
-				}
-			}
-		</style>
-	</head>
-
-	<body>
-		<div id="load-spinner" class="spinner"></div>
-		<div id="app" class="h-full flex-col" style="display: none"></div>
-		<script type="module" src="/src/main.js"></script>
-	</body>
-	<script>
+<body>
+  <div id="load-spinner" class="spinner"></div>
+  <div id="app" class="h-full flex flex-col"></div>
+  <script type="module" src="/src/main.js"></script>
+  <script>
 		/**
 		 * If browser back button was used, flush cache
 		 * This ensures that user will always see an accurate, up-to-date view based on their state
@@ -102,4 +90,6 @@
 			};
 		})();
 	</script>
+</body>
+
 </html>
