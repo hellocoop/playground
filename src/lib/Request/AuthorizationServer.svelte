@@ -1,6 +1,6 @@
 <script>
-    import { AUTHZ_SERVERS } from '../constants.js'
-    import ChevronY from './ChevronY.svelte'
+    import { AUTHZ_SERVERS } from '../../constants.js'
+    import ChevronY from '../ChevronY.svelte'
 
     let { dropdowns = $bindable() } = $props()
 </script>

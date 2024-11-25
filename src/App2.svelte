@@ -2,13 +2,12 @@
     import { onMount } from 'svelte'
     import { PARAMS, AUTHZ_SERVERS } from './constants.js'
     import Header from './lib/Header.svelte'
-    import ScopeParam from './lib/ScopeParam.svelte'
-    import ProtocolParams from './lib/ProtocolParams.svelte'
-    import HelloParams from './lib/HelloParams.svelte'
+    import ScopeParam from './lib/Request/ScopeParam.svelte'
+    import ProtocolParams from './lib/Request/ProtocolParams.svelte'
+    import HelloParams from './lib/Request/HelloParams.svelte'
     import AuthorizationRequest from './lib/AuthorizationRequest.svelte'
-    import AuthorizationUrlResponse from './lib/AuthorizationUrlResponse.svelte'
-    import AuthorizationJsonResponse from './lib/AuthorizationJsonResponse.svelte'
-    import InviteRequest from './lib/InviteRequest.svelte'
+    import AuthorizationResponse from './lib/AuthorizationResponse.svelte'
+    import Invite from './lib/Request/Invite.svelte'
     import FileIssue from './lib/FileIssue.svelte'
     import { makeAuthzUrl, makeInviteUrl, cleanUrl } from './lib/utils.js'
     import { parseToken, fetchToken } from '@hellocoop/helper-browser'
@@ -158,10 +157,11 @@
             {authzUrl}
         />
 
-        <AuthorizationUrlResponse authzUrlResponse={authzResponse.url}/>
-        <AuthorizationJsonResponse authzJsonResponse={authzResponse.json}/>
+        <AuthorizationResponse
+            {authzResponse}
+        />
 
-        <InviteRequest {inviteUrl}/>
+        <Invite {inviteUrl}/>
 
         <FileIssue/>
     </main>

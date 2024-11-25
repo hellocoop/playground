@@ -1,9 +1,9 @@
 <script>
-    import ScopeParam from "./ScopeParam.svelte";
-    import ProtocolParams from "./ProtocolParams.svelte";
-    import HelloParams from "./HelloParams.svelte";
-    import AuthorizationServer from "./AuthorizationServer.svelte";
-    import AuthorizationRequestUrl from "./AuthorizationRequestUrl.svelte";
+    import ScopeParam from "./Request/ScopeParam.svelte";
+    import ProtocolParams from "./Request/ProtocolParams.svelte";
+    import HelloParams from "./Request/HelloParams.svelte";
+    import AuthorizationServer from "./Request/AuthorizationServer.svelte";
+    import RequestUrl from "./Request/RequestUrl.svelte";
 
     let {
         selectedScopes = $bindable(),
@@ -80,6 +80,6 @@
 
         <AuthorizationServer bind:dropdowns />
 
-        <AuthorizationRequestUrl bind:dropdowns {authzUrl} />
+        <RequestUrl bind:dropdowns {authzUrl} />
     </div>
 </section>
