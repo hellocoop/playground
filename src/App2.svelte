@@ -24,6 +24,7 @@
         server: false,
         request: true
     })
+    let isHelloMode = $state(false)
 
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: AUTHZ_SERVERS[0],
@@ -152,6 +153,7 @@
             bind:selectedParams
             bind:selectedParamsValues
             bind:dropdowns
+            bind:isHelloMode
             {authzUrl}
         />
 
