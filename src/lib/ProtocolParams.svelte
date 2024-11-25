@@ -29,6 +29,7 @@
                     pclParam.NAME,
                 )}
                 {@const selected = selectedParams.includes(pclParam.NAME)}
+                {@const hasValue = !!selectedParamsValues[pclParam.NAME]}
                 <li class="flex flex-row items-center space-x-2">
                     <input
                         type="checkbox"
@@ -38,6 +39,7 @@
                         value={pclParam.NAME}
                     />
                     <label for={pclParam.NAME} class="text-sm font-normal w-48"
+                        class:text-red-500={(!selected || !hasValue) && required}
                         >{pclParam.NAME} {required ? "*" : ""}</label
                     >
 
