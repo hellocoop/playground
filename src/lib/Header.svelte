@@ -136,3 +136,16 @@
 		/>
 	{/if}
 </header>
+
+<style>
+	.nav-link:hover::after {
+		width: 100%;
+		content: ' ';
+		height: 2px;
+		background-color: white;
+		display: inline-block;
+		position: absolute;
+		bottom: -4px;
+		left: 0;
+	}
+</style>
