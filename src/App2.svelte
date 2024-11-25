@@ -16,6 +16,7 @@
     let selectedParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
     let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES)
     let authzResponse = $state({ url: null,json: null })
+    let isHelloMode = $state(false)
     let mounted = $state(false)
     let dropdowns = $state({
         scope: true,
@@ -24,7 +25,6 @@
         server: false,
         request: true
     })
-    let isHelloMode = $state(false)
 
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: AUTHZ_SERVERS[0],
@@ -85,43 +85,43 @@
     }
 
     async function processCode(params) {
-        try {
-            const code_verifier = sessionStorage.getItem('code_verifier');
-            const nonce = sessionStorage.getItem('nonce');
-            const code = params.get('code');
-            if (!code_verifier)
-                throw new Error('Missing code_verifier');
-            if (!nonce)
-                throw new Error('Missing nonce');
-            if (!code)
-                throw new Error('Missing code');
+        // try {
+        //     const code_verifier = sessionStorage.getItem('code_verifier');
+        //     const nonce = sessionStorage.getItem('nonce');
+        //     const code = params.get('code');
+        //     if (!code_verifier)
+        //         throw new Error('Missing code_verifier');
+        //     if (!nonce)
+        //         throw new Error('Missing nonce');
+        //     if (!code)
+        //         throw new Error('Missing code');
 
-            const token = await fetchToken({
-                client_id: CONFIG.client_id,
-                redirect_uri: CONFIG.redirect_uri,
-                code_verifier,
-                nonce,
-                code,
-            });
-            if (!token)
-                throw new Error('Did not get response from token endpoint');
-            const { payload: profile } = parseToken(token);
-            if (!profile)
-                throw new Error('Did not get profile from token');
+        //     const token = await fetchToken({
+        //         client_id: CONFIG.client_id,
+        //         redirect_uri: CONFIG.redirect_uri,
+        //         code_verifier,
+        //         nonce,
+        //         code,
+        //     });
+        //     if (!token)
+        //         throw new Error('Did not get response from token endpoint');
+        //     const { payload: profile } = parseToken(token);
+        //     if (!profile)
+        //         throw new Error('Did not get profile from token');
         
-            sessionStorage.clear();  // clean code_verifier, nonce
+        //     sessionStorage.clear();  // clean code_verifier, nonce
         
-            sessionStorage.setItem('profile', JSON.stringify(profile));
-            sendPlausibleEvent({ path: '/profile' });
-            showProfile(profile);
-        } catch (err) {
-            console.error(err)
-            sessionStorage.clear();
-            showLoginPage();
-            processError(params);
-        } finally {
-            clearFragment();
-        }
+        //     sessionStorage.setItem('profile', JSON.stringify(profile));
+        //     sendPlausibleEvent({ path: '/profile' });
+        //     showProfile(profile);
+        // } catch (err) {
+        //     console.error(err)
+        //     sessionStorage.clear();
+        //     showLoginPage();
+        //     processError(params);
+        // } finally {
+        //     clearFragment();
+        // }
     }
 
     async function processIdToken(params) {
