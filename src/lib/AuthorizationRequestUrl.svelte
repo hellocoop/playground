@@ -1,4 +1,6 @@
 <script>
+    import { slide } from 'svelte/transition'
+
     let { dropdowns = $bindable(), authzUrl } = $props()
 
     let continueWithHelloAjax = $state(false);
@@ -32,7 +34,7 @@
         </button>
     </div>
     {#if dropdowns.request}
-        <div class="relative">
+        <div class="relative" transition:slide={{duration: 150}}>
             <!-- <button
                 on:click={() => copy('requestURL', requestURL)}
                 class="absolute z-50 right-2.5 top-2.5 w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-charcoal border border-[#808080] shadow-xl"
@@ -53,7 +55,6 @@
             </button> -->
             <div
                 class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
-                transition:slide|local
             >
                 <span
                     class="url-container block text-sm whitespace-pre-line"

@@ -1,4 +1,5 @@
 <script>
+    import { slide } from 'svelte/transition'
     import { PARAMS } from '../constants.js'
     import ChevronY from './ChevronY.svelte'
     import Tooltip from './Tooltip.svelte'
@@ -18,7 +19,7 @@
         />
     </button>
     {#if dropdowns.scope}
-        <div class="flex mt-2">
+        <div class="flex mt-2" transition:slide={{duration: 150}}>
             <ul class="space-y-2 w-48">
                 {#each [
                     ...PARAMS.SCOPE_PARAM.STANDARD,

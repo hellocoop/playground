@@ -1,4 +1,5 @@
 <script>
+    import { slide } from 'svelte/transition';
     import { PARAMS } from "../constants.js";
     import ChevronY from "./ChevronY.svelte";
     import Tooltip from "./Tooltip.svelte";
@@ -23,7 +24,7 @@
         />
     </button>
     {#if dropdowns.protocol}
-        <ul class="flex flex-col mt-2 space-y-2">
+        <ul class="flex flex-col mt-2 space-y-2" transition:slide={{duration: 150}}>
             {#each PARAMS.PROTOCOL_PARAM.PARAMS as pclParam}
                 {@const required = PARAMS.PROTOCOL_PARAM.REQUIRED.includes(
                     pclParam.NAME,

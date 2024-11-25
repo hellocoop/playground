@@ -1,4 +1,5 @@
 <script>
+    import { slide } from 'svelte/transition'
     import { PARAMS } from '../constants.js'
     import ChevronY from './ChevronY.svelte'
     import Tooltip from './Tooltip.svelte'
@@ -18,7 +19,7 @@
         />
     </button>
     {#if dropdowns.hello}
-        <ul class="flex flex-col justify-center mt-2 space-y-2">
+        <ul class="flex flex-col justify-center mt-2 space-y-2" transition:slide={{duration: 150}}>
             {#each PARAMS.HELLO_PARAM.PARAMS as pclParam}
                 {@const required = PARAMS.HELLO_PARAM.REQUIRED.includes(pclParam.NAME)}
                 <li class="flex flex-row items-start">
