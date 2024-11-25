@@ -15,7 +15,12 @@
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)
     let selectedParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
     let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES)
-    let authzResponse = $state({ url: null,json: null })
+    let authzResponse = $state({
+        url: null,
+        token: null,
+        userinfo: null,
+        introspect: null
+    })
     let isHelloMode = $state(false)
     let mounted = $state(false)
     let dropdowns = $state({
@@ -130,11 +135,12 @@
             if (!token)
                 throw new Error('Missing id_token');
             
+            // tbd call introspect endpoint
             const { payload } = parseToken(token);    
             if (!payload)
                 throw new Error('Did not get profile from token');
         
-            authzResponse.json = payload
+            authzResponse.introspect = payload
         } catch (err) {
         }
     }

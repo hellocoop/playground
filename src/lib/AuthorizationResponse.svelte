@@ -6,4 +6,15 @@
 </script>
 
 <UrlResponse authzUrlResponse={authzResponse.url} />
-<JsonResponse authzJsonResponse={authzResponse.json} />
+
+{#if authzResponse.token}
+    <JsonResponse authzJsonResponse={authzResponse.token} />
+{/if}
+
+{#if authzResponse.userinfo}
+    <JsonResponse authzJsonResponse={authzResponse.userinfo} />
+{/if}
+
+{#if authzResponse.introspect}
+    <JsonResponse authzJsonResponse={authzResponse.introspect} />
+{/if}
