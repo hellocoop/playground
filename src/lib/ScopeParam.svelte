@@ -20,7 +20,11 @@
     {#if dropdowns.scope}
         <div class="flex mt-2">
             <ul class="space-y-2 w-48">
-                {#each PARAMS.SCOPE_PARAM.STANDARD as stdScope}
+                {#each [
+                    ...PARAMS.SCOPE_PARAM.STANDARD,
+                    ...(isHelloMode ? HELLO_EXTEND_STANDARD : [])
+                ] 
+                as stdScope}
                     {@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
                     <li class="flex flex-row items-center space-x-2">
                         <input
@@ -33,26 +37,14 @@
                         <label for={stdScope}>{stdScope} {required ? '*' : ''}</label>
                     </li>
                 {/each}
-
-                {#if isHelloMode}
-                    {#each PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD as stdScope}
-                        {@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
-                        <li class="flex flex-row items-center space-x-2">
-                            <input
-                                type="checkbox"
-                                id={stdScope}
-                                name="scope"
-                                bind:group={selectedScopes}
-                                value={stdScope}
-                            />
-                            <label for={stdScope}>{stdScope} {required ? '*' : ''}</label>
-                        </li>
-                    {/each}
-                {/if}
             </ul>
         
             <ul class="space-y-2 w-48">
-                {#each PARAMS.SCOPE_PARAM.NON_STANDARD as nonStdScope}
+                {#each [
+                        ...PARAMS.SCOPE_PARAM.NON_STANDARD,
+                        ...(isHelloMode ? HELLO_EXTEND_NON_STANDARD : [])
+                    ] 
+                as nonStdScope}
                     <li class="flex flex-row items-center space-x-2">
                         <input
                             type="checkbox"
@@ -64,21 +56,6 @@
                         <label for={nonStdScope} class="italic">{nonStdScope}</label>
                     </li>
                 {/each}
-
-                {#if isHelloMode}
-                    {#each PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD as nonStdScope}
-                        <li class="flex flex-row items-center space-x-2">
-                            <input
-                                type="checkbox"
-                                id={nonStdScope}
-                                name="scope"
-                                value={nonStdScope}
-                                bind:group={selectedScopes}
-                            />
-                            <label for={nonStdScope} class="italic">{nonStdScope}</label>
-                        </li>
-                    {/each}
-                {/if}
             </ul>
         </div>
     {/if}

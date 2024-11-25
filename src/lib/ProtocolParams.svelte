@@ -38,7 +38,7 @@
                         bind:group={selectedParams}
                         value={pclParam.NAME}
                     />
-                    <label for={pclParam.NAME} class="text-sm font-normal w-48"
+                    <label for={pclParam.NAME} class="font-normal w-48"
                         class:text-red-500={(!selected || !hasValue) && required}
                         >{pclParam.NAME} {required ? "*" : ""}</label
                     >

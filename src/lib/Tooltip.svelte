@@ -9,13 +9,12 @@
     {href}
     target="_blank"
     aria-label="tooltip"
-    class="mt-0.5"
 >
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        style="height: 1.1rem"
+        style="height: 1rem"
     >
         <path
             fill-rule="evenodd"

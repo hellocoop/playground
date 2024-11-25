@@ -119,11 +119,13 @@ const HELLO_PARAM = {
         {
             NAME: 'provider_hint',
             POSSIBLE_VALUE: PROVIDER_HINTS,
+            PLACEHOLDER: [...PROVIDER_HINTS, 'apple--', 'microsoft--', 'google-', 'email--', 'passkey--'],
             ONLY_ONE: false
         },
         {
             NAME: 'domain_hint',
-            POSSIBLE_VALUE: ['personal', 'managed', 'domain.example'],
+            POSSIBLE_VALUE: '',
+            PLACEHOLDER: ['personal', '|' , 'managed', '|' ,'domain.example'],
             ONLY_ONE: true
         }
     ],
