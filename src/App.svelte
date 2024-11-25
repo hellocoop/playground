@@ -701,7 +701,7 @@
 	});
 
 	async function sendPlausibleEvent() {
-		if (isHelloMode) {
+		if (isHelloMode || import.meta.env.DEV) {
 			console.info('Ignoring Event: localStorage flag');
 			return;
 		}
