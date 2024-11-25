@@ -1,14 +1,17 @@
 <script>
     import { AUTHZ_SERVERS } from '../constants.js'
+    let { dropdowns = $bindable() } = $props()
 </script>
 
 <section>
-    <legend class="font-medium text-base">Protocol Parameters</legend>
-    <div class="flex">
-        <ul class="space-y-2">
-            {#each AUTHZ_SERVERS as server}
-                {server}
-            {/each}
-        </ul>
-    </div>
+    <button class="font-medium text-base" onclick={() => dropdowns.server = !dropdowns.server}>Authorization Server</button>
+    {#if dropdowns.server}
+        <div class="flex">
+            <ul class="space-y-2">
+                {#each AUTHZ_SERVERS as server}
+                    {server}
+                {/each}
+            </ul>
+        </div>
+    {/if}
 </section>

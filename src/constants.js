@@ -68,7 +68,8 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'login_hint',
-            POSSIBLE_VALUE: ''
+            POSSIBLE_VALUE: '',
+            PLACEHOLDER: 'name@example.com'
         },
         {
             NAME: 'scope',

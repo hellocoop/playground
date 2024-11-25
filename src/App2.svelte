@@ -5,7 +5,7 @@
     import ScopeParam from './lib/ScopeParam.svelte'
     import ProtocolParams from './lib/ProtocolParams.svelte'
     import HelloParams from './lib/HelloParams.svelte'
-    import AuthorizationServer from './lib/AuthorizationServer.svelte'
+    import AuthorizationRequest from './lib/AuthorizationRequest.svelte'
     import AuthorizationUrlResponse from './lib/AuthorizationUrlResponse.svelte'
     import AuthorizationJsonResponse from './lib/AuthorizationJsonResponse.svelte'
     import InviteRequest from './lib/InviteRequest.svelte'
@@ -15,9 +15,15 @@
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)
     let selectedParams = $state(Object.keys(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED))
     let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
-    let authzUrlResponse = $state(null)
-    let authzJsonResponse = $state(null)
+    let authzResponse = $state({ url: null,json: null })
     let mounted = $state(false)
+    let dropdowns = $state({
+        scope: true,
+        protocol: false,
+        hello: true,
+        server: false,
+        request: true
+    })
 
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: AUTHZ_SERVERS[0],
@@ -43,7 +49,7 @@
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(search || hash);
 
-        authzUrlResponse = params.toString()
+        authzResponse.url = params.toString()
 
         if (params.has('id_token'))
             processIdToken(params)
@@ -56,12 +62,13 @@
     })
 
     function saveStateToLocalStorage() {
-        // we dont want to overwrite existing state on page load
-        // so we wait for page to mount which reads from local storage
+        // avoid overwriting existing state on page load
+        // wait for the page to mount and read state from local storage
         if (!mounted) return
 
         const states = JSON.stringify({
-            scopes: selectedScopes
+            scopes: selectedScopes,
+            dropdowns
         })
         localStorage.setItem('states', states)
     }
@@ -70,6 +77,7 @@
         try {
             const states = JSON.parse(localStorage.getItem('states'))
             selectedScopes = states.scopes
+            dropdowns = states.dropdowns
         } catch(err) {
             console.error(err)
         }
@@ -125,7 +133,7 @@
             if (!payload)
                 throw new Error('Did not get profile from token');
         
-            authzJsonResponse = payload
+            authzResponse.json = payload
         } catch (err) {
         }
     }
@@ -138,28 +146,17 @@
 {#if mounted}
     <Header/>
 
-    <main>
-        <section class="flex gap-10 p-4 border m-4">
-            <ScopeParam bind:selectedScopes/>
-        
-            <ProtocolParams
-                bind:selectedParams
-                bind:selectedParamsValues
-            />
-        
-            <HelloParams
-                bind:selectedParams
-                bind:selectedParamsValues
-            />
-        
-            <AuthorizationServer/>
-        </section>
+    <main class="py-6 px-4 space-y-6">
+        <AuthorizationRequest
+            bind:selectedScopes
+            bind:selectedParams
+            bind:selectedParamsValues
+            bind:dropdowns
+            {authzUrl}
+        />
 
-        <a href="{authzUrl}">authz test</a>
-        <a href="{inviteUrl}">invite test</a>
-
-        <AuthorizationUrlResponse {authzUrlResponse}/>
-        <AuthorizationJsonResponse {authzJsonResponse}/>
+        <AuthorizationUrlResponse authzUrlResponse={authzResponse.url}/>
+        <AuthorizationJsonResponse authzJsonResponse={authzResponse.json}/>
 
         <InviteRequest {inviteUrl}/>
     </main>
