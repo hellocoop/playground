@@ -56,7 +56,10 @@
     })
 
     function saveStateToLocalStorage() {
+        // we dont want to overwrite existing state on page load
+        // so we wait for page to mount which reads from local storage
         if (!mounted) return
+
         const states = JSON.stringify({
             scopes: selectedScopes
         })
