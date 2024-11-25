@@ -82,11 +82,13 @@ const PROTOCOL_PARAM = {
         'redirect_uri',
         'response_type'
     ],
-    DEFAULT_SELECTED: {
+    DEFAULT_SELECTED: ['client_id', 'nonce', 'redirect_uri', 'response_type'],
+    DEFAULT_VALUES: {
         client_id: 'app_HelloDeveloperPlayground_Iq2',
         nonce: '123',
         redirect_uri: 'http://localhost:5173/',
-        response_type: 'id_token'
+        response_type: 'id_token',
+        response_mode: 'fragment'
     }
 }
 

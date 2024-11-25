@@ -13,8 +13,8 @@
     import { parseToken, fetchToken } from '@hellocoop/helper-browser'
 
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)
-    let selectedParams = $state(Object.keys(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED))
-    let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
+    let selectedParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
+    let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES)
     let authzResponse = $state({ url: null,json: null })
     let mounted = $state(false)
     let dropdowns = $state({
