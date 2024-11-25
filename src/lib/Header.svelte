@@ -39,7 +39,7 @@
 			class="hidden sm:inline-flex items-center relative nav-link"
 		>
 			<span>hello.dev</span>
-			<svg
+			<!-- <svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="h-4 ml-1 mt-0.5 opacity-80 flex-shrink-0"
 				fill="none"
@@ -52,7 +52,7 @@
 					stroke-width="2"
 					d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
 				/>
-			</svg>
+			</svg> -->
 		</a>
 	</div>
 	<span class="md:w-1/3 flex justify-center flex-shrink-0">
@@ -64,7 +64,7 @@
 				<li class="nav-link text-sm font-normal relative">
 					<a href={link} target="_blank" class="inline-flex items-center">
 						{text}
-						<svg
+						<!-- <svg
 							xmlns="http://www.w3.org/2000/svg"
 							class="h-3 ml-1 mt-0.5 opacity-80"
 							fill="none"
@@ -77,7 +77,7 @@
 								stroke-width="2"
 								d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
 							/>
-						</svg>
+						</svg> -->
 					</a>
 				</li>
 			{/each}
@@ -90,7 +90,7 @@
 				<li class="nav-link relative sm:hidden">
 					<a href="https://hello.dev" target="_blank" class="inline-flex items-center font-medium">
 						hello.dev
-						<svg
+						<!-- <svg
 							xmlns="http://www.w3.org/2000/svg"
 							class="h-4 ml-1 mt-0.5 opacity-80"
 							fill="none"
@@ -103,14 +103,14 @@
 								stroke-width="2"
 								d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
 							/>
-						</svg>
+						</svg> -->
 					</a>
 				</li>
 				{#each navLinks as { text, link }}
 					<li class="nav-link relative">
 						<a href={link} target="_blank" class="inline-flex items-center font-medium">
 							{text}
-							<svg
+							<!-- <svg
 								xmlns="http://www.w3.org/2000/svg"
 								class="h-4 ml-1 mt-0.5 opacity-80"
 								fill="none"
@@ -123,17 +123,17 @@
 									stroke-width="2"
 									d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
 								/>
-							</svg>
+							</svg> -->
 						</a>
 					</li>
 				{/each}
 			</ul>
 		</div>
 
-		<div
+		<!-- <div
 			onclick={() => (mobileMenu = false)}
 			class="lg:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
-		></div>
+		></div> -->
 	{/if}
 </header>
 
