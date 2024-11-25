@@ -17,6 +17,7 @@
     let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
     let authzUrlResponse = $state(null)
     let authzJsonResponse = $state(null)
+    let mounted = $state(false)
 
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: AUTHZ_SERVERS[0],
@@ -36,6 +37,8 @@
     $effect(saveStateToLocalStorage)
 
     onMount(async () => {
+        loadStateFromLocalStorage()
+
         const { search } = window.location;
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(search || hash);
@@ -49,13 +52,24 @@
 
         cleanUrl()
         removeLoader()
+        mounted = true
     })
 
     function saveStateToLocalStorage() {
-        const state = JSON.stringify({
+        if (!mounted) return
+        const states = JSON.stringify({
             scopes: selectedScopes
         })
-        localStorage.setItem('state', state)
+        localStorage.setItem('states', states)
+    }
+
+    function loadStateFromLocalStorage() {
+        try {
+            const states = JSON.parse(localStorage.getItem('states'))
+            selectedScopes = states.scopes
+        } catch(err) {
+            console.error(err)
+        }
     }
 
     async function processCode(params) {
@@ -115,36 +129,37 @@
 
     function removeLoader() {
         document.getElementById('load-spinner')?.remove(); //remove spinner
-		document.getElementById('app').style.display = 'flex'; //show content
     }
 </script>
 
-<Header/>
+{#if mounted}
+    <Header/>
 
-<main>
-    <section class="flex gap-10 p-4 border m-4">
-        <ScopeParam bind:selectedScopes/>
-    
-        <ProtocolParams
-            bind:selectedParams
-            bind:selectedParamsValues
-        />
-    
-        <HelloParams
-            bind:selectedParams
-            bind:selectedParamsValues
-        />
-    
-        <AuthorizationServer/>
-    </section>
+    <main>
+        <section class="flex gap-10 p-4 border m-4">
+            <ScopeParam bind:selectedScopes/>
+        
+            <ProtocolParams
+                bind:selectedParams
+                bind:selectedParamsValues
+            />
+        
+            <HelloParams
+                bind:selectedParams
+                bind:selectedParamsValues
+            />
+        
+            <AuthorizationServer/>
+        </section>
 
-    <a href="{authzUrl}">authz test</a>
-    <a href="{inviteUrl}">invite test</a>
+        <a href="{authzUrl}">authz test</a>
+        <a href="{inviteUrl}">invite test</a>
 
-   <AuthorizationUrlResponse {authzUrlResponse}/>
-   <AuthorizationJsonResponse {authzJsonResponse}/>
+        <AuthorizationUrlResponse {authzUrlResponse}/>
+        <AuthorizationJsonResponse {authzJsonResponse}/>
 
-   <InviteRequest {inviteUrl}/>
-</main>
+        <InviteRequest {inviteUrl}/>
+    </main>
 
-<wc-footer/>
+    <wc-footer></wc-footer>
+{/if}

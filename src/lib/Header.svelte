@@ -36,7 +36,7 @@
 		<a
 			href="https://hello.dev"
 			target="_blank"
-			class="hidden sm:inline-flex items-center relative nav-link"
+			class="hidden sm:inline-flex items-center relative nav-link font-normal"
 		>
 			<span>hello.dev</span>
 			<!-- <svg
@@ -136,16 +136,3 @@
 		></div> -->
 	{/if}
 </header>
-
-<style>
-	.nav-link:hover::after {
-		width: 100%;
-		content: ' ';
-		height: 2px;
-		background-color: white;
-		display: inline-block;
-		position: absolute;
-		bottom: -4px;
-		left: 0;
-	}
-</style>
