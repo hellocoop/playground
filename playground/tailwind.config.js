@@ -1,12 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'media',
-  content: [
-    "./index.html",
-    "./src/**/*.{svelte,js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
+	darkMode: 'media',
+	content: [
+		"./index.html",
+		"./src/**/*.{svelte,js,ts,jsx,tsx}",
+	],
+	theme: {
+		extend: {
 			spacing: {
 				18: '4.5rem'
 			},
@@ -26,6 +26,10 @@ export default {
 				'4xl': '2000px'
 			}
 		}
-  },
-  plugins: [],
+	},
+	plugins: [
+		require('@tailwindcss/forms')({
+			strategy: 'class'
+		})
+	]
 }

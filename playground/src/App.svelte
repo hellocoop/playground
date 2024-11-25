@@ -701,7 +701,7 @@
 	});
 
 	async function sendPlausibleEvent() {
-		if (isHelloMode) {
+		if (isHelloMode || import.meta.env.DEV) {
 			console.info('Ignoring Event: localStorage flag');
 			return;
 		}
@@ -755,7 +755,7 @@
 	class="text-white dark:text-gray flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg"
 >
 	<div class="w-1/3 inline-flex items-center">
-		<button on:click={() => (mobileMenu = !mobileMenu)} class="lg:hidden mr-2 group">
+		<!-- <button on:click={() => (mobileMenu = !mobileMenu)} class="lg:hidden mr-2 group">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="h-6 w-6"
@@ -770,7 +770,7 @@
 					d="M4 6h16M4 12h16M4 18h16"
 				/>
 			</svg>
-		</button>
+		</button> -->
 		<a
 			href="https://hello.dev"
 			target="_blank"
@@ -1079,7 +1079,7 @@
 									/>
 								</svg>
 							</button>
-							<a
+							<!-- <a
 								use:tippy={{ content: 'Protocol Parameters Docs', placement: 'top' }}
 								href="https://www.hello.dev/docs/oidc/request/#openid-connect-parameters"
 								target="_blank"
@@ -1096,7 +1096,7 @@
 										clip-rule="evenodd"
 									/>
 								</svg>
-							</a>
+							</a> -->
 						</div>
 
 						{#if states.dropdowns.protocolParams}
@@ -1254,7 +1254,7 @@
 									/>
 								</svg>
 							</button>
-							<a
+							<!-- <a
 								use:tippy={{ content: 'Hellō Parameters Docs', placement: 'top' }}
 								href="https://www.hello.dev/docs/oidc/request/#hellō-parameters"
 								target="_blank"
@@ -1271,14 +1271,14 @@
 										clip-rule="evenodd"
 									/>
 								</svg>
-							</a>
+							</a> -->
 						</div>
 						{#if states.dropdowns.queryParams}
 							<ul class="space-y-2 mt-2" transition:slide|local>
 								{#each Object.entries( { ...queryParams.params, ...(isHelloMode ? queryParams.pi_params : {}) } ) as [param, value]}
 									{@const required = queryParams.required.includes(param)}
 									{#if param === 'custom'}
-										<span class="pt-0.5 block" />
+										<!-- <span class="pt-0.5 block" /> -->
 									{/if}
 									<li
 										class="flex {['provider_hint', 'domain_hint'].includes(param)
@@ -1511,7 +1511,7 @@
 						</div>
 						{#if states.dropdowns.requestURL}
 							<div class="relative">
-								<button
+								<!-- <button
 									on:click={() => copy('requestURL', requestURL)}
 									class="absolute z-50 right-2.5 top-2.5 w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-charcoal border border-[#808080] shadow-xl"
 								>
@@ -1528,7 +1528,7 @@
 											d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
 										/>
 									</svg>
-								</button>
+								</button> -->
 								<div
 									class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
 									transition:slide|local
