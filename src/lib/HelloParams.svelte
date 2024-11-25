@@ -20,27 +20,32 @@
     </button>
     {#if dropdowns.hello}
         <ul class="flex flex-col justify-center mt-2 space-y-2" transition:slide={{duration: 150}}>
-            {#each PARAMS.HELLO_PARAM.PARAMS as pclParam}
-                {@const required = PARAMS.HELLO_PARAM.REQUIRED.includes(pclParam.NAME)}
+            {#each PARAMS.HELLO_PARAM.PARAMS as param}
+                {@const required = PARAMS.HELLO_PARAM.REQUIRED.includes(
+                    param.NAME,
+                )}
+                {@const selected = selectedParams.includes(param.NAME)}
+                {@const hasValue = !!selectedParamsValues[param.NAME]}
                 <li class="flex flex-row items-start">
                     <div class="flex items-center space-x-2">
                         <input
                             type="checkbox"
-                            id={pclParam.NAME}
+                            id={param.NAME}
                             name="scope"
                             bind:group={selectedParams}
-                            value={pclParam.NAME}
+                            value={param.NAME}
                         />
-                        <label for={pclParam.NAME} class="font-normal w-48">{pclParam.NAME} {required ? '*' : ''}</label>
+                        <label for={param.NAME} class="font-normal w-48">{param.NAME} {required ? '*' : ''}</label>
                     </div>
                     <div class="flex flex-col w-full">
                         <input
                             type="text"
                             class="border w-full form-input h-6 px-2"
-                            bind:value={selectedParamsValues[pclParam.NAME]}
+                            class:opacity-50={!selected}
+                            bind:value={selectedParamsValues[param.NAME]}
                         />
-                        {#if pclParam.PLACEHOLDER}
-                            <p class="text-xs opacity-70 mt-1">{pclParam.PLACEHOLDER.join(' ')}</p>
+                        {#if param.PLACEHOLDER}
+                            <p class="text-xs opacity-70 mt-1">{param.PLACEHOLDER.join(' ')}</p>
                         {/if}
                     </div>
                 </li>

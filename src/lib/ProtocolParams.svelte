@@ -61,6 +61,7 @@
                         <input
                             type="text"
                             class="border w-full form-input h-6 px-2"
+                            class:opacity-50={!selected}
                             bind:value={selectedParamsValues[pclParam.NAME]}
                             placeholder={pclParam.PLACEHOLDER}
                         />

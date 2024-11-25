@@ -9,6 +9,7 @@
     import AuthorizationUrlResponse from './lib/AuthorizationUrlResponse.svelte'
     import AuthorizationJsonResponse from './lib/AuthorizationJsonResponse.svelte'
     import InviteRequest from './lib/InviteRequest.svelte'
+    import FileIssue from './lib/FileIssue.svelte'
     import { makeAuthzUrl, makeInviteUrl, cleanUrl } from './lib/utils.js'
     import { parseToken, fetchToken } from '@hellocoop/helper-browser'
 
@@ -161,6 +162,8 @@
         <AuthorizationJsonResponse authzJsonResponse={authzResponse.json}/>
 
         <InviteRequest {inviteUrl}/>
+
+        <FileIssue/>
     </main>
 
     <wc-footer></wc-footer>
