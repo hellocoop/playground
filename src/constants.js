@@ -41,7 +41,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'response_type',
-            POSSIBLE_VALUE: ['id_token', 'code'],
+            POSSIBLE_VALUE: ['code', 'id_token'],
             ONLY_ONE: true
         },
         {
@@ -80,14 +80,14 @@ const PROTOCOL_PARAM = {
         'client_id',
         'nonce',
         'redirect_uri',
-        'response_type'
+        'code'
     ],
     DEFAULT_SELECTED: ['client_id', 'nonce', 'redirect_uri', 'response_type'],
     DEFAULT_VALUES: {
         client_id: 'app_HelloDeveloperPlayground_Iq2',
         nonce: '123',
         redirect_uri: 'http://localhost:5173/',
-        response_type: 'id_token',
+        response_type: 'code',
         response_mode: 'fragment'
     }
 }
@@ -138,10 +138,13 @@ const PARAMS = {
     HELLO_PARAM
 }
 
-const AUTHZ_SERVERS = [
-    'https://wallet.hello.coop/authorize',
-    'https://wallet.hello-beta.net/authorize'
-]
+const AUTHZ_SERVERS = {
+    SERVERS: [
+        'https://wallet.hello.coop/authorize',
+        'https://wallet.hello-beta.net/authorize'
+    ],
+    DEFAULT_SELECTED: 'https://wallet.hello.coop/authorize'
+}
 
 export {
     PARAMS,

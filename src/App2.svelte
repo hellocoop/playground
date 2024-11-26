@@ -2,19 +2,17 @@
     import { onMount } from 'svelte'
     import { PARAMS, AUTHZ_SERVERS } from './constants.js'
     import Header from './lib/Header.svelte'
-    import ScopeParam from './lib/Request/ScopeParam.svelte'
-    import ProtocolParams from './lib/Request/ProtocolParams.svelte'
-    import HelloParams from './lib/Request/HelloParams.svelte'
     import AuthorizationRequest from './lib/AuthorizationRequest.svelte'
     import AuthorizationResponse from './lib/AuthorizationResponse.svelte'
     import Invite from './lib/Request/Invite.svelte'
     import FileIssue from './lib/FileIssue.svelte'
-    import { makeAuthzUrl, makeInviteUrl, cleanUrl } from './lib/utils.js'
-    import { parseToken, fetchToken } from '@hellocoop/helper-browser'
+    import { makeAuthzUrl, makeInviteUrl, cleanUrl, removeLoader } from './lib/utils.js'
+    import { parseToken } from '@hellocoop/helper-browser'
 
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)
     let selectedParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
     let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES)
+    let selectedAuthzServer = $state(AUTHZ_SERVERS.DEFAULT_SELECTED)
     let authzResponse = $state({
         url: null,
         token: null,
@@ -74,7 +72,8 @@
 
         const states = JSON.stringify({
             scopes: selectedScopes,
-            dropdowns
+            dropdowns,
+            selected_authorization_server: selectedAuthzServer
         })
         localStorage.setItem('states', states)
     }
@@ -84,6 +83,7 @@
             const states = JSON.parse(localStorage.getItem('states'))
             selectedScopes = states.scopes
             dropdowns = states.dropdowns
+            selectedAuthzServer = states.selected_authorization_server
         } catch(err) {
             console.error(err)
         }
@@ -144,10 +144,6 @@
         } catch (err) {
         }
     }
-
-    function removeLoader() {
-        document.getElementById('load-spinner')?.remove(); //remove spinner
-    }
 </script>
 
 {#if mounted}
@@ -160,6 +156,7 @@
             bind:selectedParamsValues
             bind:dropdowns
             bind:isHelloMode
+            bind:selectedAuthzServer
             {authzUrl}
         />
 

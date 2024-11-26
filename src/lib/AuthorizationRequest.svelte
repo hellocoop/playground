@@ -11,6 +11,7 @@
         selectedParamsValues = $bindable(),
         dropdowns = $bindable(),
         isHelloMode = $bindable(),
+        selectedAuthzServer = $bindable(),
         authzUrl,
     } = $props();
 </script>
@@ -78,7 +79,7 @@
             {isHelloMode}
         />
 
-        <AuthorizationServer bind:dropdowns />
+        <AuthorizationServer bind:dropdowns bind:selectedAuthzServer />
 
         <RequestUrl bind:dropdowns {authzUrl} />
     </div>

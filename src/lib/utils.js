@@ -44,8 +44,14 @@ function cleanUrl() {
     }
 }
 
+
+function removeLoader() {
+    document.getElementById('load-spinner')?.remove(); //remove spinner
+}
+
 export {
     makeAuthzUrl,
     makeInviteUrl,
-    cleanUrl
+    cleanUrl,
+    removeLoader
 }
