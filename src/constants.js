@@ -50,7 +50,8 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'code_verifier',
-            POSSIBLE_VALUE: ''
+            POSSIBLE_VALUE: '',
+            CHECKBOX_HIDDEN: true
         },
         {
             NAME: 'response_mode',
@@ -88,7 +89,8 @@ const PROTOCOL_PARAM = {
         nonce: '123',
         redirect_uri: 'http://localhost:5173/',
         response_type: 'code',
-        response_mode: 'fragment'
+        response_mode: 'fragment',
+        prompt: 'consent'
     }
 }
 

@@ -4,7 +4,12 @@
     import ChevronY from '../ChevronY.svelte'
     import Tooltip from '../Tooltip.svelte'
 
-    let { selectedParams = $bindable(), selectedParamsValues = $bindable(), dropdowns = $bindable() } = $props()
+    let {
+        selectedParams = $bindable(),
+        selectedParamsValues = $bindable(),
+        dropdowns = $bindable(),
+        isHelloMode = $bindable()
+    } = $props()
 </script>
 
 <section class="break-inside-avoid-column">

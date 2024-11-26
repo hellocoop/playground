@@ -13,14 +13,14 @@
     let selectedParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
     let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES)
     let selectedAuthzServer = $state(AUTHZ_SERVERS.DEFAULT_SELECTED)
+    let isHelloMode = $state(false)
+    let mounted = $state(false)
     let authzResponse = $state({
         url: null,
         token: null,
         userinfo: null,
         introspect: null
     })
-    let isHelloMode = $state(false)
-    let mounted = $state(false)
     let dropdowns = $state({
         scope: true,
         protocol: false,

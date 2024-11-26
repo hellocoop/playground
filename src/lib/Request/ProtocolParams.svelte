@@ -8,6 +8,7 @@
         selectedParams = $bindable(),
         selectedParamsValues = $bindable(),
         dropdowns = $bindable(),
+        isHelloMode = $bindable(),
     } = $props();
 </script>
 
@@ -37,9 +38,10 @@
                         id={pclParam.NAME}
                         name="scope"
                         bind:group={selectedParams}
+                        class:invisible={pclParam.CHECKBOX_HIDDEN}
                         value={pclParam.NAME}
                     />
-                    <label for={pclParam.NAME} class="font-normal w-48"
+                    <label for={pclParam.NAME} class="font-normal w-48" class:pointer-events-none={pclParam.CHECKBOX_HIDDEN}
                         class:text-red-500={(!selected || !hasValue) && required}
                         >{pclParam.NAME} {required ? "*" : ""}</label
                     >
@@ -50,7 +52,11 @@
                         >
                             {#each pclParam.POSSIBLE_VALUE as value}
                                 <li class="w-full">
-                                    <input name={pclParam.NAME} id={value} value={value} bind:group={selectedParamsValues[pclParam.NAME]} type="radio" class="hidden peer">
+                                    {#if pclParam.ONLY_ONE}
+                                        <input type="radio" name={pclParam.NAME} id={value} value={value} bind:group={selectedParamsValues[pclParam.NAME]} class="hidden peer">
+                                    {:else}
+                                        <input type="checkbox" name={pclParam.NAME} id={value} value={value} bind:group={selectedParamsValues[pclParam.NAME]} class="hidden peer">
+                                    {/if}
                                     <label for={value} class="peer-checked:bg-charcoal peer-checked:ring-1 ring-charcoal dark:ring-gray-800 block flex justify-center items-center w-full cursor-pointer">
                                         {value}
                                     </label>
