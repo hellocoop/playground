@@ -5,7 +5,8 @@
 
     let continueWithHelloAjax = $state(false);
 	async function continueWithHello() {
-		
+		continueWithHelloAjax = true
+        window.location.href = authzUrl
 	}
 </script>
 

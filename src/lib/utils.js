@@ -1,5 +1,5 @@
 function makeAuthzUrl({authzServer, scopes, params, paramsValues}) {
-    const url = new URL('https://wallet.hello-dev.net/authorize')
+    const url = new URL(authzServer)
     
     if (scopes.length)
         url.searchParams.set('scope', scopes.join(' '))
@@ -15,7 +15,7 @@ function makeAuthzUrl({authzServer, scopes, params, paramsValues}) {
 }
 
 function makeInviteUrl({authzServer, scopes, params, paramsValues}) {
-    const url = new URL('https://wallet.hello-dev.net/authorize')
+    const url = new URL(authzServer)
 
     url.pathname = '/invite'
     

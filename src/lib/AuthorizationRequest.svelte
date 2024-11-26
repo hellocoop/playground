@@ -23,7 +23,7 @@
         class="absolute -mt-9 bg-white dark:bg-[#151515] px-2 -mx-2 text-white/50"
         >Authorization Request</span
     >
-    {#if localStorage.plausible_ignore}
+    {#if !localStorage.plausible_ignore}
         <div class="flex items-center absolute absolute -top-3.5 right-18">
             <div>
                 <input
@@ -79,7 +79,7 @@
             {isHelloMode}
         />
 
-        <AuthorizationServer bind:dropdowns bind:selectedAuthzServer />
+        <AuthorizationServer bind:dropdowns bind:selectedAuthzServer {isHelloMode} />
 
         <RequestUrl bind:dropdowns {authzUrl} />
     </div>

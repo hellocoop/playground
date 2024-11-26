@@ -30,13 +30,13 @@
     })
 
     const authzUrl = $derived(makeAuthzUrl({
-        authzServer: AUTHZ_SERVERS[0],
+        authzServer: selectedAuthzServer,
         scopes: selectedScopes,
         params: selectedParams,
         paramsValues: selectedParamsValues
     }))
     const inviteUrl = $derived(makeInviteUrl({
-        authzServer: AUTHZ_SERVERS[0],
+        authzServer: selectedAuthzServer,
         scopes: selectedScopes,
         params: selectedParams,
         paramsValues: selectedParamsValues

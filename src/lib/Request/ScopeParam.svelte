@@ -23,7 +23,7 @@
             <ul class="space-y-2 w-48">
                 {#each [
                     ...PARAMS.SCOPE_PARAM.STANDARD,
-                    ...(isHelloMode ? HELLO_EXTEND_STANDARD : [])
+                    ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD : [])
                 ] 
                 as stdScope}
                     {@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
@@ -43,7 +43,7 @@
             <ul class="space-y-2 w-48">
                 {#each [
                         ...PARAMS.SCOPE_PARAM.NON_STANDARD,
-                        ...(isHelloMode ? HELLO_EXTEND_NON_STANDARD : [])
+                        ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
                     ] 
                 as nonStdScope}
                     <li class="flex flex-row items-center space-x-2">

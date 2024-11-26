@@ -140,12 +140,21 @@ const PARAMS = {
     HELLO_PARAM
 }
 
+const SERVERS = [
+    'https://wallet.hello.coop/authorize',
+    'https://wallet.hello-beta.net/authorize'
+]
+
 const AUTHZ_SERVERS = {
-    SERVERS: [
-        'https://wallet.hello.coop/authorize',
-        'https://wallet.hello-beta.net/authorize'
+    SERVERS,
+    DEFAULT_SELECTED: SERVERS[0],
+
+    // Hellō Dev Mode
+    HELLO_EXTEND_SERVERS: [
+        'https://wallet.hello-staging.net/authorize',
+        'https://wallet.hello-local.net/authorize',
+        'https://wallet.hello-dev.net/authorize',
     ],
-    DEFAULT_SELECTED: 'https://wallet.hello.coop/authorize'
 }
 
 export {

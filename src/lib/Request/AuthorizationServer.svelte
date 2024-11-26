@@ -3,7 +3,7 @@
     import { AUTHZ_SERVERS } from "../../constants.js";
     import ChevronY from "../ChevronY.svelte";
 
-    let { dropdowns = $bindable(), selectedAuthzServer = $bindable() } = $props();
+let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } = $props();
 </script>
 
 <section>
@@ -16,7 +16,7 @@
     </button>
     {#if dropdowns.server}
         <ul class="space-y-2 mt-2" transition:slide|local>
-            {#each AUTHZ_SERVERS.SERVERS as server}
+            {#each [...AUTHZ_SERVERS.SERVERS, ...(isHelloMode ? AUTHZ_SERVERS.HELLO_EXTEND_SERVERS : [])] as server}
                 <li class="flex items-center">
                     <input
                         type="radio"
