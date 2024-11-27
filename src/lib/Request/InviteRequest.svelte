@@ -1,4 +1,8 @@
 <script>
+    import { highlight } from '../shiki.js'
+    import { lineBreakUrl } from '../utils.js'
+    import CopyButton from '../CopyButton.svelte'
+
     let { inviteUrl, canInvite = false } = $props();
 
     let inviteWithHelloAjax = $state(false);
@@ -18,37 +22,19 @@
     <div class="max-w-lg mx-auto">
         {#if canInvite}
             <div
-                class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mb-4"
+                class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mb-4 relative"
             >
-                <h2 class="inline-flex items-center">
-                    <span class="font-medium">Invite URL</span>
-                    <!-- <button on:click={() => copy('invitePlaygroundURL', invitePlaygroundURL)}>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-5 ml-1 stroke-2 hover:stroke-3"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-										/>
-									</svg>
-								</button> -->
+                <span class="absolute right-4 top-4">
+                    <CopyButton content={inviteUrl}/>
+                </span>
+                <h2 class="inline-flex items-center space-x-1 font-medium">
+                    Invite URL
                 </h2>
                 <span
-                    class="url-container mt-2 block text-sm whitespace-pre-line"
+                    class="url-container mt-2 block text-sm"
                 >
-                    {@html inviteUrl}
+                    {@html highlight('http', lineBreakUrl(inviteUrl))}
                 </span>
-                <!-- <span
-                    class="url-container mt-2 block text-sm whitespace-pre-line"
-                    class:flash={copyTooltip.invitePlaygroundURL}
-                >
-                    {@html highlight("http", invitePlaygroundURL)}
-                </span> -->
             </div>
         {/if}
 

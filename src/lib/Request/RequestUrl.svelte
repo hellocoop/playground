@@ -1,6 +1,7 @@
 <script>
     import { highlight } from '../shiki.js'
     import { lineBreakUrl } from '../utils.js'
+    import CopyButton from '../CopyButton.svelte'
     import { slide } from 'svelte/transition'
 
     let { dropdowns = $bindable(), authzUrl } = $props()
@@ -38,29 +39,14 @@
     </div>
     {#if dropdowns.request}
         <div class="relative" transition:slide={{duration: 150}}>
-            <!-- <button
-                on:click={() => copy('requestURL', requestURL)}
-                class="absolute z-50 right-2.5 top-2.5 w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-charcoal border border-[#808080] shadow-xl"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 stroke hover:stroke-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                </svg>
-            </button> -->
             <div
                 class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
             >
+                <span class="absolute right-4 top-4">
+                    <CopyButton content={authzUrl}/>
+                </span>
                 <span
-                    class="url-container block text-sm whitespace-pre-line"
+                    class="url-container block text-sm"
                 >
                     {@html highlight('http', lineBreakUrl(authzUrl))}
                 </span>
