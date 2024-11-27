@@ -63,6 +63,7 @@
 
         cleanUrl()
         removeLoader()
+        
         mounted = true
     })
 
