@@ -1,5 +1,7 @@
 <script>
-import Copy from '../Copy.svelte'
+    import { highlight } from '../shiki.js'
+    import { lineBreakUrl } from '../utils.js'
+    import Copy from '../Copy.svelte'
 
     let { label, url } = $props()
 </script>
@@ -11,5 +13,7 @@ import Copy from '../Copy.svelte'
         >
         <Copy content={url} />
     </div>
-    <p class="mt-2 break-words text-sm">{url}</p>
+    <p class="mt-2 break-words text-sm">
+        {@html highlight('http', lineBreakUrl(url))}
+    </p>
 </section>

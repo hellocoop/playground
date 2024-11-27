@@ -1,4 +1,5 @@
 <script>
+    import { highlight } from '../shiki.js'
     import Copy from '../Copy.svelte'
 
     let { label, json } = $props()
@@ -9,7 +10,9 @@
         <span class="font-medium" style="word-break: break-word;"
             >{label}</span
         >
-        <Copy content={JSON.stringify(json,null,4)}/>
+        <Copy content={JSON.stringify(json,null,2)}/>
     </div>
-    <pre class="mt-2 break-words text-sm font-sans whitespace-pre-wrap">{JSON.stringify(json,null,4)}</pre>
+    <p class="mt-2 break-words text-sm font-sans">
+        {@html highlight('json', JSON.stringify(json,null,2))}
+    </p>
 </section>

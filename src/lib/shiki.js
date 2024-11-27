@@ -24,7 +24,6 @@ function highlight(lang, content) {
         lang,
         theme: 'css-vars'
     });
-    console.log(html)
     return html;
 };
 
