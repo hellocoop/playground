@@ -122,7 +122,10 @@ const HELLO_PARAM = {
             NAME: 'provider_hint',
             POSSIBLE_VALUE: PROVIDER_HINTS,
             PLACEHOLDER: [...PROVIDER_HINTS, 'apple--', 'microsoft--', 'google-', 'email--', 'passkey--'],
-            ONLY_ONE: false
+            ONLY_ONE: false,
+            
+            // Hellō Dev Mode
+            HELLO_EXTEND: ['testing'],
         },
         {
             NAME: 'domain_hint',
