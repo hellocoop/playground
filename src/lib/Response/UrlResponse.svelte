@@ -1,15 +1,15 @@
 <script>
 import Copy from '../Copy.svelte'
 
-    let { authzUrlResponse, authzUrl } = $props()
+    let { label, url } = $props()
 </script>
 
-<section class="pb-4">
+<section class="py-4 first:pt-0">
     <div class="flex flex-col items-start text-left">
         <span class="font-medium" style="word-break: break-word;"
-            >{new URL('/authorize', authzUrl)}</span
+            >{label}</span
         >
-        <Copy content={authzUrlResponse} />
+        <Copy content={url} />
     </div>
-    <p class="mt-2 break-words text-sm">{authzUrlResponse}</p>
+    <p class="mt-2 break-words text-sm">{url}</p>
 </section>

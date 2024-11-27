@@ -1,15 +1,15 @@
 <script>
     import Copy from '../Copy.svelte'
 
-    let { authzJsonResponse, authzUrl } = $props()
+    let { label, json } = $props()
 </script>
 
-<section class="pt-4">
+<section class="py-4">
     <div class="flex flex-col items-start text-left">
         <span class="font-medium" style="word-break: break-word;"
-            >{new URL('/oauth/introspect', authzUrl)}</span
+            >{label}</span
         >
-        <Copy content={JSON.stringify(authzJsonResponse,null,4)}/>
+        <Copy content={JSON.stringify(json,null,4)}/>
     </div>
-    <pre class="mt-2 break-words text-sm font-sans">{JSON.stringify(authzJsonResponse,null,4)}</pre>
+    <pre class="mt-2 break-words text-sm font-sans whitespace-pre-wrap">{JSON.stringify(json,null,4)}</pre>
 </section>

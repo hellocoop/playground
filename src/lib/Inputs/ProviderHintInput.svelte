@@ -18,7 +18,7 @@
         debouncer = setTimeout(() => {
             const valueArr = value?.split(' ');
             invalidSlugs = valueArr
-                .map((i) => i.replace('--', ''))
+                ?.map((i) => i.replace('--', ''))
                 .filter(
                     (i) => ![...PROVIDER_HINT.POSSIBLE_VALUE, ...(isHelloMode ? PROVIDER_HINT.HELLO_EXTEND : [])].includes(i) && i
                 );

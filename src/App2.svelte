@@ -7,7 +7,7 @@
     import InviteRequest from './lib/Request/InviteRequest.svelte'
     import FileIssue from './lib/FileIssue.svelte'
     import { makeAuthzUrl, makeInviteUrl, cleanUrl, removeLoader } from './lib/utils.js'
-    import { parseToken, validateToken } from '@hellocoop/helper-browser'
+    import { parseToken, validateToken, fetchToken } from '@hellocoop/helper-browser'
 
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)
     let selectedPtlParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
@@ -20,7 +20,8 @@
     let authzResponse = $state({
         url: null,
         token: null,
-        introspect: null,
+        parsed: null, // code flow does not call introspect -- parses locally
+        introspect: null, // id_token flow calls introspect
         userinfo: null
     })
     let dropdowns = $state({
@@ -31,11 +32,15 @@
         request: true
     })
 
-    const canInvite = $derived(
-        authzResponse.introspect?.sub &&
-        authzResponse.introspect?.name &&
-        authzResponse.introspect?.email
+    const claims = $derived(
+        // id_token flow            // code flow
+        authzResponse.introspect || authzResponse.parsed
     )
+    const canInvite = $derived(Boolean(
+        claims?.sub &&
+        claims?.name &&
+        claims?.email
+    ))
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: selectedAuthzServer,
         scopes: selectedScopes,
@@ -46,7 +51,7 @@
     }))
     const inviteUrl = $derived(makeInviteUrl({
         authzServer: selectedAuthzServer,
-        profile: authzResponse.introspect,
+        claims,
         ptlParamsValues: selectedPtlParamsValues
     }))
 
@@ -107,6 +112,51 @@
     }
 
     async function processCode(params) {
+        try {
+            const code = params.get('code');
+            if (!code)
+                throw new Error('Missing code');
+            
+            const tokenRes = await fetch(new URL('/oauth/token', selectedAuthzServer), {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({
+                    code,
+                    code_verifier: selectedPtlParamsValues.code_verifier,
+                    client_id: selectedPtlParamsValues.client_id,
+                    redirect_uri: selectedPtlParamsValues.redirect_uri,
+                    nonce: selectedPtlParamsValues.nonce,
+                    grant_type: 'authorization_code'
+                }).toString()
+            })
+            const token = await tokenRes.json()
+            // this only returns id_token str and not full json response
+            // we need access_token to call userinfo endpoint later
+            // const token = await fetchToken()
+            if (!token)
+                throw new Error('Did not get response from token endpoint');
+            authzResponse.token = token
+            
+            const { payload: profile } = parseToken(token.id_token);
+            if (!profile)
+                throw new Error('Did not get profile from token');
+            authzResponse.parsed = profile
+            
+            const userinfoRes = await fetch(new URL('/oauth/userinfo', selectedAuthzServer), {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: { Authorization: `Bearer ${token.access_token}` },
+            })
+            const userinfo = await userinfoRes.json()
+            if (!userinfo)
+                throw new Error('Did not get userinfo');
+            authzResponse.userinfo = userinfo
+        } catch (err) {
+            console.error(err)
+        }
     }
 
     async function processIdToken(params) {
@@ -124,7 +174,6 @@
                 wallet: selectedAuthzServer.replace('/authorize', '')
             })
             authzResponse.introspect = payload
-            console.log(payload)
         } catch (err) {
             console.error(err)
         }

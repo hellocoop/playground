@@ -1,3 +1,5 @@
+import { createAuthRequest } from "@hellocoop/helper-browser"
+
 const SCOPE_PARAM = {
     STANDARD: [
         'openid',
@@ -24,6 +26,16 @@ const SCOPE_PARAM = {
     HELLO_EXTEND_STANDARD: ['preferred_username'],
     HELLO_EXTEND_NON_STANDARD: ['recovery', 'verified_name', 'existing_name', 'existing_username']
 }
+
+
+
+const { url, nonce, code_verifier } = await createAuthRequest({
+    // we just need nonce & code_verifier
+    client_id: 'x',
+    redirect_uri: 'x'
+})
+// because helper-browser only returns code_verifier in url 
+const code_challenge = new URL(url).searchParams.get('code_challenge')
 
 const PROTOCOL_PARAM = {
     PARAMS: [
@@ -83,12 +95,14 @@ const PROTOCOL_PARAM = {
         'redirect_uri',
         'code'
     ],
-    DEFAULT_SELECTED: ['client_id', 'nonce', 'redirect_uri', 'response_type'],
+    DEFAULT_SELECTED: ['client_id', 'nonce', 'redirect_uri', 'response_type', 'code_challenge', 'response_mode'],
     DEFAULT_VALUES: {
         client_id: 'app_HelloDeveloperPlayground_Iq2',
-        nonce: '123',
+        nonce,
         redirect_uri: 'http://localhost:5173/',
         response_type: 'code',
+        code_challenge,
+        code_verifier,
         response_mode: 'fragment',
         prompt: 'consent'
     }
