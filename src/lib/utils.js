@@ -1,34 +1,36 @@
-function makeAuthzUrl({authzServer, scopes, params, paramsValues}) {
+function makeAuthzUrl({
+    authzServer,
+    scopes,
+    ptlParams,
+    ptlParamsValues,
+    helloParams,
+    helloParamsValues
+}) {
     const url = new URL(authzServer)
     
     if (scopes.length)
         url.searchParams.set('scope', scopes.join(' '))
 
-    for (const key in paramsValues) {
+    for (const key in ptlParamsValues) {
         // value exists but not selected
-        if (!params.includes(key)) continue
+        if (!ptlParams.includes(key)) continue
 
-        url.searchParams.set(key, paramsValues[key])
+        url.searchParams.set(key, ptlParamsValues[key])
+    }
+
+    for (const key in helloParamsValues) {
+        // value exists but not selected
+        if (!helloParams.includes(key)) continue
+
+        url.searchParams.set(key, helloParamsValues[key])
     }
 
     return url.href
 }
 
-function makeInviteUrl({authzServer, scopes, params, paramsValues}) {
+function makeInviteUrl({authzServer}) {
     const url = new URL(authzServer)
-
     url.pathname = '/invite'
-    
-    if (scopes.length)
-        url.searchParams.set('scope', scopes.join(' '))
-
-    for (const key in paramsValues) {
-        // value exists but not selected
-        if (!params.includes(key)) continue
-
-        url.searchParams.set(key, paramsValues[key])
-    }
-
     return url.href
 }
 

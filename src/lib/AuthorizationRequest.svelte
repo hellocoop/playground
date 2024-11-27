@@ -7,8 +7,10 @@
 
     let {
         selectedScopes = $bindable(),
-        selectedParams = $bindable(),
-        selectedParamsValues = $bindable(),
+        selectedPtlParams = $bindable(),
+        selectedPtlParamsValues = $bindable(),
+        selectedHelloParams = $bindable(),
+        selectedHelloParamsValues = $bindable(),
         dropdowns = $bindable(),
         isHelloMode = $bindable(),
         selectedAuthzServer = $bindable(),
@@ -66,15 +68,15 @@
         <ScopeParam bind:selectedScopes bind:dropdowns {isHelloMode} />
 
         <ProtocolParams
-            bind:selectedParams
-            bind:selectedParamsValues
+            bind:selectedPtlParams
+            bind:selectedPtlParamsValues
             bind:dropdowns
             {isHelloMode}
         />
 
         <HelloParams
-            bind:selectedParams
-            bind:selectedParamsValues
+            bind:selectedHelloParams
+            bind:selectedHelloParamsValues
             bind:dropdowns
             {isHelloMode}
         />

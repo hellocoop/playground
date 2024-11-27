@@ -5,10 +5,10 @@
     import Tooltip from "../Tooltip.svelte";
 
     let {
-        selectedParams = $bindable(),
-        selectedParamsValues = $bindable(),
+        selectedPtlParams = $bindable(),
+        selectedPtlParamsValues = $bindable(),
         dropdowns = $bindable(),
-        isHelloMode = $bindable(),
+        isHelloMode
     } = $props();
 </script>
 
@@ -30,14 +30,14 @@
                 {@const required = PARAMS.PROTOCOL_PARAM.REQUIRED.includes(
                     pclParam.NAME,
                 )}
-                {@const selected = selectedParams.includes(pclParam.NAME)}
-                {@const hasValue = !!selectedParamsValues[pclParam.NAME]}
+                {@const selected = selectedPtlParams.includes(pclParam.NAME)}
+                {@const hasValue = !!selectedPtlParamsValues[pclParam.NAME]}
                 <li class="flex flex-row items-center space-x-2">
                     <input
                         type="checkbox"
                         id={pclParam.NAME}
-                        name="scope"
-                        bind:group={selectedParams}
+                        name="param"
+                        bind:group={selectedPtlParams}
                         class:invisible={pclParam.CHECKBOX_HIDDEN}
                         value={pclParam.NAME}
                     />
@@ -53,9 +53,9 @@
                             {#each pclParam.POSSIBLE_VALUE as value}
                                 <li class="w-full">
                                     {#if pclParam.ONLY_ONE}
-                                        <input type="radio" name={pclParam.NAME} id={value} value={value} bind:group={selectedParamsValues[pclParam.NAME]} class="hidden peer">
+                                        <input type="radio" name={pclParam.NAME} id={value} value={value} bind:group={selectedPtlParamsValues[pclParam.NAME]} class="hidden peer">
                                     {:else}
-                                        <input type="checkbox" name={pclParam.NAME} id={value} value={value} bind:group={selectedParamsValues[pclParam.NAME]} class="hidden peer">
+                                        <input type="checkbox" name={pclParam.NAME} id={value} value={value} bind:group={selectedPtlParamsValues[pclParam.NAME]} class="hidden peer">
                                     {/if}
                                     <label for={value} class="peer-checked:bg-charcoal peer-checked:ring-1 ring-charcoal dark:ring-gray-800 block flex justify-center items-center w-full cursor-pointer">
                                         {value}
@@ -68,7 +68,7 @@
                             type="text"
                             class="border w-full form-input h-6 px-2"
                             class:opacity-50={!selected}
-                            bind:value={selectedParamsValues[pclParam.NAME]}
+                            bind:value={selectedPtlParamsValues[pclParam.NAME]}
                             placeholder={pclParam.PLACEHOLDER}
                         />
                     {/if}

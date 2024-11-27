@@ -7,11 +7,13 @@
     import Invite from './lib/Request/Invite.svelte'
     import FileIssue from './lib/FileIssue.svelte'
     import { makeAuthzUrl, makeInviteUrl, cleanUrl, removeLoader } from './lib/utils.js'
-    import { parseToken } from '@hellocoop/helper-browser'
+    import { parseToken, validateToken } from '@hellocoop/helper-browser'
 
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)
-    let selectedParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
-    let selectedParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES)
+    let selectedPtlParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
+    let selectedPtlParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES)
+    let selectedHelloParams = $state(PARAMS.HELLO_PARAM.DEFAULT_SELECTED)
+    let selectedHelloParamsValues = $state(PARAMS.HELLO_PARAM.DEFAULT_VALUES)
     let selectedAuthzServer = $state(AUTHZ_SERVERS.DEFAULT_SELECTED)
     let isHelloMode = $state(false)
     let mounted = $state(false)
@@ -32,14 +34,13 @@
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: selectedAuthzServer,
         scopes: selectedScopes,
-        params: selectedParams,
-        paramsValues: selectedParamsValues
+        ptlParams: selectedPtlParams,
+        ptlParamsValues: selectedPtlParamsValues,
+        helloParams: selectedHelloParams,
+        helloParamsValues: selectedHelloParamsValues
     }))
     const inviteUrl = $derived(makeInviteUrl({
-        authzServer: selectedAuthzServer,
-        scopes: selectedScopes,
-        params: selectedParams,
-        paramsValues: selectedParamsValues
+        authzServer: selectedAuthzServer
     }))
 
     // save state to local storage
@@ -73,7 +74,11 @@
         const states = JSON.stringify({
             scopes: selectedScopes,
             dropdowns,
-            selected_authorization_server: selectedAuthzServer
+            server: selectedAuthzServer,
+            ptl_params: selectedPtlParams,
+            ptl_params_values: selectedPtlParamsValues,
+            hello_params: selectedPtlParams,
+            hello_params_values: selectedHelloParamsValues
         })
         localStorage.setItem('states', states)
     }
@@ -81,52 +86,19 @@
     function loadStateFromLocalStorage() {
         try {
             const states = JSON.parse(localStorage.getItem('states'))
-            selectedScopes = states.scopes
-            dropdowns = states.dropdowns
-            selectedAuthzServer = states.selected_authorization_server
+            if (states.scopes) selectedScopes = states.scopes
+            if (states.dropdowns) dropdowns = states.dropdowns
+            if (states.server) selectedAuthzServer = states.server
+            if (states.ptl_params) selectedPtlParams = states.ptl_params
+            if (states.ptl_params_values) selectedPtlParamsValues = states.ptl_params_values
+            if (states.hello_params) selectedHelloParams = states.hello_params
+            if (states.hello_params_values) selectedHelloParamsValues = states.hello_params_values
         } catch(err) {
             console.error(err)
         }
     }
 
     async function processCode(params) {
-        // try {
-        //     const code_verifier = sessionStorage.getItem('code_verifier');
-        //     const nonce = sessionStorage.getItem('nonce');
-        //     const code = params.get('code');
-        //     if (!code_verifier)
-        //         throw new Error('Missing code_verifier');
-        //     if (!nonce)
-        //         throw new Error('Missing nonce');
-        //     if (!code)
-        //         throw new Error('Missing code');
-
-        //     const token = await fetchToken({
-        //         client_id: CONFIG.client_id,
-        //         redirect_uri: CONFIG.redirect_uri,
-        //         code_verifier,
-        //         nonce,
-        //         code,
-        //     });
-        //     if (!token)
-        //         throw new Error('Did not get response from token endpoint');
-        //     const { payload: profile } = parseToken(token);
-        //     if (!profile)
-        //         throw new Error('Did not get profile from token');
-        
-        //     sessionStorage.clear();  // clean code_verifier, nonce
-        
-        //     sessionStorage.setItem('profile', JSON.stringify(profile));
-        //     sendPlausibleEvent({ path: '/profile' });
-        //     showProfile(profile);
-        // } catch (err) {
-        //     console.error(err)
-        //     sessionStorage.clear();
-        //     showLoginPage();
-        //     processError(params);
-        // } finally {
-        //     clearFragment();
-        // }
     }
 
     async function processIdToken(params) {
@@ -135,13 +107,11 @@
             if (!token)
                 throw new Error('Missing id_token');
             
-            // tbd call introspect endpoint
-            const { payload } = parseToken(token);    
-            if (!payload)
-                throw new Error('Did not get profile from token');
-        
-            authzResponse.introspect = payload
+            // tbd validate token
+            
+            // authzResponse.introspect = payload
         } catch (err) {
+            console.error(err)
         }
     }
 </script>
@@ -152,8 +122,10 @@
     <main class="py-6 px-4 space-y-6">
         <AuthorizationRequest
             bind:selectedScopes
-            bind:selectedParams
-            bind:selectedParamsValues
+            bind:selectedPtlParams
+            bind:selectedPtlParamsValues
+            bind:selectedHelloParams
+            bind:selectedHelloParamsValues
             bind:dropdowns
             bind:isHelloMode
             bind:selectedAuthzServer

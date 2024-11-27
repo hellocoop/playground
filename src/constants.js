@@ -131,7 +131,9 @@ const HELLO_PARAM = {
             ONLY_ONE: true
         }
     ],
-    REQUIRED: ''
+    REQUIRED: [],
+    DEFAULT_SELECTED: [],
+    DEFAULT_VALUES: {}
 }
 
 const PARAMS = {

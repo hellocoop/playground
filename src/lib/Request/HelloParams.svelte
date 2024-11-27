@@ -5,10 +5,10 @@
     import Tooltip from '../Tooltip.svelte'
 
     let {
-        selectedParams = $bindable(),
-        selectedParamsValues = $bindable(),
+        selectedHelloParams = $bindable(),
+        selectedHelloParamsValues = $bindable(),
         dropdowns = $bindable(),
-        isHelloMode = $bindable()
+        isHelloMode
     } = $props()
 </script>
 
@@ -29,15 +29,14 @@
                 {@const required = PARAMS.HELLO_PARAM.REQUIRED.includes(
                     param.NAME,
                 )}
-                {@const selected = selectedParams.includes(param.NAME)}
-                {@const hasValue = !!selectedParamsValues[param.NAME]}
+                {@const selected = selectedHelloParams.includes(param.NAME)}
                 <li class="flex flex-row items-start">
                     <div class="flex items-center space-x-2">
                         <input
                             type="checkbox"
                             id={param.NAME}
-                            name="scope"
-                            bind:group={selectedParams}
+                            name="param"
+                            bind:group={selectedHelloParams}
                             value={param.NAME}
                         />
                         <label for={param.NAME} class="font-normal w-48">{param.NAME} {required ? '*' : ''}</label>
@@ -47,7 +46,7 @@
                             type="text"
                             class="border w-full form-input h-6 px-2"
                             class:opacity-50={!selected}
-                            bind:value={selectedParamsValues[param.NAME]}
+                            bind:value={selectedHelloParamsValues[param.NAME]}
                         />
                         {#if param.PLACEHOLDER}
                             <p class="text-xs opacity-70 mt-1">{param.PLACEHOLDER.join(' ')}</p>
