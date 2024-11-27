@@ -77,7 +77,7 @@
             server: selectedAuthzServer,
             ptl_params: selectedPtlParams,
             ptl_params_values: selectedPtlParamsValues,
-            hello_params: selectedPtlParams,
+            hello_params: selectedHelloParams,
             hello_params_values: selectedHelloParamsValues
         })
         localStorage.setItem('states', states)
