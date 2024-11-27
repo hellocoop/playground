@@ -3,7 +3,8 @@
 
     let inviteWithHelloAjax = $state(false);
 	async function inviteWithHello() {
-		
+		inviteWithHelloAjax = true
+        window.location.href = inviteUrl
 	}
 </script>
 

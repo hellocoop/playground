@@ -28,9 +28,12 @@ function makeAuthzUrl({
     return url.href
 }
 
-function makeInviteUrl({authzServer}) {
-    const url = new URL(authzServer)
-    url.pathname = '/invite'
+function makeInviteUrl({authzServer, profile, ptlParamsValues}) {
+    const url = new URL('/invite', authzServer)
+    url.searchParams.set('inviter', profile.sub)
+    url.searchParams.set('client_id', ptlParamsValues.client_id)
+    url.searchParams.set('initiate_login_uri', window.location.origin)
+    url.searchParams.set('return_uri', window.location.origin)
     return url.href
 }
 

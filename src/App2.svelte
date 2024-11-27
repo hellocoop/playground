@@ -4,7 +4,7 @@
     import Header from './lib/Header.svelte'
     import AuthorizationRequest from './lib/AuthorizationRequest.svelte'
     import AuthorizationResponse from './lib/AuthorizationResponse.svelte'
-    import Invite from './lib/Request/Invite.svelte'
+    import InviteRequest from './lib/Request/InviteRequest.svelte'
     import FileIssue from './lib/FileIssue.svelte'
     import { makeAuthzUrl, makeInviteUrl, cleanUrl, removeLoader } from './lib/utils.js'
     import { parseToken, validateToken } from '@hellocoop/helper-browser'
@@ -20,8 +20,8 @@
     let authzResponse = $state({
         url: null,
         token: null,
-        userinfo: null,
-        introspect: null
+        introspect: null,
+        userinfo: null
     })
     let dropdowns = $state({
         scope: true,
@@ -31,6 +31,11 @@
         request: true
     })
 
+    const canInvite = $derived(
+        authzResponse.introspect?.sub &&
+        authzResponse.introspect?.name &&
+        authzResponse.introspect?.email
+    )
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: selectedAuthzServer,
         scopes: selectedScopes,
@@ -40,7 +45,9 @@
         helloParamsValues: selectedHelloParamsValues
     }))
     const inviteUrl = $derived(makeInviteUrl({
-        authzServer: selectedAuthzServer
+        authzServer: selectedAuthzServer,
+        profile: authzResponse.introspect,
+        ptlParamsValues: selectedPtlParamsValues
     }))
 
     // save state to local storage
@@ -63,7 +70,7 @@
 
         cleanUrl()
         removeLoader()
-        
+
         mounted = true
     })
 
@@ -145,7 +152,7 @@
             {authzResponse}
         />
 
-        <Invite {inviteUrl}/>
+        <InviteRequest {canInvite} {inviteUrl} />
 
         <FileIssue/>
     </main>
