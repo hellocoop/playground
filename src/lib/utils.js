@@ -49,14 +49,18 @@ function cleanUrl() {
     }
 }
 
-
 function removeLoader() {
     document.getElementById('load-spinner')?.remove(); //remove spinner
+}
+
+function lineBreakUrl(url) {
+    return url.replace(/&/g, '\n&').replace(/\?/g, '\n?')
 }
 
 export {
     makeAuthzUrl,
     makeInviteUrl,
     cleanUrl,
-    removeLoader
+    removeLoader,
+    lineBreakUrl
 }

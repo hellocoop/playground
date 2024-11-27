@@ -20,16 +20,16 @@ const SCOPE_PARAM = {
         'gitlab'
     ],
     REQUIRED: ['openid'],
-    DEFAULT_SELECTED: ['openid', 'profile'],
+    DEFAULT_SELECTED: ['openid','profile'],
 
     // Hellō Dev Mode
     HELLO_EXTEND_STANDARD: ['preferred_username'],
-    HELLO_EXTEND_NON_STANDARD: ['recovery', 'verified_name', 'existing_name', 'existing_username']
+    HELLO_EXTEND_NON_STANDARD: ['recovery','verified_name','existing_name','existing_username']
 }
 
 
 
-const { url, nonce, code_verifier } = await createAuthRequest({
+const { url,nonce,code_verifier } = await createAuthRequest({
     // we just need nonce & code_verifier
     client_id: 'x',
     redirect_uri: 'x'
@@ -53,7 +53,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'response_type',
-            POSSIBLE_VALUE: ['code', 'id_token'],
+            POSSIBLE_VALUE: ['code','id_token'],
             ONLY_ONE: true
         },
         {
@@ -67,7 +67,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'response_mode',
-            POSSIBLE_VALUE: ['fragment', 'query'],
+            POSSIBLE_VALUE: ['fragment','query'],
             ONLY_ONE: true
         },
         {
@@ -76,7 +76,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'prompt',
-            POSSIBLE_VALUE: ['consent', 'login'],
+            POSSIBLE_VALUE: ['consent','login'],
             ONLY_ONE: false
         },
         {
@@ -95,7 +95,14 @@ const PROTOCOL_PARAM = {
         'redirect_uri',
         'code'
     ],
-    DEFAULT_SELECTED: ['client_id', 'nonce', 'redirect_uri', 'response_type', 'code_challenge', 'response_mode'],
+    DEFAULT_SELECTED: [
+        'client_id',
+        'nonce',
+        'redirect_uri',
+        'response_type',
+        'code_challenge',
+        'response_mode'
+    ],
     DEFAULT_VALUES: {
         client_id: 'app_HelloDeveloperPlayground_Iq2',
         nonce,
@@ -135,7 +142,7 @@ const HELLO_PARAM = {
         {
             NAME: 'provider_hint',
             POSSIBLE_VALUE: PROVIDER_HINTS,
-            PLACEHOLDER: [...PROVIDER_HINTS, 'apple--', 'microsoft--', 'google-', 'email--', 'passkey--'],
+            PLACEHOLDER: [...PROVIDER_HINTS,'apple--','microsoft--','google-','email--','passkey--'],
             ONLY_ONE: false,
             
             // Hellō Dev Mode
@@ -144,7 +151,7 @@ const HELLO_PARAM = {
         {
             NAME: 'domain_hint',
             POSSIBLE_VALUE: '',
-            PLACEHOLDER: ['personal', '|' , 'managed', '|' ,'domain.example'],
+            PLACEHOLDER: ['personal','|' ,'managed','|' ,'domain.example'],
             ONLY_ONE: true
         }
     ],

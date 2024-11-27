@@ -1,4 +1,6 @@
 <script>
+    import { highlight } from '../shiki.js'
+    import { lineBreakUrl } from '../utils.js'
     import { slide } from 'svelte/transition'
 
     let { dropdowns = $bindable(), authzUrl } = $props()
@@ -60,14 +62,8 @@
                 <span
                     class="url-container block text-sm whitespace-pre-line"
                 >
-                    {@html authzUrl}
+                    {@html highlight('http', lineBreakUrl(authzUrl))}
                 </span>
-                <!-- <span
-                    class="url-container block text-sm whitespace-pre-line"
-                    class:flash={copyTooltip.requestURL}
-                >
-                    {@html highlight('http', requestURL)}
-                </span> -->
             </div>
         </div>
     {/if}

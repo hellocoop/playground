@@ -6,6 +6,7 @@
     import AuthorizationResponse from './lib/AuthorizationResponse.svelte'
     import InviteRequest from './lib/Request/InviteRequest.svelte'
     import FileIssue from './lib/FileIssue.svelte'
+    import { init as initShiki } from './lib/shiki.js'
     import { makeAuthzUrl, makeInviteUrl, cleanUrl, removeLoader } from './lib/utils.js'
     import { parseToken, validateToken, fetchToken } from '@hellocoop/helper-browser'
 
@@ -75,6 +76,7 @@
 
         cleanUrl()
         removeLoader()
+        await initShiki() // syntax highlighting
 
         mounted = true
     })
