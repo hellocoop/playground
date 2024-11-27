@@ -15,7 +15,7 @@
     let selectedHelloParams = $state(PARAMS.HELLO_PARAM.DEFAULT_SELECTED)
     let selectedHelloParamsValues = $state(PARAMS.HELLO_PARAM.DEFAULT_VALUES)
     let selectedAuthzServer = $state(AUTHZ_SERVERS.DEFAULT_SELECTED)
-    let isHelloMode = $state(false)
+    let isHelloMode = $state(true) // this only matters if flag is set
     let mounted = $state(false)
     let authzResponse = $state({
         url: null,
@@ -107,9 +107,16 @@
             if (!token)
                 throw new Error('Missing id_token');
             
-            // tbd validate token
-            
-            // authzResponse.introspect = payload
+            const payload = await validateToken({
+                token,
+                client_id: selectedPtlParamsValues.client_id,
+                nonce: selectedPtlParamsValues.nonce,
+                
+                // because helper-browser adds ''/authorize'
+                wallet: selectedAuthzServer.replace('/authorize', '')
+            })
+            authzResponse.introspect = payload
+            console.log(payload)
         } catch (err) {
             console.error(err)
         }
@@ -133,6 +140,7 @@
         />
 
         <AuthorizationResponse
+            {authzUrl}
             {authzResponse}
         />
 
