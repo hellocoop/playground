@@ -2,10 +2,10 @@
     let { inviteUrl, canInvite = false } = $props();
 
     let inviteWithHelloAjax = $state(false);
-	async function inviteWithHello() {
-		inviteWithHelloAjax = true
-        window.location.href = inviteUrl
-	}
+    async function inviteWithHello() {
+        inviteWithHelloAjax = true;
+        window.location.href = inviteUrl;
+    }
 </script>
 
 <section
@@ -21,7 +21,7 @@
                 class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mb-4"
             >
                 <h2 class="inline-flex items-center">
-                    <span>Invite URL</span>
+                    <span class="font-medium">Invite URL</span>
                     <!-- <button on:click={() => copy('invitePlaygroundURL', invitePlaygroundURL)}>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,9 @@
 									</svg>
 								</button> -->
                 </h2>
-                <span class="url-container mt-2 block text-sm whitespace-pre-line">
+                <span
+                    class="url-container mt-2 block text-sm whitespace-pre-line"
+                >
                     {@html inviteUrl}
                 </span>
                 <!-- <span

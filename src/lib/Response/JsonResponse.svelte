@@ -4,7 +4,7 @@
     let { authzJsonResponse, authzUrl } = $props()
 </script>
 
-<section class="py-4">
+<section class="pt-4">
     <div class="flex flex-col items-start text-left">
         <span class="font-medium" style="word-break: break-word;"
             >{new URL('/oauth/introspect', authzUrl)}</span
