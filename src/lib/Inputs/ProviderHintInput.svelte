@@ -10,6 +10,7 @@
     let debouncer = $state();
     let invalidSlugs = $state([]);
 
+    // validate on input load as well
     onMount(validate)
 
     const PROVIDER_HINT = HELLO_PARAMS.find(i => i.NAME === 'provider_hint')
