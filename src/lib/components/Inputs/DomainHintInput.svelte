@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte'
     import { slide } from 'svelte/transition'
-    import { PARAMS } from '../../../constants.js'
+    import { PARAMS } from '$lib/constants.js'
 
     const { HELLO_PARAM: { PARAMS: HELLO_PARAMS } } = PARAMS;
 

@@ -1,10 +1,10 @@
 <script>
-    import ScopeParam from "./Request/ScopeParam.svelte";
-    import ProtocolParams from "./Request/ProtocolParams.svelte";
-    import HelloParams from "./Request/HelloParams.svelte";
-    import AuthorizationServer from "./Request/AuthorizationServer.svelte";
-    import RequestUrl from "./Request/RequestUrl.svelte";
-    import HelloModeToggle from "./Request/HelloModeToggle.svelte";
+    import ScopeParam from "$components/Request/ScopeParam.svelte";
+    import ProtocolParams from "$components/Request/ProtocolParams.svelte";
+    import HelloParams from "$components/Request/HelloParams.svelte";
+    import AuthorizationServer from "$components/Request/AuthorizationServer.svelte";
+    import RequestUrl from "$components/Request/RequestUrl.svelte";
+    import HelloModeToggle from "$components/Request/HelloModeToggle.svelte";
 
     let {
         selectedScopes = $bindable(),

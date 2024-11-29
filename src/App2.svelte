@@ -1,14 +1,14 @@
 <script>
     import { onMount } from 'svelte'
-    import { PARAMS, AUTHZ_SERVERS } from './constants.js'
-    import Header from './lib/components/Header.svelte'
-    import AuthorizationRequest from './lib/components/AuthorizationRequest.svelte'
-    import AuthorizationResponse from './lib/components/AuthorizationResponse.svelte'
-    import InviteRequest from './lib/components/Request/InviteRequest.svelte'
-    import FileIssue from './lib/components/FileIssue.svelte'
-    import { init as initShiki } from './lib/shiki.js'
-    import { cleanUrl, removeLoader } from './lib/utils.js'
-    import { makeAuthzUrl, makeInviteUrl } from './lib/request.js'
+    import { PARAMS, AUTHZ_SERVERS } from '$lib/constants.js'
+    import Header from '$components/Header.svelte'
+    import AuthorizationRequest from '$components/AuthorizationRequest.svelte'
+    import AuthorizationResponse from '$components/AuthorizationResponse.svelte'
+    import InviteRequest from '$components/Request/InviteRequest.svelte'
+    import FileIssue from '$components/FileIssue.svelte'
+    import { init as initShiki } from '$lib/shiki.js'
+    import { cleanUrl, removeLoader } from '$lib/utils.js'
+    import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js'
     import { parseToken, validateToken } from '@hellocoop/helper-browser'
 
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)

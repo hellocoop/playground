@@ -1,10 +1,10 @@
 <script>
     import { slide } from "svelte/transition";
-    import { PARAMS } from "../../../constants.js";
-    import ChevronY from "../ChevronY.svelte";
-    import Tooltip from "../Tooltip.svelte";
-    import ProviderHintInput from "../Inputs/ProviderHintInput.svelte";
-    import DomainHintInput from "../Inputs/DomainHintInput.svelte";
+    import { PARAMS } from "$lib/constants.js";
+    import ChevronY from "$components/ChevronY.svelte";
+    import Tooltip from "$components/Tooltip.svelte";
+    import ProviderHintInput from "$components/Inputs/ProviderHintInput.svelte";
+    import DomainHintInput from "$components/Inputs/DomainHintInput.svelte";
 
     let {
         selectedHelloParams = $bindable(),

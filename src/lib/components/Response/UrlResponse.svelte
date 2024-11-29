@@ -1,7 +1,7 @@
 <script>
-    import { highlight } from '../../shiki.js'
-    import { lineBreakUrl } from '../../utils.js'
-    import CopyText from '../CopyText.svelte'
+    import { highlight } from '$lib/shiki.js'
+    import { lineBreakUrl } from '$lib/utils.js'
+    import CopyText from '$components/CopyText.svelte'
 
     let { label, url } = $props()
 </script>

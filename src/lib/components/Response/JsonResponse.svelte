@@ -1,6 +1,6 @@
 <script>
-    import { highlight } from '../../shiki.js'
-    import CopyText from '../CopyText.svelte'
+    import { highlight } from '$lib/shiki.js'
+    import CopyText from '$components/CopyText.svelte'
 
     let { label, json } = $props()
 </script>

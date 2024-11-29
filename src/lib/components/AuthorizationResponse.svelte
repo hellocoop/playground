@@ -1,6 +1,6 @@
 <script>
-    import UrlResponse from './Response/UrlResponse.svelte'
-    import JsonResponse from './Response/JsonResponse.svelte'
+    import UrlResponse from '$components/Response/UrlResponse.svelte'
+    import JsonResponse from '$components/Response/JsonResponse.svelte'
 
     let { authzUrl, authzResponse } = $props()
 </script>

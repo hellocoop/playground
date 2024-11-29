@@ -1,8 +1,8 @@
 <script>
     import { slide } from 'svelte/transition'
-    import { PARAMS } from '../../../constants.js'
-    import ChevronY from '../ChevronY.svelte'
-    import Tooltip from '../Tooltip.svelte'
+    import { PARAMS } from '$lib/constants.js'
+    import ChevronY from '$components/ChevronY.svelte'
+    import Tooltip from '$components/Tooltip.svelte'
 
     let { selectedScopes = $bindable(), dropdowns = $bindable(), isHelloMode } = $props()
 </script>
