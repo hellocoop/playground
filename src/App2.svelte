@@ -7,8 +7,9 @@
     import InviteRequest from './lib/Request/InviteRequest.svelte'
     import FileIssue from './lib/FileIssue.svelte'
     import { init as initShiki } from './lib/shiki.js'
-    import { makeAuthzUrl, makeInviteUrl, cleanUrl, removeLoader } from './lib/utils.js'
-    import { parseToken, validateToken, fetchToken } from '@hellocoop/helper-browser'
+    import { cleanUrl, removeLoader } from './lib/utils.js'
+    import { makeAuthzUrl, makeInviteUrl } from './lib/request.js'
+    import { parseToken, validateToken } from '@hellocoop/helper-browser'
 
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)
     let selectedPtlParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)

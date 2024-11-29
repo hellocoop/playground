@@ -48,7 +48,6 @@
             bind:selectedPtlParams
             bind:selectedPtlParamsValues
             bind:dropdowns
-            {isHelloMode}
         />
 
         <HelloParams

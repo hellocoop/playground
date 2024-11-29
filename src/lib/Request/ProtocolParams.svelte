@@ -7,8 +7,7 @@
     let {
         selectedPtlParams = $bindable(),
         selectedPtlParamsValues = $bindable(),
-        dropdowns = $bindable(),
-        isHelloMode,
+        dropdowns = $bindable()
     } = $props();
 </script>
 
