@@ -10,11 +10,6 @@
         dropdowns = $bindable(),
         isHelloMode,
     } = $props();
-
-    function validateDeps(deps) {
-
-        return true;
-    }
 </script>
 
 <section class="break-inside-avoid-column">
