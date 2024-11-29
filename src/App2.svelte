@@ -114,7 +114,7 @@
         }
     }
 
-    async function processCode(params) {
+    async function processCode(params = {}) {
         try {
             authzResponse.url = params.toString()
 
@@ -164,7 +164,7 @@
         }
     }
 
-    async function processIdToken(params) {
+    async function processIdToken(params = {}) {
         try {
             authzResponse.url = params.toString()
             
