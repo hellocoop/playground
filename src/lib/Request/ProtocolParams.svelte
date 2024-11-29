@@ -10,6 +10,11 @@
         dropdowns = $bindable(),
         isHelloMode,
     } = $props();
+
+    function validateDeps(deps) {
+
+        return true;
+    }
 </script>
 
 <section class="break-inside-avoid-column">
@@ -20,8 +25,7 @@
         <span class="font-medium text-base"> Protocol Parameters </span>
         <ChevronY dir={dropdowns.protocol ? "up" : "down"} />
         <Tooltip
-            content="Protocol Parameters Docs"
-            ,
+            content="Protocol Parameters Docs",
             href="https://www.hello.dev/docs/oidc/request/#openid-connect-parameters"
         />
     </button>
@@ -36,7 +40,8 @@
                 )}
                 {@const selected = selectedPtlParams.includes(pclParam.NAME)}
                 {@const hasValue = !!selectedPtlParamsValues[pclParam.NAME]}
-                {@const error = required && (!selected || !hasValue)}
+                {@const requiredOk = !required || (selected && hasValue)}
+                {@const error = !requiredOk}
                 <li class="flex flex-row items-center space-x-2">
                     <input
                         type="checkbox"

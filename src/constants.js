@@ -59,9 +59,6 @@ const PROTOCOL_PARAM = {
         {
             NAME: 'code_challenge',
             POSSIBLE_VALUE: '',
-            NEEDS: {
-                response_type: 'code'
-            }
         },
         {
             NAME: 'code_verifier',
