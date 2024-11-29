@@ -6,7 +6,7 @@
 let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } = $props();
 </script>
 
-<section>
+<section class="break-inside-avoid-column">
     <button
         class="inline-flex items-center space-x-2"
         onclick={() => (dropdowns.server = !dropdowns.server)}

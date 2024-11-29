@@ -109,7 +109,7 @@
             if (states.hello_params) selectedHelloParams = states.hello_params
             if (states.hello_params_values) selectedHelloParamsValues = states.hello_params_values
         } catch(err) {
-            console.error(err)
+            // no states
         }
     }
 

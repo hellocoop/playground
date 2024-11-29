@@ -17,6 +17,11 @@
         selectedAuthzServer = $bindable(),
         authzUrl,
     } = $props();
+
+    function reset() {
+        localStorage.removeItem('states')
+        window.location.reload()
+    }
 </script>
 
 <section
@@ -29,11 +34,11 @@
     {#if localStorage.plausible_ignore}
         <HelloMode bind:isHelloMode />
     {/if}
-    <!-- <button
-        onclick={resetAll}
+    <button
+        onclick={reset}
         class="absolute -top-3 right-1 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
         >Reset</button
-    > -->
+    >
     <div
         class="columns-1 md:columns-2 xl:columns-3 4xl:columns-4 gap-x-12 space-y-6"
     >

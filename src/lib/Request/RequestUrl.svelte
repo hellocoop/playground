@@ -19,7 +19,7 @@
             class="inline-flex items-center space-x-2"
             onclick={() => (dropdowns.request = !dropdowns.request)}
         >
-            <h1 class="font-semibold text-lg">Request URL</h1>
+            <h1 class="font-medium">Request URL</h1>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
