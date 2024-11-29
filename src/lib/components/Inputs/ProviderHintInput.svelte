@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte'
     import { slide } from 'svelte/transition'
-    import { PARAMS } from '../../constants.js'
+    import { PARAMS } from '../../../constants.js'
 
     const { HELLO_PARAM: { PARAMS: HELLO_PARAMS } } = PARAMS;
 
@@ -20,9 +20,7 @@
             const valueArr = value?.split(' ');
             invalidSlugs = valueArr
                 ?.map((i) => i.replace('--', ''))
-                .filter(
-                    (i) => ![...PROVIDER_HINT.POSSIBLE_VALUE,...(isHelloMode ? PROVIDER_HINT.HELLO_EXTEND : [])].includes(i) && i
-                );
+                .filter((i) => !PROVIDER_HINT.POSSIBLE_VALUE.includes(i) && i);
         }, 250);
     }  
 </script>

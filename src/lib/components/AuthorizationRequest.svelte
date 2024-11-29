@@ -4,7 +4,7 @@
     import HelloParams from "./Request/HelloParams.svelte";
     import AuthorizationServer from "./Request/AuthorizationServer.svelte";
     import RequestUrl from "./Request/RequestUrl.svelte";
-    import HelloMode from "./Request/HelloMode.svelte";
+    import HelloModeToggle from "./Request/HelloModeToggle.svelte";
 
     let {
         selectedScopes = $bindable(),
@@ -32,7 +32,7 @@
         >Authorization Request</span
     >
     {#if localStorage.plausible_ignore}
-        <HelloMode bind:isHelloMode />
+        <HelloModeToggle bind:isHelloMode />
     {/if}
     <button
         onclick={reset}

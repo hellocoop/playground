@@ -1,6 +1,6 @@
 <script>
-    import { highlight } from '../shiki.js'
-    import { lineBreakUrl } from '../utils.js'
+    import { highlight } from '../../shiki.js'
+    import { lineBreakUrl } from '../../utils.js'
     import CopyButton from '../CopyButton.svelte'
 
     let { inviteUrl, canInvite = false } = $props();

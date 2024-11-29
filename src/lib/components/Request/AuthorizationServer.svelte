@@ -1,6 +1,6 @@
 <script>
     import { slide } from "svelte/transition";
-    import { AUTHZ_SERVERS } from "../../constants.js";
+    import { AUTHZ_SERVERS } from "../../../constants.js";
     import ChevronY from "../ChevronY.svelte";
 
 let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } = $props();

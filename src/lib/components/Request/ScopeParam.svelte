@@ -1,6 +1,6 @@
 <script>
     import { slide } from 'svelte/transition'
-    import { PARAMS } from '../../constants.js'
+    import { PARAMS } from '../../../constants.js'
     import ChevronY from '../ChevronY.svelte'
     import Tooltip from '../Tooltip.svelte'
 

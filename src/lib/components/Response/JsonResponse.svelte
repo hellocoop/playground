@@ -1,5 +1,5 @@
 <script>
-    import { highlight } from '../shiki.js'
+    import { highlight } from '../../shiki.js'
     import CopyText from '../CopyText.svelte'
 
     let { label, json } = $props()

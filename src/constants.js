@@ -191,8 +191,7 @@ const AUTHZ_SERVERS = {
 
     // Hellō Dev Mode
     HELLO_EXTEND_SERVERS: [
-        'https://wallet.hello-staging.net/authorize',
-        'https://wallet.hello-local.net/authorize',
+        
         'https://wallet.hello-dev.net/authorize',
     ],
 }

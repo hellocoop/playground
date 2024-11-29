@@ -1,6 +1,6 @@
 <script>
-    import { highlight } from '../shiki.js'
-    import { lineBreakUrl } from '../utils.js'
+    import { highlight } from '../../shiki.js'
+    import { lineBreakUrl } from '../../utils.js'
     import CopyText from '../CopyText.svelte'
 
     let { label, url } = $props()
