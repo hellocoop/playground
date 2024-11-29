@@ -36,7 +36,7 @@
     {/if}
     <button
         onclick={reset}
-        class="absolute -top-3 right-1 px-3 rounded-xl border border-charcoal dark:border-gray-800 text-sm bg-white dark:bg-[#151515]"
+        class="absolute -top-3 right-2 px-3 py-0.5 rounded-md border border-charcoal dark:border-gray-800 text-xs bg-white dark:bg-[#151515]"
         >Reset</button
     >
     <div
