@@ -28,8 +28,6 @@ const SCOPE_PARAM = {
     DEFAULT_SELECTED: ['openid','profile'],
 }
 
-
-
 const { url,nonce,code_verifier } = await createAuthRequest({
     // we just need nonce & code_verifier
     client_id: 'x',
