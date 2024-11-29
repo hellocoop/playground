@@ -21,7 +21,7 @@
             invalidSlugs = valueArr
                 ?.map((i) => i.replace('--', ''))
                 .filter(
-                    (i) => ![...PROVIDER_HINT.POSSIBLE_VALUE, ...(isHelloMode ? PROVIDER_HINT.HELLO_EXTEND : [])].includes(i) && i
+                    (i) => ![...PROVIDER_HINT.POSSIBLE_VALUE,...(isHelloMode ? PROVIDER_HINT.HELLO_EXTEND : [])].includes(i) && i
                 );
         }, 250);
     }  

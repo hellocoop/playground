@@ -67,12 +67,12 @@
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(search || hash);
 
-        authzResponse.url = params.toString()
-
         if (params.has('id_token'))
             await processIdToken(params)
         else if (params.has('code'))
             await processCode(params)
+        else if (params.has('beta'))
+            selectBetaServer()
 
         cleanUrl()
         removeLoader()
@@ -115,6 +115,8 @@
 
     async function processCode(params) {
         try {
+            authzResponse.url = params.toString()
+
             const code = params.get('code');
             if (!code)
                 throw new Error('Missing code');
@@ -163,6 +165,8 @@
 
     async function processIdToken(params) {
         try {
+            authzResponse.url = params.toString()
+            
             const token = params.get('id_token');
             if (!token)
                 throw new Error('Missing id_token');
@@ -179,6 +183,10 @@
         } catch (err) {
             console.error(err)
         }
+    }
+
+    function selectBetaServer() {
+        selectedAuthzServer = AUTHZ_SERVERS.SERVERS[1] // beta authz server
     }
 </script>
 
