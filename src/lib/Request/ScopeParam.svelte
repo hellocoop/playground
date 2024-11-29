@@ -19,13 +19,17 @@
         />
     </button>
     {#if dropdowns.scope}
+        {@const ALL_STANDARD_SCOEPS = [
+            ...PARAMS.SCOPE_PARAM.STANDARD,
+            ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD : [])
+        ]}
+        {@const ALL_NON_STANDARD_SCOEPS = [
+            ...PARAMS.SCOPE_PARAM.NON_STANDARD,
+            ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
+        ]}
         <div class="flex mt-2" transition:slide={{duration: 150}}>
             <ul class="space-y-2 w-48">
-                {#each [
-                    ...PARAMS.SCOPE_PARAM.STANDARD,
-                    ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD : [])
-                ] 
-                as stdScope}
+                {#each ALL_STANDARD_SCOEPS as stdScope}
                     {@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
                     <li class="flex flex-row items-center space-x-2">
                         <input
@@ -41,11 +45,7 @@
             </ul>
         
             <ul class="space-y-2 w-48">
-                {#each [
-                        ...PARAMS.SCOPE_PARAM.NON_STANDARD,
-                        ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
-                    ] 
-                as nonStdScope}
+                {#each ALL_NON_STANDARD_SCOEPS as nonStdScope}
                     <li class="flex flex-row items-center space-x-2">
                         <input
                             type="checkbox"

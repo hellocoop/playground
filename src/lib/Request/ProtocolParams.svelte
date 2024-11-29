@@ -20,7 +20,7 @@
         <span class="font-medium text-base"> Protocol Parameters </span>
         <ChevronY dir={dropdowns.protocol ? "up" : "down"} />
         <Tooltip
-            content="Protocol Parameters Docs",
+            content="Protocol Parameters Docs"
             href="https://www.hello.dev/docs/oidc/request/#openid-connect-parameters"
         />
     </button>

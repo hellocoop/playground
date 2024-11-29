@@ -19,12 +19,13 @@ const SCOPE_PARAM = {
         'github',
         'gitlab'
     ],
-    REQUIRED: ['openid'],
-    DEFAULT_SELECTED: ['openid','profile'],
 
     // Hellō Dev Mode
     HELLO_EXTEND_STANDARD: ['preferred_username'],
-    HELLO_EXTEND_NON_STANDARD: ['recovery','verified_name','existing_name','existing_username']
+    HELLO_EXTEND_NON_STANDARD: ['recovery','verified_name','existing_name','existing_username'],
+
+    REQUIRED: ['openid'],
+    DEFAULT_SELECTED: ['openid','profile'],
 }
 
 
@@ -142,22 +143,35 @@ const HELLO_PARAM = {
         {
             NAME: 'provider_hint',
             POSSIBLE_VALUE: PROVIDER_HINTS,
-            PLACEHOLDER: [...PROVIDER_HINTS,'apple--','microsoft--','google-','email--','passkey--'],
+            HINT: [...PROVIDER_HINTS,'apple--','microsoft--','google-','email--','passkey--'].join(' '),
             ONLY_ONE: false,
-            
-            // Hellō Dev Mode
-            HELLO_EXTEND: ['testing'],
         },
         {
             NAME: 'domain_hint',
             POSSIBLE_VALUE: '',
-            PLACEHOLDER: ['personal','|' ,'managed','|' ,'domain.example'],
+            HINT: 'personal | managed | domain.example',
             ONLY_ONE: true
+        },
+        {
+            NAME: 'custom',
+            POSSIBLE_VALUE: ''
         }
     ],
+    
+    // Hellō Dev Mode
+    HELLO_EXTEND_PARAMS: [
+        {
+            NAME: 'passkeys',
+            POSSIBLE_VALUE: '',
+        }
+    ],
+
     REQUIRED: [],
     DEFAULT_SELECTED: [],
-    DEFAULT_VALUES: {}
+    DEFAULT_VALUES: {
+        passkeys: 'global'
+    },
+
 }
 
 const PARAMS = {

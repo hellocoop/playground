@@ -22,7 +22,17 @@ function makeAuthzUrl({
         // value exists but not selected
         if (!helloParams.includes(key)) continue
 
-        url.searchParams.set(key, helloParamsValues[key])
+        if (key === 'custom') {
+            // interpret 'custom' value as param + value
+            // i.e. custom='foo=bar&bar=foo' => '&foo=bar&bar=foo'
+            const custom = new URLSearchParams(helloParamsValues[key]);
+            for (const [key, value] of custom) {
+                url.searchParams.set(key, value)
+            }
+            continue;
+        } else {
+            url.searchParams.set(key, helloParamsValues[key])
+        }
     }
 
     return url.href

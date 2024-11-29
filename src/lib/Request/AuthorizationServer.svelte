@@ -15,8 +15,9 @@ let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } 
         <ChevronY dir={dropdowns.server ? "up" : "down"} />
     </button>
     {#if dropdowns.server}
+        {@const ALL_AUTHZ_SERVERS = [...AUTHZ_SERVERS.SERVERS, ...(isHelloMode ? AUTHZ_SERVERS.HELLO_EXTEND_SERVERS : [])]}
         <ul class="space-y-2 mt-2" transition:slide|local>
-            {#each [...AUTHZ_SERVERS.SERVERS, ...(isHelloMode ? AUTHZ_SERVERS.HELLO_EXTEND_SERVERS : [])] as server}
+            {#each ALL_AUTHZ_SERVERS as server}
                 <li class="flex items-center">
                     <input
                         type="radio"

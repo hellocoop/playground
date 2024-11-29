@@ -28,11 +28,15 @@
         />
     </button>
     {#if dropdowns.hello}
+        {@const ALL_HELLO_PARAMS = [
+            ...PARAMS.HELLO_PARAM.PARAMS,
+            ...(isHelloMode ? PARAMS.HELLO_PARAM.HELLO_EXTEND_PARAMS : [])
+        ]}
         <ul
             class="flex flex-col justify-center mt-2 space-y-2"
             transition:slide={{ duration: 150 }}
         >
-            {#each PARAMS.HELLO_PARAM.PARAMS as param}
+            {#each ALL_HELLO_PARAMS as param}
                 {@const required = PARAMS.HELLO_PARAM.REQUIRED.includes(
                     param.NAME,
                 )}
@@ -68,19 +72,14 @@
                                 type="text"
                                 class="border w-full form-input h-6 px-2"
                                 class:opacity-50={!selected}
-                                oninput={() =>
-                                    inputHandler(
-                                        param.NAME,
-                                        selectedHelloParamsValues[param.NAME],
-                                    )}
                                 bind:value={selectedHelloParamsValues[
                                     param.NAME
                                 ]}
                             />
                         {/if}
-                        {#if param.PLACEHOLDER}
+                        {#if param.HINT}
                             <p class="text-xs opacity-70 mt-1">
-                                {param.PLACEHOLDER.join(" ")}
+                                {param.HINT}
                             </p>
                         {/if}
                     </div>
