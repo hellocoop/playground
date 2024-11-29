@@ -70,9 +70,9 @@
         authzResponse.url = params.toString()
 
         if (params.has('id_token'))
-            processIdToken(params)
+            await processIdToken(params)
         else if (params.has('code'))
-            processCode(params)
+            await processCode(params)
 
         cleanUrl()
         removeLoader()
