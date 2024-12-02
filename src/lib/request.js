@@ -1,6 +1,7 @@
 function makeAuthzUrl({
     authzServer,
     scopes,
+    customScopeValue,
     ptlParams,
     ptlParamsValues,
     helloParams,
@@ -9,8 +10,14 @@ function makeAuthzUrl({
     const url = new URL(authzServer)
 
     // scope is not overridden in protocol params section
-    if (scopes.length && !ptlParams.includes('scope'))
-        url.searchParams.set('scope', scopes.join(' '))
+    if (scopes.length && !ptlParams.includes('scope')) {
+        let scopesStr = scopes.join(' ')
+        // replace 'custom-scope' key w/ custom scope value
+        scopesStr = scopesStr.replace('custom-scope', customScopeValue)
+        // trim whitespace at ends so there is no trailing '+'
+        scopesStr = scopesStr.trim()
+        url.searchParams.set('scope', scopesStr)
+    }
 
     for (const key in ptlParamsValues) {
         // value exists
@@ -18,7 +25,7 @@ function makeAuthzUrl({
         // param not selected
         if (!ptlParams.includes(key)) continue
 
-        url.searchParams.set(key, ptlParamsValues[key])
+        url.searchParams.set(key, ptlParamsValues[key].trim())
     }
 
     for (const key in helloParamsValues) {
@@ -32,11 +39,11 @@ function makeAuthzUrl({
             // i.e. custom='foo=bar&bar=foo' => '&foo=bar&bar=foo'
             const custom = new URLSearchParams(helloParamsValues[key]);
             for (const [key, value] of custom) {
-                url.searchParams.set(key, value)
+                url.searchParams.set(key, value.trim())
             }
             continue;
         } else {
-            url.searchParams.set(key, helloParamsValues[key])
+            url.searchParams.set(key, helloParamsValues[key].trim())
         }
     }
 

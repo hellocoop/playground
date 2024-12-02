@@ -18,6 +18,7 @@
     let selectedHelloParams = $state(PARAMS.HELLO_PARAM.DEFAULT_SELECTED)
     let selectedHelloParamsValues = $state(PARAMS.HELLO_PARAM.DEFAULT_VALUES)
     let selectedAuthzServer = $state(AUTHZ_SERVERS.DEFAULT_SELECTED)
+    let customScopeValue = $state('')
     let isHelloMode = $state(true) // this only matters if flag is set
     let mounted = $state(false)
     let authzResponse = $state({
@@ -48,6 +49,7 @@
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: selectedAuthzServer,
         scopes: selectedScopes,
+        customScopeValue,
         ptlParams: selectedPtlParams,
         ptlParamsValues: selectedPtlParamsValues,
         helloParams: selectedHelloParams,
@@ -96,7 +98,8 @@
             ptl_params: selectedPtlParams,
             ptl_params_values: selectedPtlParamsValues,
             hello_params: selectedHelloParams,
-            hello_params_values: selectedHelloParamsValues
+            hello_params_values: selectedHelloParamsValues,
+            custom_scope_value: customScopeValue
         })
         localStorage.setItem('states', states)
     }
@@ -111,6 +114,7 @@
             if (states.ptl_params_values) selectedPtlParamsValues = states.ptl_params_values
             if (states.hello_params) selectedHelloParams = states.hello_params
             if (states.hello_params_values) selectedHelloParamsValues = states.hello_params_values
+            if (states.custom_scope_value) customScopeValue = states.custom_scope_value
         } catch(err) {
             // no states
         }
@@ -206,6 +210,7 @@
             bind:dropdowns
             bind:isHelloMode
             bind:selectedAuthzServer
+            bind:customScopeValue
             {authzUrl}
         />
 

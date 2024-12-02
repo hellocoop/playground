@@ -4,7 +4,13 @@
     import ChevronY from '$components/ChevronY.svelte'
     import Tooltip from '$components/Tooltip.svelte'
 
-    let { selectedScopes = $bindable(), dropdowns = $bindable(), selectedPtlParams, isHelloMode } = $props()
+    let {
+        selectedScopes = $bindable(),
+        dropdowns = $bindable(),
+        customScopeValue = $bindable(),
+        selectedPtlParams,
+        isHelloMode
+    } = $props()
 
     // scope input in protocol params
     const isOverwritten = $derived(selectedPtlParams.includes('scope'))
@@ -76,8 +82,12 @@
                         type="checkbox"
                         id="custom-scope"
                         name="scope"
+                        value="custom-scope"
+                        bind:group={selectedScopes}
                     />
                     <input
+                        class:opacity-50={!selectedScopes.includes('custom-scope')}
+                        form="custom-scope"
                         type="text"
                         class="h-6 px-2 w-40 form-input italic"
                         autocomplete="off"
@@ -85,6 +95,7 @@
                         autocapitalize="off"
                         spellcheck="false"
                         placeholder="space separated"
+                        bind:value={customScopeValue}
                     />
                 </li>
             </ul>
