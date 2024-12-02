@@ -7,8 +7,9 @@ function makeAuthzUrl({
     helloParamsValues
 }) {
     const url = new URL(authzServer)
-    
-    if (scopes.length)
+
+    // scope is not overridden in protocol params section
+    if (scopes.length && !ptlParams.includes('scope'))
         url.searchParams.set('scope', scopes.join(' '))
 
     for (const key in ptlParamsValues) {

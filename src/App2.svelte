@@ -11,6 +11,7 @@
     import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js'
     import { parseToken, validateToken } from '@hellocoop/helper-browser'
 
+    // states
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED)
     let selectedPtlParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED)
     let selectedPtlParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES)
@@ -34,6 +35,7 @@
         request: true
     })
 
+    // derived
     const claims = $derived(
         // id_token flow            // code flow
         authzResponse.introspect || authzResponse.parsed

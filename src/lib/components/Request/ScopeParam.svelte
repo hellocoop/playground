@@ -4,10 +4,14 @@
     import ChevronY from '$components/ChevronY.svelte'
     import Tooltip from '$components/Tooltip.svelte'
 
-    let { selectedScopes = $bindable(), dropdowns = $bindable(), isHelloMode } = $props()
+    let { selectedScopes = $bindable(), dropdowns = $bindable(), selectedPtlParams, isHelloMode } = $props()
+
+    // scope input in protocol params
+    const isOverwritten = $derived(selectedPtlParams.includes('scope'))
 </script>
 
-<section class="break-inside-avoid-column">
+<section class="break-inside-avoid-column"
+>
     <button class="inline-flex items-center space-x-2" onclick={() => dropdowns.scope = !dropdowns.scope}>
         <span class="font-medium text-base">
             Scope Parameter
@@ -18,6 +22,12 @@
             href='https://www.hello.dev/docs/scopes/'
         />
     </button>
+
+
+    {#if isOverwritten}
+        <p class="opacity-70 text-xs italic mt-1">Overwritten with 'scope' in Protocol Parameters section</p>
+    {/if}
+
     {#if dropdowns.scope}
         {@const ALL_STANDARD_SCOEPS = [
             ...PARAMS.SCOPE_PARAM.STANDARD,
@@ -27,7 +37,10 @@
             ...PARAMS.SCOPE_PARAM.NON_STANDARD,
             ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
         ]}
-        <div class="flex mt-2" transition:slide={{duration: 150}}>
+        <div class="flex mt-2" transition:slide={{duration: 150}}
+            class:opacity-50={isOverwritten}
+            class:pointer-events-none={isOverwritten}
+        >
             <ul class="space-y-2 w-48">
                 {#each ALL_STANDARD_SCOEPS as stdScope}
                     {@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
@@ -57,6 +70,23 @@
                         <label for={nonStdScope} class="italic">{nonStdScope}</label>
                     </li>
                 {/each}
+
+                <li class="flex flex-row items-center space-x-2">
+                    <input
+                        type="checkbox"
+                        id="custom-scope"
+                        name="scope"
+                    />
+                    <input
+                        type="text"
+                        class="h-6 px-2 w-40 form-input italic"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        placeholder="space separated"
+                    />
+                </li>
             </ul>
         </div>
     {/if}

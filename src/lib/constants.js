@@ -85,7 +85,8 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'scope',
-            POSSIBLE_VALUE: ''
+            POSSIBLE_VALUE: '',
+            PLACEHOLDER: 'space separated'
         }
     ],
     REQUIRED: [
