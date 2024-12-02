@@ -16,7 +16,7 @@ let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } 
     </button>
     {#if dropdowns.server}
         {@const ALL_AUTHZ_SERVERS = [...AUTHZ_SERVERS.SERVERS, ...(isHelloMode ? AUTHZ_SERVERS.HELLO_EXTEND_SERVERS : [])]}
-        <ul class="space-y-2 mt-2" transition:slide|local>
+        <ul class="space-y-2 mt-2" transition:slide|local={{duration: 150}}>
             {#each ALL_AUTHZ_SERVERS as server}
                 <li class="flex items-center">
                     <input
