@@ -18,7 +18,8 @@
     let selectedHelloParams = $state(PARAMS.HELLO_PARAM.DEFAULT_SELECTED)
     let selectedHelloParamsValues = $state(PARAMS.HELLO_PARAM.DEFAULT_VALUES)
     let selectedAuthzServer = $state(AUTHZ_SERVERS.DEFAULT_SELECTED)
-    let customScopeValue = $state('')
+    let customAuthzServer = $state('')
+    let customScope = $state('')
     let isHelloMode = $state(true) // this only matters if flag is set
     let mounted = $state(false)
     let authzResponse = $state({
@@ -48,8 +49,9 @@
     ))
     const authzUrl = $derived(makeAuthzUrl({
         authzServer: selectedAuthzServer,
+        customAuthzServer,
         scopes: selectedScopes,
-        customScopeValue,
+        customScope,
         ptlParams: selectedPtlParams,
         ptlParamsValues: selectedPtlParamsValues,
         helloParams: selectedHelloParams,
@@ -99,7 +101,8 @@
             ptl_params_values: selectedPtlParamsValues,
             hello_params: selectedHelloParams,
             hello_params_values: selectedHelloParamsValues,
-            custom_scope_value: customScopeValue
+            custom_scope_value: customScope,
+            custom_authz_server_value: customAuthzServer
         })
         localStorage.setItem('states', states)
     }
@@ -114,7 +117,8 @@
             if (states.ptl_params_values) selectedPtlParamsValues = states.ptl_params_values
             if (states.hello_params) selectedHelloParams = states.hello_params
             if (states.hello_params_values) selectedHelloParamsValues = states.hello_params_values
-            if (states.custom_scope_value) customScopeValue = states.custom_scope_value
+            if (states.custom_scope_value) customScope = states.custom_scope_value
+            if (states.custom_authz_server_value) customAuthzServer = states.custom_authz_server_value
         } catch(err) {
             // no states
         }
@@ -210,7 +214,8 @@
             bind:dropdowns
             bind:isHelloMode
             bind:selectedAuthzServer
-            bind:customScopeValue
+            bind:customScope
+            bind:customAuthzServer
             {authzUrl}
         />
 

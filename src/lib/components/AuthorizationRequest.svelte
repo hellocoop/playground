@@ -15,7 +15,8 @@
         dropdowns = $bindable(),
         isHelloMode = $bindable(),
         selectedAuthzServer = $bindable(),
-        customScopeValue = $bindable(),
+        customScope = $bindable(),
+        customAuthzServer = $bindable(),
         authzUrl
     } = $props();
 
@@ -43,7 +44,7 @@
     <div
         class="columns-1 md:columns-2 xl:columns-3 4xl:columns-4 gap-x-12 space-y-6"
     >
-        <ScopeParam bind:selectedScopes bind:customScopeValue bind:dropdowns {selectedPtlParams} {isHelloMode} />
+        <ScopeParam bind:selectedScopes bind:customScope bind:dropdowns {selectedPtlParams} {isHelloMode} />
 
         <ProtocolParams
             bind:selectedPtlParams
@@ -58,7 +59,7 @@
             {isHelloMode}
         />
 
-        <AuthorizationServer bind:dropdowns bind:selectedAuthzServer {isHelloMode} />
+        <AuthorizationServer bind:dropdowns bind:selectedAuthzServer bind:customAuthzServer {isHelloMode} />
 
         <RequestUrl bind:dropdowns {authzUrl} />
     </div>

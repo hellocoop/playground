@@ -4,7 +4,12 @@
     import ChevronY from "$components/ChevronY.svelte";
     import CopyButton from "../CopyButton.svelte";
 
-let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } = $props();
+let {
+    dropdowns = $bindable(),
+    selectedAuthzServer = $bindable(),
+    customAuthzServer = $bindable(),
+    isHelloMode
+} = $props();
 </script>
 
 <section class="break-inside-avoid-column">
@@ -22,7 +27,7 @@ let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } 
                 <li class="flex items-center">
                     <input
                         type="radio"
-                        name="authorization_server"
+                        name="authz-server"
                         value={server}
                         id={server}
                         class="text-charcoal dark:text-gray-800"
@@ -38,15 +43,20 @@ let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } 
             <li class="flex items-center">
                 <input
                     type="radio"
-                    name="authorization_server"
+                    name="authz-server"
                     class="text-charcoal dark:text-gray-800"
-                    id="custom-authorization-server"
+                    id="custom-authz-server"
+                    value="custom-authz-server"
+                    bind:group={selectedAuthzServer}
                 />
                 <input
+                    form="custom-authz-server"
                     type="url"
-                    name="custom"
+                    name="authz-server"
                     class="h-6 ml-2 w-full text-charcoal form-input"
-                    placeholder="eg http://example.com:9000/"
+                    placeholder="https://domain.example/"
+                    oninput={() => selectedAuthzServer = 'custom-authz-server'}
+                    bind:value={customAuthzServer}
                 />
             </li>
         </ul>

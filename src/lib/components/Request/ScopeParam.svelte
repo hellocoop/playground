@@ -7,7 +7,7 @@
     let {
         selectedScopes = $bindable(),
         dropdowns = $bindable(),
-        customScopeValue = $bindable(),
+        customScope = $bindable(),
         selectedPtlParams,
         isHelloMode
     } = $props()
@@ -95,7 +95,7 @@
                         autocapitalize="off"
                         spellcheck="false"
                         placeholder="space separated"
-                        bind:value={customScopeValue}
+                        bind:value={customScope}
                     />
                 </li>
             </ul>
