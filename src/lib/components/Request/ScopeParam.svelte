@@ -89,7 +89,7 @@
                         class:opacity-50={!selectedScopes.includes('custom-scope')}
                         form="custom-scope"
                         type="text"
-                        class="h-6 px-2 w-40 form-input italic"
+                        class="h-6 px-2 w-36 form-input italic"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"

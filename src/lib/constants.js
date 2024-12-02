@@ -153,7 +153,8 @@ const HELLO_PARAM = {
         },
         {
             NAME: 'custom',
-            POSSIBLE_VALUE: ''
+            POSSIBLE_VALUE: '',
+            PLACEHOLDER: 'foo=bar&hello=world'
         }
     ],
     

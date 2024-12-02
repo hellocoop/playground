@@ -75,6 +75,7 @@
                                 bind:value={selectedHelloParamsValues[
                                     param.NAME
                                 ]}
+                                placeholder={param.PLACEHOLDER}
                             />
                         {/if}
                         {#if param.HINT}
