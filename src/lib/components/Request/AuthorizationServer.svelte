@@ -2,6 +2,7 @@
     import { slide } from "svelte/transition";
     import { AUTHZ_SERVERS } from "$lib/constants.js";
     import ChevronY from "$components/ChevronY.svelte";
+    import CopyButton from "../CopyButton.svelte";
 
 let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } = $props();
 </script>
@@ -27,30 +28,27 @@ let { dropdowns = $bindable(), selectedAuthzServer = $bindable(), isHelloMode } 
                         class="text-charcoal dark:text-gray-800"
                         bind:group={selectedAuthzServer}
                     />
-                    <label for={server} class="ml-2 w-full break-all"
+                    <label for={server} class="ml-2 break-all"
                         >{server}</label
                     >
+                    <CopyButton content={server} css="opacity-70 ml-1"
+                    />
                 </li>
             {/each}
-            <!-- <li class="flex items-center">
+            <li class="flex items-center">
                 <input
                     type="radio"
                     name="authorization_server"
-                    value={custom_authorization_server}
-                    class="text-charcoal form-radio dark:text-gray-800"
+                    class="text-charcoal dark:text-gray-800"
                     id="custom-authorization-server"
-                    bind:group={states.selected_authorization_server}
                 />
                 <input
-                    bind:value={custom_authorization_server}
-                    oninput={(e) =>
-                        (states.selected_authorization_server = e.target.value)}
                     type="url"
                     name="custom"
-                    class="h-8 ml-2 w-full text-charcoal form-input"
+                    class="h-6 ml-2 w-full text-charcoal form-input"
                     placeholder="eg http://example.com:9000/"
                 />
-            </li> -->
+            </li>
         </ul>
     {/if}
 </section>

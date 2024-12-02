@@ -1,5 +1,5 @@
 <script>
-    let { content } = $props()
+    let { content, css = '' } = $props()
 
     let copied = $state(false)
     async function copy() {
@@ -11,7 +11,7 @@
 	}
 </script>
 
-<button onclick={copy} class="w-4">
+<button onclick={copy} class="w-4 {css}">
     {#if copied}
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
