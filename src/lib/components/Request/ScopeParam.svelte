@@ -23,7 +23,7 @@
             ...PARAMS.SCOPE_PARAM.STANDARD,
             ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD : [])
         ]}
-        {@const ALL_NON_STANDARD_SCOEPS = [
+        {@const ALL_NON_STANDARD_SCOPES = [
             ...PARAMS.SCOPE_PARAM.NON_STANDARD,
             ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
         ]}
@@ -45,7 +45,7 @@
             </ul>
         
             <ul class="space-y-2 w-48">
-                {#each ALL_NON_STANDARD_SCOEPS as nonStdScope}
+                {#each ALL_NON_STANDARD_SCOPES as nonStdScope}
                     <li class="flex flex-row items-center space-x-2">
                         <input
                             type="checkbox"
