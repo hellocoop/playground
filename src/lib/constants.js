@@ -4,13 +4,13 @@ const SCOPE_PARAM = {
     STANDARD: [
         'openid',
         'profile',
-        'email',
-        'phone',
-        'picture',
         'name',
+        'email',
+        'picture',
         'nickname',
         'given_name',
-        'family_name'
+        'family_name',
+        'phone',
     ],
     NON_STANDARD: [
         'ethereum',

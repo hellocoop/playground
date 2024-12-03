@@ -50,6 +50,8 @@
             <ul class="space-y-2 w-48">
                 {#each ALL_STANDARD_SCOEPS as stdScope}
                     {@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
+                    {@const selected = selectedScopes.includes(stdScope)}
+                    {@const requiredOk = !required || selected}
                     <li class="flex flex-row items-center space-x-2">
                         <input
                             type="checkbox"
@@ -58,7 +60,7 @@
                             bind:group={selectedScopes}
                             value={stdScope}
                         />
-                        <label for={stdScope}>{stdScope} {required ? '*' : ''}</label>
+                        <label for={stdScope} class:text-red-500={!requiredOk}>{stdScope} {required ? '*' : ''}</label>
                     </li>
                 {/each}
             </ul>
