@@ -28,7 +28,12 @@ function makeAuthzUrl({
             // param not selected
             if (!ptlParams.includes(key)) continue
     
-            url.searchParams.set(key, ptlParamsValues[key].trim())
+            const value = ptlParamsValues[key]
+            if (Array.isArray(value)) { // value of prompt is array [consent,login]
+                url.searchParams.set(key, ptlParamsValues[key].join(' ')) 
+            } else {
+                url.searchParams.set(key, ptlParamsValues[key].trim())
+            }
         }
     
         for (const key in helloParamsValues) {
@@ -53,6 +58,7 @@ function makeAuthzUrl({
         return url.href
     } catch(err) {
         // do nothing with err since common flow
+        // (user can enter custom authz server url)
         return 'Invalid URL'
     }
 }
