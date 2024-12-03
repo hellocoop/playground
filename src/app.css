@@ -79,4 +79,8 @@ pre {
 	@apply whitespace-pre-wrap
 }
 
+.hello-btn-black-and-static {
+	@apply h-11 font-medium
+}
+
 @tailwind utilities;

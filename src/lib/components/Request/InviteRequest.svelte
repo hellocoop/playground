@@ -22,7 +22,7 @@
     <div class="max-w-lg mx-auto">
         {#if canInvite}
             <div
-                class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mb-4 relative"
+                class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words relative"
             >
                 <span class="absolute right-4 top-4">
                     <CopyButton content={inviteUrl}/>
@@ -40,7 +40,7 @@
 
         <button
             onclick={inviteWithHello}
-            class="hello-btn-black-and-static w-full disabled:opacity-30"
+            class="hello-btn-black-and-static w-full disabled:opacity-30 mt-3"
             class:hello-btn-loader={inviteWithHelloAjax}
             disabled={inviteWithHelloAjax || !canInvite}
             >Invite others to Playground</button

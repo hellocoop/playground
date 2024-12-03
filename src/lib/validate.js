@@ -44,7 +44,7 @@ function validateProtocolParams({
         const domainHintSelected = helloParams.includes('domain_hint')
         if (!loginHintSelected || !domainHintSelected) return true;
         const domainHint = helloParamsValues.domain_hint
-        if (!['personal', 'managed'].includes(domainHint)) return false;
+        if (!['personal', 'managed'].includes(domainHint.trim())) return false;
     }
     return true;
 }
@@ -62,7 +62,7 @@ function validateHelloParams({
         const domainHintSelected = helloParams.includes('domain_hint')
         if (!loginHintSelected || !domainHintSelected) return true;
         const domainHint = helloParamsValues.domain_hint
-        if (!['personal', 'managed'].includes(domainHint)) return false;
+        if (!['personal', 'managed'].includes(domainHint.trim())) return false;
     }
     return true;
 }
