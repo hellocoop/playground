@@ -28,14 +28,6 @@ const SCOPE_PARAM = {
     DEFAULT_SELECTED: ['openid', 'profile'],
 }
 
-const { url, nonce, code_verifier } = await createAuthRequest({
-    // we just need nonce & code_verifier
-    client_id: 'x',
-    redirect_uri: 'x'
-})
-// because helper-browser only returns code_verifier in url 
-const code_challenge = new URL(url).searchParams.get('code_challenge')
-
 const PROTOCOL_PARAM = {
     PARAMS: [
         {
@@ -105,11 +97,8 @@ const PROTOCOL_PARAM = {
     ],
     DEFAULT_VALUES: {
         client_id: 'app_HelloDeveloperPlayground_Iq2',
-        nonce,
         redirect_uri: 'http://localhost:5173/',
         response_type: 'code',
-        code_challenge,
-        code_verifier,
         response_mode: 'fragment',
         prompt: 'consent'
     }
