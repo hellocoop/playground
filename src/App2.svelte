@@ -7,14 +7,16 @@
     import InviteRequest from "$components/Request/InviteRequest.svelte";
     import FileIssue from "$components/FileIssue.svelte";
     import { init as initShiki } from "$lib/shiki.js";
-    import { cleanUrl, removeLoader, reset } from "$lib/utils.js";
+    import { cleanUrl, handleLegacyState, removeLoader } from "$lib/utils.js";
     import { makeAuthzUrl, makeInviteUrl } from "$lib/request.js";
     import { parseToken, validateToken } from "@hellocoop/helper-browser";
 
     // states
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED);
     let selectedProtocolParams = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_SELECTED);
-    let selectedProtocolParamsValues = $state(PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES);
+    let selectedProtocolParamsValues = $state(
+        PARAMS.PROTOCOL_PARAM.DEFAULT_VALUES,
+    );
     let selectedHelloParams = $state(PARAMS.HELLO_PARAM.DEFAULT_SELECTED);
     let selectedHelloParamsValues = $state(PARAMS.HELLO_PARAM.DEFAULT_VALUES);
     let selectedAuthzServer = $state(AUTHZ_SERVERS.DEFAULT_SELECTED);
@@ -76,6 +78,8 @@
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(search || hash);
 
+        if (params.has("iss")) return processIssuer(params);
+
         if (params.has("id_token")) await processIdToken(params);
         else if (params.has("code")) await processCode(params);
         else if (params.has("beta")) selectBetaServer();
@@ -109,14 +113,15 @@
     function loadStateFromLocalStorage() {
         try {
             const states = JSON.parse(localStorage.getItem("states"));
-            
+
             // cleanup legacy state
-            if ('invite_query_params' in states) return reset();
+            if ("invite_query_params" in states) return handleLegacyState();
 
             if (states.scopes) selectedScopes = states.scopes;
             if (states.dropdowns) dropdowns = states.dropdowns;
             if (states.server) selectedAuthzServer = states.server;
-            if (states.protocol_params) selectedProtocolParams = states.protocol_params;
+            if (states.protocol_params)
+                selectedProtocolParams = states.protocol_params;
             if (states.protocol_params_values)
                 selectedProtocolParamsValues = states.protocol_params_values;
             if (states.hello_params) selectedHelloParams = states.hello_params;
@@ -128,6 +133,40 @@
                 customAuthzServer = states.custom_authz_server_value;
         } catch (err) {
             // no states
+        }
+    }
+
+    function processIssuer(params = {}) {
+        try {
+            const iss = params.get("iss");
+            if (!iss) throw params;
+            const wallet = iss.replace("issuer", "wallet");
+            const authorize = new URL("/authorize", wallet).href;
+            const loginHint = params.get("login_hint");
+            if (loginHint) {
+                if (!selectedProtocolParams.includes("login_hint")) {
+                    selectedProtocolParams.push("login_hint");
+                }
+                selectedProtocolParamsValues.login_hint = loginHint;
+            }
+            const domainHint = params.get("domain_hint");
+            if (domainHint) {
+                if (!selectedHelloParams.includes("domain_hint")) {
+                    selectedHelloParams.push("domain_hint");
+                }
+                selectedHelloParamsValues.domain_hint = domainHint;
+            }
+            const url = makeAuthzUrl({
+                authzServer: authorize,
+                scopes: selectedScopes,
+                protocolParams: selectedProtocolParams,
+                protocolParamsValues: selectedProtocolParamsValues,
+                helloParams: selectedHelloParams,
+                helloParamsValues: selectedHelloParamsValues,
+            });
+            return (window.location.href = url);
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -149,7 +188,8 @@
                     },
                     body: new URLSearchParams({
                         code,
-                        code_verifier: selectedProtocolParamsValues.code_verifier,
+                        code_verifier:
+                            selectedProtocolParamsValues.code_verifier,
                         client_id: selectedProtocolParamsValues.client_id,
                         redirect_uri: selectedProtocolParamsValues.redirect_uri,
                         nonce: selectedProtocolParamsValues.nonce,

@@ -23,9 +23,17 @@ function reset() {
     window.location.reload();
 }
 
+function handleLegacyState() {
+    // move old state to new var just in case we need it later
+    localStorage.setItem('_legacy_states', localStorage.getItem('states'))
+    // remove old state and reload
+    return reset()
+}
+
 export {
     cleanUrl,
     removeLoader,
     lineBreakUrl,
-    reset
+    reset,
+    handleLegacyState
 }

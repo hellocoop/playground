@@ -1,8 +1,8 @@
 function makeAuthzUrl({
     authzServer,
-    customAuthzServer,
+    customAuthzServer = null,
     scopes,
-    customScope,
+    customScope = null,
     protocolParams,
     protocolParamsValues,
     helloParams,
