@@ -2,7 +2,7 @@
     let { isHelloMode = $bindable() } = $props();
 </script>
 
-<div class="flex items-center absolute absolute -top-3 right-18">
+<div class="flex items-center absolute absolute top-4 md:-top-3 right-2 md:right-18">
     <div>
         <input
             id="mode-hello"
