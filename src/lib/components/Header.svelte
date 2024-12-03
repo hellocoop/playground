@@ -36,7 +36,7 @@
 		<a
 			href="https://hello.dev"
 			target="_blank"
-			class="hidden sm:inline-flex items-center relative nav-link font-normal"
+			class="hidden sm:inline-flex items-center relative nav-link font-normal hover:underline"
 		>
 			<span>hello.dev</span>
 			<!-- <svg
@@ -62,7 +62,7 @@
 		<ul class="hidden lg:flex space-x-4">
 			{#each navLinks as { text, link }}
 				<li class="nav-link text-sm font-normal relative">
-					<a href={link} target="_blank" class="inline-flex items-center">
+					<a href={link} target="_blank" class="inline-flex items-center hover:underline">
 						{text}
 						<!-- <svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +88,7 @@
 		<div class="bg-charcoal lg:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]">
 			<ul class="flex flex-col gap-y-3 pb-4 text-base">
 				<li class="nav-link relative sm:hidden">
-					<a href="https://hello.dev" target="_blank" class="inline-flex items-center font-medium">
+					<a href="https://hello.dev" target="_blank" class="inline-flex items-center font-medium hover:underline">
 						hello.dev
 						<!-- <svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +108,7 @@
 				</li>
 				{#each navLinks as { text, link }}
 					<li class="nav-link relative">
-						<a href={link} target="_blank" class="inline-flex items-center font-medium">
+						<a href={link} target="_blank" class="inline-flex items-center font-medium hover:underline">
 							{text}
 							<!-- <svg
 								xmlns="http://www.w3.org/2000/svg"
