@@ -1,12 +1,12 @@
 <script>
     import { slide } from 'svelte/transition'
-
-    let { errorNotification } = $props()
+    
+    let { close } = $props()
 </script>
 
-<div class="bg-red-500 p-2.5 text-center text-white flex items-center justify-center" out:slide>
-    <span class="text-sm">{errorNotification}</span>
-    <button class="absolute right-4" onclick={() => (errorNotification = null)} aria-label="close">
+<div class="bg-red-500 px-2.5 h-9 text-center text-white flex items-center justify-center" out:slide>
+    <span class="text-sm">Authorization Error - Please see Authorization Response section below</span>
+    <button class="absolute right-4" onclick={close} aria-label="close">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

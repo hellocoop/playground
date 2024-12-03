@@ -14,6 +14,7 @@
         parseToken,
         validateToken,
     } from "@hellocoop/helper-browser";
+    import Notification from "$lib/components/Notification.svelte";
 
     // states
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED);
@@ -28,6 +29,7 @@
     let customScope = $state("");
     let isHelloMode = $state(true); // this only matters if hello dev flag is set
     let mounted = $state(false);
+    let showErrorNotification = $state(false)
     let authzResponse = $state({
         url: null,
         token: null,
@@ -86,6 +88,7 @@
 
         if (params.has("id_token")) await processIdToken(params);
         else if (params.has("code")) await processCode(params);
+        else if (params.has("error")) processError(params);
         else if (params.has("beta")) selectedAuthzServer = BETA_SERVER;
 
         cleanUrl();
@@ -199,6 +202,7 @@
             return (window.location.href = url);
         } catch (err) {
             console.error(err);
+            showErrorNotification = true;
         }
     }
 
@@ -255,6 +259,7 @@
             authzResponse.userinfo = userinfo;
         } catch (err) {
             console.error(err);
+            showErrorNotification = true;
         }
     }
 
@@ -276,12 +281,22 @@
             authzResponse.introspect = payload;
         } catch (err) {
             console.error(err);
+            showErrorNotification = true;
         }
+    }
+
+    function processError(params) {
+        authzResponse.url = params.toString();
+        showErrorNotification = true;
     }
 </script>
 
 {#if mounted}
     <Header />
+
+    {#if showErrorNotification}
+        <Notification close={() => showErrorNotification = false}/>
+    {/if}
 
     <main class="py-6 px-4 space-y-6 flex-1">
         <AuthorizationRequest
