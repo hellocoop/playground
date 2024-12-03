@@ -1,58 +1,86 @@
 <script>
-    import { slide } from 'svelte/transition'
-    import { PARAMS } from '$lib/constants.js'
-    import ChevronY from '$components/ChevronY.svelte'
-    import Tooltip from '$components/Tooltip.svelte'
+    import { slide } from "svelte/transition";
+    import { PARAMS } from "$lib/constants.js";
+    import ChevronY from "$components/ChevronY.svelte";
+    import Tooltip from "$components/Tooltip.svelte";
 
     let {
         selectedScopes = $bindable(),
         dropdowns = $bindable(),
         customScope = $bindable(),
         selectedPtlParams,
-        isHelloMode
-    } = $props()
+        isHelloMode,
+    } = $props();
 
-    // scope input in protocol params
-    const isOverwritten = $derived(selectedPtlParams.includes('scope'))
+    // scope input selected in protocol params
+    const isOverwritten = $derived(selectedPtlParams.includes("scope"));
+
+    const profileScopeSelected = $derived(selectedScopes.includes("profile"));
+    const profileClaimsSelected = $derived(
+        selectedScopes.includes("name") &&
+            selectedScopes.includes("email") &&
+            selectedScopes.includes("picture"),
+    );
 </script>
 
-<section class="break-inside-avoid-column"
->
-    <button class="inline-flex items-center space-x-2" onclick={() => dropdowns.scope = !dropdowns.scope}>
-        <span class="font-medium text-base">
-            Scope Parameter
-        </span>
-        <ChevronY dir={dropdowns.scope ? 'up' : 'down'}/>
+<section class="break-inside-avoid-column">
+    <button
+        class="inline-flex items-center space-x-2"
+        onclick={() => (dropdowns.scope = !dropdowns.scope)}
+    >
+        <span class="font-medium text-base"> Scope Parameter </span>
+        <ChevronY dir={dropdowns.scope ? "up" : "down"} />
         <Tooltip
-            content='Scope Parameter Docs',
-            href='https://www.hello.dev/docs/scopes/'
+            content="Scope Parameter Docs"
+            ,
+            href="https://www.hello.dev/docs/scopes/"
         />
     </button>
 
-
     {#if isOverwritten}
-        <p class="opacity-70 text-xs italic mt-1">Overwritten with 'scope' in Protocol Parameters section</p>
+        <p class="opacity-70 text-xs italic mt-1">
+            Overwritten with 'scope' in Protocol Parameters section
+        </p>
     {/if}
 
     {#if dropdowns.scope}
         {@const ALL_STANDARD_SCOEPS = [
             ...PARAMS.SCOPE_PARAM.STANDARD,
-            ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD : [])
+            ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD : []),
         ]}
         {@const ALL_NON_STANDARD_SCOPES = [
             ...PARAMS.SCOPE_PARAM.NON_STANDARD,
-            ...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
+            ...(isHelloMode
+                ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD
+                : []),
         ]}
-        <div class="flex mt-2" transition:slide={{duration: 150}}
+        <div
+            class="flex mt-2"
+            transition:slide={{ duration: 150 }}
             class:opacity-50={isOverwritten}
             class:pointer-events-none={isOverwritten}
         >
             <ul class="space-y-2 w-48">
                 {#each ALL_STANDARD_SCOEPS as stdScope}
-                    {@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
+                    {@const required =
+                        PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
                     {@const selected = selectedScopes.includes(stdScope)}
                     {@const requiredOk = !required || selected}
-                    <li class="flex flex-row items-center space-x-2">
+                    {@const isProfileScope = stdScope === "profile"}
+                    {@const isProfileClaims = [
+                        "name",
+                        "email",
+                        "picture",
+                    ].includes(stdScope)}
+                    {@const disableProfileScope = isProfileScope
+                        ? profileClaimsSelected
+                        : false}
+                    {@const disableProfileClaims = isProfileClaims
+                        ? profileScopeSelected
+                        : false}
+                    <li class="flex flex-row items-center space-x-2"
+                        class:opacity-50={disableProfileScope || disableProfileClaims}
+                    >
                         <input
                             type="checkbox"
                             id={stdScope}
@@ -60,11 +88,15 @@
                             bind:group={selectedScopes}
                             value={stdScope}
                         />
-                        <label for={stdScope} class:text-red-500={!requiredOk}>{stdScope} {required ? '*' : ''}</label>
+                        <label
+                            for={stdScope}
+                            class:text-red-500={!requiredOk}
+                            >{stdScope} {required ? "*" : ""}</label
+                        >
                     </li>
                 {/each}
             </ul>
-        
+
             <ul class="space-y-2 w-48">
                 {#each ALL_NON_STANDARD_SCOPES as nonStdScope}
                     <li class="flex flex-row items-center space-x-2">
@@ -75,7 +107,9 @@
                             value={nonStdScope}
                             bind:group={selectedScopes}
                         />
-                        <label for={nonStdScope} class="italic">{nonStdScope}</label>
+                        <label for={nonStdScope} class="italic"
+                            >{nonStdScope}</label
+                        >
                     </li>
                 {/each}
 
@@ -88,7 +122,9 @@
                         bind:group={selectedScopes}
                     />
                     <input
-                        class:opacity-50={!selectedScopes.includes('custom-scope')}
+                        class:opacity-50={!selectedScopes.includes(
+                            "custom-scope",
+                        )}
                         form="custom-scope"
                         type="text"
                         class="h-6 px-2 w-36 form-input italic"
