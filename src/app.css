@@ -29,7 +29,8 @@
 		--shiki-token-link: #ffab70;
 	}
 }
-/* hello.dev nextra default colors */
+
+/* End of Nextra default colors */
 
 pre[class*='language-'] {
 	@apply m-0;
@@ -46,13 +47,11 @@ input[type='url'] {
 @tailwind components;
 
 .btn {
-	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-[#808080] rounded-sm;
-	@apply hover:ring-2;
+	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-[#808080] rounded-sm hover:ring-2;
 }
 
 .form-input {
-	@apply rounded-sm bg-transparent;
-	@apply ring-1 border-none hover:ring-2;
+	@apply rounded-sm bg-transparent ring-1 border-none hover:ring-2;
 	@apply ring-charcoal !important;
 	@apply dark:ring-[#808080] !important;
 }
@@ -63,22 +62,21 @@ input[type='url'] {
 }
 
 pre {
-	@apply whitespace-pre-wrap
+	@apply whitespace-pre-wrap;
 }
 
 .hello-btn-black-and-static {
-	@apply h-11 font-medium
+	@apply h-11 font-medium;
 }
 
 input[type='checkbox'] {
-	@apply form-checkbox w-[14px] h-[14px] text-[#808080] hover:border-2 border-charcoal dark:border-[#808080] rounded-sm bg-transparent;
-	@apply focus:ring-0 focus:outline-none focus:ring-offset-0;
+	@apply form-checkbox w-[14px] h-[14px] text-[#808080] border-charcoal dark:border-[#808080] rounded-sm bg-transparent;
+	@apply hover:border-2 focus:ring-0 focus:outline-none focus:ring-offset-0;
 }
 
 input[type='radio'] {
-	@apply form-radio w-[14px] h-[14px] text-[#808080] hover:border-2 border-charcoal dark:border-[#808080] bg-transparent;
-	@apply hover:border-2 border-charcoal dark:border-[#808080];
-	@apply focus:ring-0 focus:outline-none focus:ring-offset-0;
+	@apply form-radio w-[14px] h-[14px] text-[#808080] border-charcoal dark:border-[#808080] bg-transparent;
+	@apply hover:border-2 focus:ring-0 focus:outline-none focus:ring-offset-0;
 }
 
 @tailwind utilities;
