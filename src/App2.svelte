@@ -111,7 +111,7 @@
             const states = JSON.parse(localStorage.getItem("states"));
             
             // cleanup legacy state
-            if ('custom_scope' in states) return reset();
+            if ('invite_query_params' in states) return reset();
 
             if (states.scopes) selectedScopes = states.scopes;
             if (states.dropdowns) dropdowns = states.dropdowns;
