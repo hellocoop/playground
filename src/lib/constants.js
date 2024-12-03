@@ -22,13 +22,13 @@ const SCOPE_PARAM = {
 
     // Hellō Dev Mode
     HELLO_EXTEND_STANDARD: ['preferred_username'],
-    HELLO_EXTEND_NON_STANDARD: ['recovery','verified_name','existing_name','existing_username'],
+    HELLO_EXTEND_NON_STANDARD: ['recovery', 'verified_name', 'existing_name', 'existing_username'],
 
     REQUIRED: ['openid'],
-    DEFAULT_SELECTED: ['openid','profile'],
+    DEFAULT_SELECTED: ['openid', 'profile'],
 }
 
-const { url,nonce,code_verifier } = await createAuthRequest({
+const { url, nonce, code_verifier } = await createAuthRequest({
     // we just need nonce & code_verifier
     client_id: 'x',
     redirect_uri: 'x'
@@ -52,7 +52,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'response_type',
-            POSSIBLE_VALUE: ['code','id_token'],
+            POSSIBLE_VALUE: ['code', 'id_token'],
             ONLY_ONE: true
         },
         {
@@ -66,7 +66,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'response_mode',
-            POSSIBLE_VALUE: ['fragment','query'],
+            POSSIBLE_VALUE: ['fragment', 'query'],
             ONLY_ONE: true
         },
         {
@@ -75,7 +75,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'prompt',
-            POSSIBLE_VALUE: ['consent','login'],
+            POSSIBLE_VALUE: ['consent', 'login'],
             ONLY_ONE: false
         },
         {
@@ -93,7 +93,7 @@ const PROTOCOL_PARAM = {
         'client_id',
         'nonce',
         'redirect_uri',
-        'code'
+        'response_type'
     ],
     DEFAULT_SELECTED: [
         'client_id',
@@ -142,7 +142,7 @@ const HELLO_PARAM = {
         {
             NAME: 'provider_hint',
             POSSIBLE_VALUE: PROVIDER_HINTS,
-            HINT: [...PROVIDER_HINTS,'apple--','microsoft--','google-','email--','passkey--'].join(' '),
+            HINT: [...PROVIDER_HINTS, 'apple--', 'microsoft--', 'google-', 'email--', 'passkey--'].join(' '),
             ONLY_ONE: false,
         },
         {
@@ -157,7 +157,7 @@ const HELLO_PARAM = {
             PLACEHOLDER: 'foo=bar&hello=world'
         }
     ],
-    
+
     // Hellō Dev Mode
     HELLO_EXTEND_PARAMS: [
         {
