@@ -256,7 +256,7 @@
 {#if mounted}
     <Header />
 
-    <main class="py-6 px-4 space-y-6">
+    <main class="py-6 px-4 space-y-6 flex-1">
         <AuthorizationRequest
             bind:selectedScopes
             bind:selectedProtocolParams
