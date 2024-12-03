@@ -7,7 +7,7 @@
 	const navLinks = [
 		{
 			text: "Documentation",
-			link: "https://hello.dev/documentation/",
+			link: "https://hello.dev/docs/",
 		},
 		{
 			text: "Console",
@@ -24,7 +24,7 @@
 	<div class="w-1/3 inline-flex items-center">
 		<button
 			onclick={() => (mobileMenu = !mobileMenu)}
-			class="lg:hidden mr-2 group"
+			class="md:hidden mr-2 group"
 		>
 			{#if mobileMenu}
 				<CloseIcon/>
@@ -35,7 +35,7 @@
 		<a
 			href="https://hello.dev"
 			target="_blank"
-			class="hidden sm:inline-flex items-center relative nav-link font-normal hover:underline"
+			class="hidden md:inline-flex items-center relative nav-link font-normal hover:underline"
 		>
 			<span>hello.dev</span>
 			<ExternalLinkIcon />
@@ -45,7 +45,7 @@
 		<img src="logo.svg" alt="Hellō Playground" />
 	</span>
 	<div class="w-1/3 flex justify-end space-x-4">
-		<ul class="hidden lg:flex space-x-4">
+		<ul class="hidden md:flex space-x-4">
 			{#each navLinks as { text, link }}
 				<li class="nav-link text-sm font-normal relative">
 					<a
@@ -63,11 +63,11 @@
 
 	{#if mobileMenu}
 		<div
-			class="bg-charcoal lg:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]"
+			class="bg-charcoal md:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]"
 			transition:slide={{duration:150}}
 		>
 			<ul class="flex flex-col gap-y-3 pb-4 text-base">
-				<li class="nav-link relative sm:hidden">
+				<li class="nav-link relative">
 					<a
 						href="https://hello.dev"
 						target="_blank"
@@ -102,7 +102,7 @@
 					mobileMenu = false;
 				}
 			}}
-			class="lg:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
+			class="md:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
 		></div>
 	{/if}
 </header>
