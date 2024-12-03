@@ -12,7 +12,7 @@
             bind:group={isHelloMode}
         />
         <label for="mode-hello" class="rounded-l-md border-l border-r"
-            ><span class="hidden xs:inline">Hell</span>ō</label
+            >Hellō</label
         >
     </div>
     <div>
@@ -24,7 +24,7 @@
             bind:group={isHelloMode}
         />
         <label for="mode-public" class="rounded-r-md border-r"
-            >P<span class="hidden xs:inline">ublic</span></label
+            >Public</label
         >
     </div>
 </div>
