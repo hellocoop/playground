@@ -67,8 +67,24 @@ function validateHelloParams({
     return true;
 }
 
+async function validateAuthzServer(url) {
+    // TBD CORS -- no way for browser to know for sure that a URL exists
+    // try {
+    //     const res = await fetch(url, {
+    //         method: 'HEAD', // Only fetch headers, no body
+    //         cache: 'no-cache' // To avoid using cached responses
+    //     });
+    //     return res.status === 200
+    // } catch (error) {
+    //     console.error('Failed to validate', url)
+    //     return false;
+    // }
+    return true;
+}
+
 export {
     validateScopes,
     validateProtocolParams,
-    validateHelloParams
+    validateHelloParams,
+    validateAuthzServer
 }

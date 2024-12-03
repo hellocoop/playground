@@ -3,6 +3,7 @@
     import { AUTHZ_SERVERS } from "$lib/constants.js";
     import ChevronY from "$components/ChevronY.svelte";
     import CopyButton from "../CopyButton.svelte";
+    import { validateAuthzServer as validate } from "$lib/validate";
 
 let {
     dropdowns = $bindable(),
@@ -33,11 +34,15 @@ let {
                         class="text-charcoal dark:text-gray-800"
                         bind:group={selectedAuthzServer}
                     />
-                    <label for={server} class="ml-2 break-all"
-                        >{server}</label
-                    >
-                    <CopyButton content={server} css="opacity-70 ml-1"
-                    />
+                    {#await validate(server)}
+                        <span class="ml-2">Checking ...</span>
+                    {:then validateOk}	                
+                        <label for={server} class="ml-2 break-all"
+                            class:text-red-500={!validateOk}
+                            >{server}</label
+                        >
+                        <CopyButton content={server} css="opacity-70 ml-1"/>
+                    {/await}
                 </li>
             {/each}
             <li class="flex items-center">
