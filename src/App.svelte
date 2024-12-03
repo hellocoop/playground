@@ -9,7 +9,11 @@
     import { init as initShiki } from "$lib/shiki.js";
     import { cleanUrl, handleLegacyState, removeLoader } from "$lib/utils.js";
     import { makeAuthzUrl, makeInviteUrl } from "$lib/request.js";
-    import { createAuthRequest, parseToken, validateToken } from "@hellocoop/helper-browser";
+    import {
+        createAuthRequest,
+        parseToken,
+        validateToken,
+    } from "@hellocoop/helper-browser";
 
     // states
     let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED);
@@ -135,21 +139,26 @@
             // no states
         }
 
-        const pkceVarsExist = selectedProtocolParamsValues.code_challenge && selectedProtocolParamsValues.code_verifier
-        if (!pkceVarsExist) { // pkce flow vars do not exist -- generate
+        const pkceVarsExist =
+            selectedProtocolParamsValues.code_challenge &&
+            selectedProtocolParamsValues.code_verifier;
+        if (!pkceVarsExist) {
+            // pkce flow vars do not exist -- generate
             try {
                 const { url, nonce, code_verifier } = await createAuthRequest({
                     // we just need nonce & code_verifier
-                    client_id: 'x',
-                    redirect_uri: 'x'
-                })
-                // because helper-browser only returns code_verifier in url 
-                const code_challenge = new URL(url).searchParams.get('code_challenge')
-                selectedProtocolParamsValues.nonce = nonce
-                selectedProtocolParamsValues.code_verifier = code_verifier
-                selectedProtocolParamsValues.code_challenge = code_challenge
-            } catch(err) {
-                console.error(err)
+                    client_id: "x",
+                    redirect_uri: "x",
+                });
+                // because helper-browser only returns code_verifier in url
+                const code_challenge = new URL(url).searchParams.get(
+                    "code_challenge",
+                );
+                selectedProtocolParamsValues.nonce = nonce;
+                selectedProtocolParamsValues.code_verifier = code_verifier;
+                selectedProtocolParamsValues.code_challenge = code_challenge;
+            } catch (err) {
+                console.error(err);
             }
         }
     }
