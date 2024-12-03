@@ -56,6 +56,8 @@
             bind:selectedProtocolParams
             bind:selectedProtocolParamsValues
             bind:dropdowns
+            {selectedHelloParams}
+            {selectedHelloParamsValues}
         />
 
         <HelloParams
@@ -63,6 +65,7 @@
             bind:selectedHelloParamsValues
             bind:dropdowns
             {isHelloMode}
+            {selectedProtocolParams}
         />
 
         <AuthorizationServer

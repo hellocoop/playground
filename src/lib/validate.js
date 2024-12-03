@@ -1,7 +1,9 @@
+import { PROFILE_CLAIMS } from "./constants.js";
+
 function validateScopes(scope, selectedScopes) {
     if (scope === 'profile') {
-        if (['name', 'email', 'picture'].every(scope => selectedScopes.includes(scope))) return false
-    } else if (['name', 'email', 'picture'].includes(scope)) {
+        if (PROFILE_CLAIMS.every(scope => selectedScopes.includes(scope))) return false
+    } else if (PROFILE_CLAIMS.includes(scope)) {
         if (selectedScopes.includes('profile')) return false
     }
     return true;
@@ -11,7 +13,8 @@ function validateProtocolParams({
     param,
     protocolParams,
     protocolParamsValues,
-
+    helloParams,
+    helloParamsValues
 }) {
     const { NAME } = param
     if (NAME === 'code_challenge') {
@@ -35,11 +38,37 @@ function validateProtocolParams({
         const responseType = protocolParamsValues.response_type
         const responseMode = protocolParamsValues.response_mode
         if (responseType === 'id_token' && responseMode === 'query') return false
+    } else if (NAME === 'login_hint') {
+        // invalidate if domain_hint is custom domain (not personal or managed)
+        const loginHintSelected = protocolParams.includes('login_hint')
+        const domainHintSelected = helloParams.includes('domain_hint')
+        if (!loginHintSelected || !domainHintSelected) return true;
+        const domainHint = helloParamsValues.domain_hint
+        if (!['personal', 'managed'].includes(domainHint)) return false;
+    }
+    return true;
+}
+
+function validateHelloParams({
+    param,
+    protocolParams,
+    helloParams,
+    helloParamsValues
+}) {
+    const { NAME } = param
+    if (NAME === 'domain_hint') {
+        // invalidate if domain_hint is custom domain (not personal or managed)
+        const loginHintSelected = protocolParams.includes('login_hint')
+        const domainHintSelected = helloParams.includes('domain_hint')
+        if (!loginHintSelected || !domainHintSelected) return true;
+        const domainHint = helloParamsValues.domain_hint
+        if (!['personal', 'managed'].includes(domainHint)) return false;
     }
     return true;
 }
 
 export {
     validateScopes,
-    validateProtocolParams
+    validateProtocolParams,
+    validateHelloParams
 }

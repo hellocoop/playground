@@ -5,12 +5,14 @@
     import Tooltip from "$components/Tooltip.svelte";
     import ProviderHintInput from "$components/Inputs/ProviderHintInput.svelte";
     import DomainHintInput from "$components/Inputs/DomainHintInput.svelte";
+    import { validateHelloParams as validate } from "$lib/validate.js";
 
     let {
         selectedHelloParams = $bindable(),
         selectedHelloParamsValues = $bindable(),
         dropdowns = $bindable(),
-        isHelloMode,
+        selectedProtocolParams,
+        isHelloMode
     } = $props();
 </script>
 
@@ -23,7 +25,6 @@
         <ChevronY dir={dropdowns.hello ? "up" : "down"} />
         <Tooltip
             content="Hellō Parameters Docs"
-            ,
             href="https://www.hello.dev/docs/oidc/request/#hellō-parameters"
         />
     </button>
@@ -41,6 +42,12 @@
                     param.NAME,
                 )}
                 {@const selected = selectedHelloParams.includes(param.NAME)}
+                {@const validateOk = validate({
+                    param,
+                    protocolParams: selectedProtocolParams,
+                    helloParams: selectedHelloParams,
+                    helloParamsValues: selectedHelloParamsValues
+                })}
                 <li class="flex flex-row items-start">
                     <div class="flex items-center space-x-2">
                         <input
@@ -51,6 +58,7 @@
                             value={param.NAME}
                         />
                         <label for={param.NAME} class="font-normal w-48"
+                            class:text-red-500={!validateOk}
                             >{param.NAME} {required ? "*" : ""}</label
                         >
                     </div>

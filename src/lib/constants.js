@@ -1,12 +1,12 @@
 import { createAuthRequest } from "@hellocoop/helper-browser"
 
+const PROFILE_CLAIMS = ['name', 'email', 'picture']
+
 const SCOPE_PARAM = {
     STANDARD: [
         'openid',
         'profile',
-        'name',
-        'email',
-        'picture',
+        ...PROFILE_CLAIMS,
         'nickname',
         'given_name',
         'family_name',
@@ -202,5 +202,6 @@ const AUTHZ_SERVERS = {
 export {
     PARAMS,
     AUTHZ_SERVERS,
-    BETA_SERVER
+    BETA_SERVER,
+    PROFILE_CLAIMS
 }

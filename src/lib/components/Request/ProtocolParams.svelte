@@ -8,6 +8,8 @@
     let {
         selectedProtocolParams = $bindable(),
         selectedProtocolParamsValues = $bindable(),
+        selectedHelloParams,
+        selectedHelloParamsValues,
         dropdowns = $bindable(),
     } = $props();
 </script>
@@ -29,65 +31,67 @@
             class="flex flex-col mt-2 space-y-2"
             transition:slide={{ duration: 150 }}
         >
-            {#each PARAMS.PROTOCOL_PARAM.PARAMS as pclParam}
+            {#each PARAMS.PROTOCOL_PARAM.PARAMS as param}
                 {@const required = PARAMS.PROTOCOL_PARAM.REQUIRED.includes(
-                    pclParam.NAME,
+                    param.NAME,
                 )}
                 {@const selected = selectedProtocolParams.includes(
-                    pclParam.NAME,
+                    param.NAME,
                 )}
                 {@const hasValue =
-                    !!selectedProtocolParamsValues[pclParam.NAME]}
+                    !!selectedProtocolParamsValues[param.NAME]}
                 {@const requiredOk = !required || (selected && hasValue)}
                 {@const needsOk = validate({
-                    param: pclParam,
+                    param: param,
                     protocolParams: selectedProtocolParams,
                     protocolParamsValues: selectedProtocolParamsValues,
+                    helloParams: selectedHelloParams,
+                    helloParamsValues: selectedHelloParamsValues
                 })}
                 {@const error = !requiredOk || !needsOk}
                 <li class="flex flex-row items-center space-x-2">
                     <input
                         type="checkbox"
-                        id={pclParam.NAME}
+                        id={param.NAME}
                         name="param"
                         bind:group={selectedProtocolParams}
-                        class:invisible={pclParam.CHECKBOX_HIDDEN}
-                        value={pclParam.NAME}
+                        class:invisible={param.CHECKBOX_HIDDEN}
+                        value={param.NAME}
                     />
                     <label
-                        for={pclParam.NAME}
+                        for={param.NAME}
                         class="font-normal w-48"
-                        class:pointer-events-none={pclParam.CHECKBOX_HIDDEN}
+                        class:pointer-events-none={param.CHECKBOX_HIDDEN}
                         class:text-red-500={error}
-                        >{pclParam.NAME} {required ? "*" : ""}</label
+                        >{param.NAME} {required ? "*" : ""}</label
                     >
 
-                    {#if Array.isArray(pclParam.POSSIBLE_VALUE)}
+                    {#if Array.isArray(param.POSSIBLE_VALUE)}
                         <ul
                             class="xl:h-8 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
                             class:opacity-50={!selected}
                         >
-                            {#each pclParam.POSSIBLE_VALUE as value}
+                            {#each param.POSSIBLE_VALUE as value}
                                 <li class="w-full">
-                                    {#if pclParam.ONLY_ONE}
+                                    {#if param.ONLY_ONE}
                                         <input
                                             type="radio"
-                                            name={pclParam.NAME}
+                                            name={param.NAME}
                                             id={value}
                                             {value}
                                             bind:group={selectedProtocolParamsValues[
-                                                pclParam.NAME
+                                                param.NAME
                                             ]}
                                             class="hidden peer"
                                         />
                                     {:else}
                                         <input
                                             type="checkbox"
-                                            name={pclParam.NAME}
+                                            name={param.NAME}
                                             id={value}
                                             {value}
                                             bind:group={selectedProtocolParamsValues[
-                                                pclParam.NAME
+                                                param.NAME
                                             ]}
                                             class="hidden peer"
                                         />
@@ -107,9 +111,9 @@
                             class="border w-full form-input h-6 px-2"
                             class:opacity-50={!selected}
                             bind:value={selectedProtocolParamsValues[
-                                pclParam.NAME
+                                param.NAME
                             ]}
-                            placeholder={pclParam.PLACEHOLDER}
+                            placeholder={param.PLACEHOLDER}
                         />
                     {/if}
                 </li>
