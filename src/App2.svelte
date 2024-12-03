@@ -78,11 +78,11 @@
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(search || hash);
 
-        if (params.has("iss")) return processIssuer(params);
+        if (params.has("iss")) processIssuer(params);
 
         if (params.has("id_token")) await processIdToken(params);
         else if (params.has("code")) await processCode(params);
-        else if (params.has("beta")) selectBetaServer();
+        else if (params.has("beta")) selectedAuthzServer = BETA_SERVER;
 
         cleanUrl();
         removeLoader();
@@ -143,26 +143,31 @@
             const wallet = iss.replace("issuer", "wallet");
             const authorize = new URL("/authorize", wallet).href;
             const loginHint = params.get("login_hint");
-            if (loginHint) {
-                if (!selectedProtocolParams.includes("login_hint")) {
-                    selectedProtocolParams.push("login_hint");
-                }
-                selectedProtocolParamsValues.login_hint = loginHint;
-            }
             const domainHint = params.get("domain_hint");
-            if (domainHint) {
-                if (!selectedHelloParams.includes("domain_hint")) {
-                    selectedHelloParams.push("domain_hint");
-                }
-                selectedHelloParamsValues.domain_hint = domainHint;
-            }
             const url = makeAuthzUrl({
                 authzServer: authorize,
                 scopes: selectedScopes,
-                protocolParams: selectedProtocolParams,
-                protocolParamsValues: selectedProtocolParamsValues,
-                helloParams: selectedHelloParams,
-                helloParamsValues: selectedHelloParamsValues,
+
+                // this creates a copy
+                // we do not want to modify the states & save locally for iss flows
+                protocolParams: [
+                    ...selectedProtocolParams.concat(
+                        loginHint ? ["login_hint"] : [],
+                    ),
+                ],
+                protocolParamsValues: {
+                    ...selectedProtocolParamsValues,
+                    login_hint: loginHint || undefined,
+                },
+                helloParams: [
+                    ...selectedHelloParams.concat(
+                        domainHint ? ["domain_hint"] : [],
+                    ),
+                ],
+                helloParamsValues: {
+                    ...selectedHelloParamsValues,
+                    domain_hint: domainHint || undefined,
+                },
             });
             return (window.location.href = url);
         } catch (err) {
@@ -245,10 +250,6 @@
         } catch (err) {
             console.error(err);
         }
-    }
-
-    function selectBetaServer() {
-        selectedAuthzServer = BETA_SERVER;
     }
 </script>
 
