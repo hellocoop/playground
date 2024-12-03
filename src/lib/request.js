@@ -52,7 +52,7 @@ function makeAuthzUrl({
     
         return url.href
     } catch(err) {
-        console.error(err)
+        // do nothing with err since common flow
         return 'Invalid URL'
     }
 }
