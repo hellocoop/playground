@@ -1,3 +1,12 @@
+function validateScopes(scope, selectedScopes) {
+    if (scope === 'profile') {
+        if (['name', 'email', 'picture'].every(scope => selectedScopes.includes(scope))) return false
+    } else if (['name', 'email', 'picture'].includes(scope)) {
+        if (selectedScopes.includes('profile')) return false
+    }
+    return true;
+}
+
 function validateProtocolParams({
     param,
     protocolParams,
@@ -31,5 +40,6 @@ function validateProtocolParams({
 }
 
 export {
+    validateScopes,
     validateProtocolParams
 }

@@ -3,6 +3,7 @@
     import { PARAMS } from "$lib/constants.js";
     import ChevronY from "$components/ChevronY.svelte";
     import Tooltip from "$components/Tooltip.svelte";
+    import { validateScopes as validate } from "$lib/validate.js"
 
     let {
         selectedScopes = $bindable(),
@@ -14,13 +15,6 @@
 
     // scope input selected in protocol params
     const isOverwritten = $derived(selectedProtocolParams.includes("scope"));
-
-    const profileScopeSelected = $derived(selectedScopes.includes("profile"));
-    const profileClaimsSelected = $derived(
-        selectedScopes.includes("name") &&
-            selectedScopes.includes("email") &&
-            selectedScopes.includes("picture"),
-    );
 </script>
 
 <section class="break-inside-avoid-column">
@@ -66,20 +60,9 @@
                         PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
                     {@const selected = selectedScopes.includes(stdScope)}
                     {@const requiredOk = !required || selected}
-                    {@const isProfileScope = stdScope === "profile"}
-                    {@const isProfileClaims = [
-                        "name",
-                        "email",
-                        "picture",
-                    ].includes(stdScope)}
-                    {@const disableProfileScope = isProfileScope
-                        ? profileClaimsSelected
-                        : false}
-                    {@const disableProfileClaims = isProfileClaims
-                        ? profileScopeSelected
-                        : false}
+                    {@const validateOk = validate(stdScope, selectedScopes)}
                     <li class="flex flex-row items-center space-x-2"
-                        class:opacity-50={disableProfileScope || disableProfileClaims}
+                        class:opacity-50={!validateOk}
                     >
                         <input
                             type="checkbox"
