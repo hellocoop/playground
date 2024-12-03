@@ -18,8 +18,14 @@ function lineBreakUrl(url) {
     return url.replace(/&/g, '\n&').replace(/\?/g, '\n?')
 }
 
+function reset() {
+    localStorage.removeItem("states");
+    window.location.reload();
+}
+
 export {
     cleanUrl,
     removeLoader,
-    lineBreakUrl
+    lineBreakUrl,
+    reset
 }

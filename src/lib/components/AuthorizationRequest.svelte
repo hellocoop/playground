@@ -5,6 +5,7 @@
     import AuthorizationServer from "$components/Request/AuthorizationServer.svelte";
     import RequestUrl from "$components/Request/RequestUrl.svelte";
     import HelloModeToggle from "$components/Request/HelloModeToggle.svelte";
+    import { reset } from "$lib/utils";
 
     let {
         selectedScopes = $bindable(),
@@ -19,11 +20,6 @@
         customAuthzServer = $bindable(),
         authzUrl,
     } = $props();
-
-    function reset() {
-        localStorage.removeItem("states");
-        window.location.reload();
-    }
 </script>
 
 <section

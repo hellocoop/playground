@@ -7,7 +7,7 @@
     import InviteRequest from "$components/Request/InviteRequest.svelte";
     import FileIssue from "$components/FileIssue.svelte";
     import { init as initShiki } from "$lib/shiki.js";
-    import { cleanUrl, removeLoader } from "$lib/utils.js";
+    import { cleanUrl, removeLoader, reset } from "$lib/utils.js";
     import { makeAuthzUrl, makeInviteUrl } from "$lib/request.js";
     import { parseToken, validateToken } from "@hellocoop/helper-browser";
 
@@ -109,6 +109,10 @@
     function loadStateFromLocalStorage() {
         try {
             const states = JSON.parse(localStorage.getItem("states"));
+            
+            // cleanup legacy state
+            if ('custom_scope' in states) return reset();
+
             if (states.scopes) selectedScopes = states.scopes;
             if (states.dropdowns) dropdowns = states.dropdowns;
             if (states.server) selectedAuthzServer = states.server;
