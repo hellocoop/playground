@@ -57,7 +57,7 @@ const PROTOCOL_PARAM = {
         },
         {
             NAME: 'code_challenge',
-            POSSIBLE_VALUE: '',
+            POSSIBLE_VALUE: ''
         },
         {
             NAME: 'code_verifier',

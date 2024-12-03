@@ -8,12 +8,12 @@
         selectedScopes = $bindable(),
         dropdowns = $bindable(),
         customScope = $bindable(),
-        selectedPtlParams,
+        selectedProtocolParams,
         isHelloMode,
     } = $props();
 
     // scope input selected in protocol params
-    const isOverwritten = $derived(selectedPtlParams.includes("scope"));
+    const isOverwritten = $derived(selectedProtocolParams.includes("scope"));
 
     const profileScopeSelected = $derived(selectedScopes.includes("profile"));
     const profileClaimsSelected = $derived(

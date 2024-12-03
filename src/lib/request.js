@@ -3,8 +3,8 @@ function makeAuthzUrl({
     customAuthzServer,
     scopes,
     customScope,
-    ptlParams,
-    ptlParamsValues,
+    protocolParams,
+    protocolParamsValues,
     helloParams,
     helloParamsValues
 }) {
@@ -13,7 +13,7 @@ function makeAuthzUrl({
         const url  = new URL(server)
     
         // scope is not overridden in protocol params section
-        if (scopes.length && !ptlParams.includes('scope')) {
+        if (scopes.length && !protocolParams.includes('scope')) {
             let scopesStr = scopes.join(' ')
             // replace 'custom-scope' key w/ custom scope value
             scopesStr = scopesStr.replace('custom-scope', customScope)
@@ -22,17 +22,17 @@ function makeAuthzUrl({
             url.searchParams.set('scope', scopesStr)
         }
     
-        for (const key in ptlParamsValues) {
+        for (const key in protocolParamsValues) {
             // value exists
-            if (!ptlParamsValues[key].length) continue;
+            if (!protocolParamsValues[key].length) continue;
             // param not selected
-            if (!ptlParams.includes(key)) continue
+            if (!protocolParams.includes(key)) continue
     
-            const value = ptlParamsValues[key]
+            const value = protocolParamsValues[key]
             if (Array.isArray(value)) { // value of prompt is array [consent,login]
-                url.searchParams.set(key, ptlParamsValues[key].join(' ')) 
+                url.searchParams.set(key, protocolParamsValues[key].join(' ')) 
             } else {
-                url.searchParams.set(key, ptlParamsValues[key].trim())
+                url.searchParams.set(key, protocolParamsValues[key].trim())
             }
         }
     
@@ -63,10 +63,10 @@ function makeAuthzUrl({
     }
 }
 
-function makeInviteUrl({authzServer, claims, ptlParamsValues}) {
+function makeInviteUrl({authzServer, claims, protocolParamsValues}) {
     const url = new URL('/invite', authzServer)
     url.searchParams.set('inviter', claims.sub)
-    url.searchParams.set('client_id', ptlParamsValues.client_id)
+    url.searchParams.set('client_id', protocolParamsValues.client_id)
     url.searchParams.set('initiate_login_uri', window.location.origin)
     url.searchParams.set('return_uri', window.location.origin)
     return url.href

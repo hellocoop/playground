@@ -8,8 +8,8 @@
 
     let {
         selectedScopes = $bindable(),
-        selectedPtlParams = $bindable(),
-        selectedPtlParamsValues = $bindable(),
+        selectedProtocolParams = $bindable(),
+        selectedProtocolParamsValues = $bindable(),
         selectedHelloParams = $bindable(),
         selectedHelloParamsValues = $bindable(),
         dropdowns = $bindable(),
@@ -17,12 +17,12 @@
         selectedAuthzServer = $bindable(),
         customScope = $bindable(),
         customAuthzServer = $bindable(),
-        authzUrl
+        authzUrl,
     } = $props();
 
     function reset() {
-        localStorage.removeItem('states')
-        window.location.reload()
+        localStorage.removeItem("states");
+        window.location.reload();
     }
 </script>
 
@@ -44,11 +44,17 @@
     <div
         class="columns-1 md:columns-2 xl:columns-3 4xl:columns-4 gap-x-12 space-y-6"
     >
-        <ScopeParam bind:selectedScopes bind:customScope bind:dropdowns {selectedPtlParams} {isHelloMode} />
+        <ScopeParam
+            bind:selectedScopes
+            bind:customScope
+            bind:dropdowns
+            {selectedProtocolParams}
+            {isHelloMode}
+        />
 
         <ProtocolParams
-            bind:selectedPtlParams
-            bind:selectedPtlParamsValues
+            bind:selectedProtocolParams
+            bind:selectedProtocolParamsValues
             bind:dropdowns
         />
 
@@ -59,7 +65,12 @@
             {isHelloMode}
         />
 
-        <AuthorizationServer bind:dropdowns bind:selectedAuthzServer bind:customAuthzServer {isHelloMode} />
+        <AuthorizationServer
+            bind:dropdowns
+            bind:selectedAuthzServer
+            bind:customAuthzServer
+            {isHelloMode}
+        />
 
         <RequestUrl bind:dropdowns {authzUrl} />
     </div>
