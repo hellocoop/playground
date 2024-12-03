@@ -3,34 +3,13 @@
     import { PARAMS } from "$lib/constants.js";
     import ChevronY from "$components/ChevronY.svelte";
     import Tooltip from "$components/Tooltip.svelte";
+    import { validateProtocolParams as validate } from "$lib/validate.js";
 
     let {
         selectedProtocolParams = $bindable(),
         selectedProtocolParamsValues = $bindable(),
-        dropdowns = $bindable()
+        dropdowns = $bindable(),
     } = $props();
-
-    function validate(param) {
-        const { NAME } = param
-        if (NAME === 'response_type') {
-            // response_type=code needs:
-            // code_challenge
-            if (selectedProtocolParamsValues[NAME] === 'code') {
-                if (!selectedProtocolParams.includes('code_challenge')) return false;
-                if (!selectedProtocolParamsValues.code_challenge) return false;
-            }
-        } else if (NAME === 'code_challenge') {
-            // skip if code_challenge is not selected and response_type=id_token
-            if (selectedProtocolParamsValues.response_type === 'id_token' && selectedProtocolParams.includes('code_challenge'))
-                return true;
-
-            // code_challenge needs:
-            // response_type=code
-            if (!selectedProtocolParams.includes('response_type')) return false;
-            if (selectedProtocolParamsValues.response_type !== 'code') return false;
-        }
-        return true;
-    }
 </script>
 
 <section class="break-inside-avoid-column">
@@ -54,10 +33,17 @@
                 {@const required = PARAMS.PROTOCOL_PARAM.REQUIRED.includes(
                     pclParam.NAME,
                 )}
-                {@const selected = selectedProtocolParams.includes(pclParam.NAME)}
-                {@const hasValue = !!selectedProtocolParamsValues[pclParam.NAME]}
+                {@const selected = selectedProtocolParams.includes(
+                    pclParam.NAME,
+                )}
+                {@const hasValue =
+                    !!selectedProtocolParamsValues[pclParam.NAME]}
                 {@const requiredOk = !required || (selected && hasValue)}
-                {@const needsOk = validate(pclParam)}
+                {@const needsOk = validate({
+                    param: pclParam,
+                    protocolParams: selectedProtocolParams,
+                    protocolParamsValues: selectedProtocolParamsValues,
+                })}
                 {@const error = !requiredOk || !needsOk}
                 <li class="flex flex-row items-center space-x-2">
                     <input
@@ -120,7 +106,9 @@
                             type="text"
                             class="border w-full form-input h-6 px-2"
                             class:opacity-50={!selected}
-                            bind:value={selectedProtocolParamsValues[pclParam.NAME]}
+                            bind:value={selectedProtocolParamsValues[
+                                pclParam.NAME
+                            ]}
                             placeholder={pclParam.PLACEHOLDER}
                         />
                     {/if}

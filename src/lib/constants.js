@@ -180,9 +180,11 @@ const PARAMS = {
     HELLO_PARAM
 }
 
+const BETA_SERVER = 'https://wallet.hello-beta.net/authorize'
+
 const SERVERS = [
     'https://wallet.hello.coop/authorize',
-    'https://wallet.hello-beta.net/authorize'
+    BETA_SERVER
 ]
 
 const AUTHZ_SERVERS = {
@@ -199,5 +201,6 @@ const AUTHZ_SERVERS = {
 
 export {
     PARAMS,
-    AUTHZ_SERVERS
+    AUTHZ_SERVERS,
+    BETA_SERVER
 }

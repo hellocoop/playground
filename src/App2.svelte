@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import { PARAMS, AUTHZ_SERVERS } from "$lib/constants.js";
+    import { PARAMS, AUTHZ_SERVERS, BETA_SERVER } from "$lib/constants.js";
     import Header from "$components/Header.svelte";
     import AuthorizationRequest from "$components/AuthorizationRequest.svelte";
     import AuthorizationResponse from "$components/AuthorizationResponse.svelte";
@@ -204,7 +204,7 @@
     }
 
     function selectBetaServer() {
-        selectedAuthzServer = AUTHZ_SERVERS.SERVERS[1]; // beta authz server
+        selectedAuthzServer = BETA_SERVER;
     }
 </script>
 
