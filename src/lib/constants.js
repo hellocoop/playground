@@ -35,10 +35,6 @@ const PROTOCOL_PARAM = {
             POSSIBLE_VALUE: ''
         },
         {
-            NAME: 'nonce',
-            POSSIBLE_VALUE: ''
-        },
-        {
             NAME: 'redirect_uri',
             POSSIBLE_VALUE: ''
         },
@@ -46,6 +42,10 @@ const PROTOCOL_PARAM = {
             NAME: 'response_type',
             POSSIBLE_VALUE: ['code', 'id_token'],
             ONLY_ONE: true
+        },
+        {
+            NAME: 'nonce',
+            POSSIBLE_VALUE: ''
         },
         {
             NAME: 'code_challenge',
