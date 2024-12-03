@@ -8,7 +8,7 @@
             id="mode-hello"
             value={true}
             type="radio"
-            class="peer hidden"
+            class="peer !hidden"
             bind:group={isHelloMode}
         />
         <label for="mode-hello" class="rounded-l-md border-l border-r"
@@ -20,7 +20,7 @@
             id="mode-public"
             value={false}
             type="radio"
-            class="peer hidden"
+            class="peer !hidden"
             bind:group={isHelloMode}
         />
         <label for="mode-public" class="rounded-r-md border-r"

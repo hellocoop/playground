@@ -82,7 +82,7 @@
                                             bind:group={selectedProtocolParamsValues[
                                                 param.NAME
                                             ]}
-                                            class="hidden peer"
+                                            class="!hidden peer"
                                         />
                                     {:else}
                                         <input
@@ -93,7 +93,7 @@
                                             bind:group={selectedProtocolParamsValues[
                                                 param.NAME
                                             ]}
-                                            class="hidden peer"
+                                            class="!hidden peer"
                                         />
                                     {/if}
                                     <label
