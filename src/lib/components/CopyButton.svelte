@@ -1,5 +1,6 @@
 <script>
 	let { content, css = '' } = $props();
+	import tippy from 'sveltejs-tippy';
 
 	let copied = $state(false);
 	async function copy() {
@@ -13,6 +14,7 @@
 
 <button
 	onclick={copy}
+	use:tippy={{ content: 'Copy', placement: 'right' }}
 	class="w-6 h-6 flex items-center justify-center {css} rounded-md bg-white dark:bg-charcoal"
 >
 	{#if copied}
