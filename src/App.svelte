@@ -159,10 +159,13 @@
 				protocolParams: [...selectedProtocolParams.concat(loginHint ? ['login_hint'] : [])],
 				protocolParamsValues: {
 					...selectedProtocolParamsValues,
-					login_hint: loginHint || undefined
+					...(loginHint ? { login_hint: loginHint } : {}) // so we dont pass login_hint: undefined
 				},
 				helloParams: [...selectedHelloParams.concat(domainHint ? ['domain_hint'] : [])],
-				helloParamsValues: { ...selectedHelloParamsValues, domain_hint: domainHint || undefined }
+				helloParamsValues: {
+					...selectedHelloParamsValues,
+					...(domainHint ? { domain_hint: domainHint } : {}) // so we dont pass domain_hint: undefined
+				}
 			});
 			return (window.location.href = url);
 		} catch (err) {

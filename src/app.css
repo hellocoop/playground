@@ -70,12 +70,12 @@ pre {
 }
 
 input[type='checkbox'] {
-	@apply form-checkbox w-[14px] h-[14px] text-[#808080] border-charcoal dark:border-[#808080] rounded-sm bg-transparent;
+	@apply form-checkbox w-[14px] h-[14px] text-charcoal dark:text-[#808080] border-charcoal dark:border-[#808080] rounded-sm bg-transparent;
 	@apply hover:border-2 focus:ring-0 focus:outline-none focus:ring-offset-0;
 }
 
 input[type='radio'] {
-	@apply form-radio w-[14px] h-[14px] text-[#808080] border-charcoal dark:border-[#808080] bg-transparent;
+	@apply form-radio w-[14px] h-[14px] text-charcoal dark:text-[#808080] border-charcoal dark:border-[#808080] bg-transparent;
 	@apply hover:border-2 focus:ring-0 focus:outline-none focus:ring-offset-0;
 }
 

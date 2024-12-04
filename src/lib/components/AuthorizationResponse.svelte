@@ -9,7 +9,7 @@
 	class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
 >
 	<span
-		class="absolute -mt-8 bg-white dark:bg-[#151515] px-2 -mx-2 text-white/50 uppercase text-xs font-mono"
+		class="absolute -mt-8 bg-white dark:bg-[#151515] px-2 -mx-2 text-charcoal/70 dark:text-[#d4d4d4]/70 uppercase text-xs font-mono"
 		>Authorization Response</span
 	>
 
