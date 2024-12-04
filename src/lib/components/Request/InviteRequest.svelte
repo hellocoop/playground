@@ -36,7 +36,7 @@
 
 		<button
 			onclick={inviteWithHello}
-			class="hello-btn-black-and-static w-full disabled:opacity-30 mt-3"
+			class="hello-btn-black-and-static hello-btn-hover-flare w-full disabled:opacity-30 mt-3"
 			class:hello-btn-loader={inviteWithHelloAjax}
 			disabled={inviteWithHelloAjax || !canInvite}>Invite others to Playground</button
 		>

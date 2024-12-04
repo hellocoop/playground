@@ -51,4 +51,39 @@ async function generatePkce() {
 	}
 }
 
-export { cleanUrl, removeLoader, lineBreakUrl, reset, handleLegacyState, generatePkce };
+const plausibleIgnore =
+	localStorage.getItem('plausible_ignore') == 'true' ||
+	window.location.origin !== 'https://playground.hello.dev';
+
+async function sendPlausibleEvent() {
+	if (plausibleIgnore) {
+		console.info('Ignoring Event: localStorage flag');
+		return;
+	}
+	const _body = {
+		w: window.innerWidth,
+		d: 'playground.hello.dev',
+		n: 'pageview',
+		r: document.referrer || null,
+		u: new URL('https://playground.hello.dev/')
+	};
+	try {
+		await fetch('/api/event', {
+			method: 'POST',
+			body: JSON.stringify(_body)
+		});
+		console.info(`Event sent: ${_body.u} (${_body.n})`);
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+export {
+	cleanUrl,
+	removeLoader,
+	lineBreakUrl,
+	reset,
+	handleLegacyState,
+	generatePkce,
+	sendPlausibleEvent
+};

@@ -7,7 +7,13 @@
 	import InviteRequest from '$components/Request/InviteRequest.svelte';
 	import FileIssue from '$components/FileIssue.svelte';
 	import { init as initShiki } from '$lib/shiki.js';
-	import { cleanUrl, handleLegacyState, removeLoader, generatePkce } from '$lib/utils.js';
+	import {
+		cleanUrl,
+		handleLegacyState,
+		removeLoader,
+		generatePkce,
+		sendPlausibleEvent
+	} from '$lib/utils.js';
 	import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js';
 	import { parseToken, validateToken } from '@hellocoop/helper-browser';
 	import Notification from '$lib/components/Notification.svelte';
@@ -76,8 +82,9 @@
 		const { search } = window.location;
 		const hash = window.location.hash.substring(1);
 		const params = new URLSearchParams(search || hash);
+		const iss = params.get('iss');
 
-		if (params.has('iss')) processIssuer(params);
+		if (iss && iss?.startsWith('https://issuer.hello')) processIssuer(params);
 
 		if (params.has('id_token')) await processIdToken(params);
 		else if (params.has('code')) await processCode(params);
@@ -86,6 +93,7 @@
 
 		cleanUrl();
 		removeLoader();
+		sendPlausibleEvent();
 		await initShiki(); // syntax highlighting
 
 		mounted = true;

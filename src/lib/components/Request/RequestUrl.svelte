@@ -51,7 +51,7 @@
 	<!-- class:hello-btn-hover-flare={darkMode} -->
 	<button
 		onclick={continueWithHello}
-		class="hello-btn-black-and-static w-full flex mt-3"
+		class="hello-btn-black-and-static hello-btn-hover-flare w-full flex mt-3"
 		class:hello-btn-loader={continueWithHelloAjax}
 		disabled={continueWithHelloAjax}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
 	>
