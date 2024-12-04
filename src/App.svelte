@@ -29,7 +29,7 @@
     let customScope = $state("");
     let isHelloMode = $state(true); // this only matters if hello dev flag is set
     let mounted = $state(false);
-    let showErrorNotification = $state(false)
+    let showErrorNotification = $state(false);
     let authzResponse = $state({
         url: null,
         token: null,
@@ -78,7 +78,15 @@
     $effect(saveStateToLocalStorage);
 
     onMount(async () => {
-        await loadStateFromLocalStorage();
+        loadStateFromLocalStorage();
+
+        const pkceChallengeExist =
+            selectedProtocolParamsValues.code_challenge &&
+            selectedProtocolParamsValues.code_verifier;
+        if (!pkceChallengeExist) {
+            // pkce flow challenge does not exist -- generate
+            await generatePkce();
+        }
 
         const { search } = window.location;
         const hash = window.location.hash.substring(1);
@@ -141,28 +149,24 @@
         } catch (err) {
             // no states
         }
+    }
 
-        const pkceVarsExist =
-            selectedProtocolParamsValues.code_challenge &&
-            selectedProtocolParamsValues.code_verifier;
-        if (!pkceVarsExist) {
-            // pkce flow vars do not exist -- generate
-            try {
-                const { url, nonce, code_verifier } = await createAuthRequest({
-                    // we just need nonce & code_verifier
-                    client_id: "x",
-                    redirect_uri: "x",
-                });
-                // because helper-browser only returns code_verifier in url
-                const code_challenge = new URL(url).searchParams.get(
-                    "code_challenge",
-                );
-                selectedProtocolParamsValues.nonce = nonce;
-                selectedProtocolParamsValues.code_verifier = code_verifier;
-                selectedProtocolParamsValues.code_challenge = code_challenge;
-            } catch (err) {
-                console.error(err);
-            }
+    async function generatePkce() {
+        try {
+            const { url, nonce, code_verifier } = await createAuthRequest({
+                // we just need nonce & code_verifier
+                client_id: "x",
+                redirect_uri: "x",
+            });
+            // because helper-browser only returns code_verifier in url
+            const code_challenge = new URL(url).searchParams.get(
+                "code_challenge",
+            );
+            selectedProtocolParamsValues.nonce = nonce;
+            selectedProtocolParamsValues.code_verifier = code_verifier;
+            selectedProtocolParamsValues.code_challenge = code_challenge;
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -295,7 +299,7 @@
     <Header />
 
     {#if showErrorNotification}
-        <Notification close={() => showErrorNotification = false}/>
+        <Notification close={() => (showErrorNotification = false)} />
     {/if}
 
     <main class="py-6 px-4 space-y-6 flex-1">
