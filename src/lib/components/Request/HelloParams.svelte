@@ -43,6 +43,11 @@
 					helloParams: selectedHelloParams,
 					helloParamsValues: selectedHelloParamsValues
 				})}
+
+				{#if param.NAME === 'custom'}
+					<hr class="border-charcoal dark:border-gray-800" />
+				{/if}
+
 				<li class="flex flex-col md:flex-row items-start">
 					<div class="flex items-center space-x-2">
 						<input
