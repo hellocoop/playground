@@ -14,7 +14,7 @@
 	} = $props();
 
 	// scope input selected in protocol params
-	const isOverwritten = $derived(selectedProtocolParams.includes('scope'));
+	const isOverridden = $derived(selectedProtocolParams.includes('scope'));
 </script>
 
 <section class="break-inside-avoid-column">
@@ -27,9 +27,9 @@
 		<Tooltip content="Scope Parameter Docs" , href="https://www.hello.dev/docs/scopes/" />
 	</button>
 
-	{#if isOverwritten}
+	{#if isOverridden}
 		<p class="opacity-70 text-xs italic mt-1">
-			Overwritten with 'scope' in Protocol Parameters section
+			Overridden with 'scope' in Protocol Parameters section
 		</p>
 	{/if}
 
@@ -45,8 +45,8 @@
 		<div
 			class="flex mt-2 space-x-2"
 			transition:slide={{ duration: 150 }}
-			class:opacity-50={isOverwritten}
-			class:pointer-events-none={isOverwritten}
+			class:opacity-50={isOverridden}
+			class:pointer-events-none={isOverridden}
 		>
 			<ul class="space-y-2 w-40 md:w-48">
 				{#each ALL_STANDARD_SCOEPS as stdScope}

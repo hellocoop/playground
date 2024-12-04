@@ -60,7 +60,7 @@
 					</div>
 					{#if Array.isArray(param.POSSIBLE_VALUE)}
 						<ul
-							class="xl:h-8 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+							class="xl:h-8 p-1 gap-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
 							class:opacity-50={!selected}
 						>
 							{#each param.POSSIBLE_VALUE as value}

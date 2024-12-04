@@ -78,6 +78,11 @@ async function sendPlausibleEvent() {
 	}
 }
 
+function focusAuthzResponseSection() {
+	const ele = document.querySelector('#authz-response-container');
+	if (ele) ele.scrollIntoView();
+}
+
 export {
 	cleanUrl,
 	removeLoader,
@@ -85,5 +90,6 @@ export {
 	reset,
 	handleLegacyState,
 	generatePkce,
-	sendPlausibleEvent
+	sendPlausibleEvent,
+	focusAuthzResponseSection
 };

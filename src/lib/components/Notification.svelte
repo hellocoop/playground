@@ -5,10 +5,13 @@
 </script>
 
 <div
-	class="bg-red-500 px-2.5 h-9 text-center text-white flex items-center justify-center"
+	class="bg-red-500 px-2.5 h-11 md:h-9 text-center text-white flex items-center justify-center"
 	out:slide
 >
-	<span class="text-sm">Authorization Error - Please see Response section below</span>
+	<span class="text-sm"
+		>Authorization Error <span class="hidden md:inline">-</span><br class="md:hidden" /> Please see Response
+		section below</span
+	>
 	<button class="absolute right-4" onclick={close} aria-label="close">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"

@@ -6,7 +6,8 @@
 </script>
 
 <section
-	class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
+	id="authz-response-container"
+	class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6 scroll-mt-5"
 >
 	<span
 		class="absolute -mt-8 bg-white dark:bg-[#151515] px-2 -mx-2 text-charcoal/70 dark:text-[#d4d4d4]/70 uppercase text-xs font-mono"

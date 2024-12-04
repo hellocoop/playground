@@ -12,7 +12,8 @@
 		handleLegacyState,
 		removeLoader,
 		generatePkce,
-		sendPlausibleEvent
+		sendPlausibleEvent,
+		focusAuthzResponseSection
 	} from '$lib/utils.js';
 	import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js';
 	import { parseToken, validateToken } from '@hellocoop/helper-browser';
@@ -29,7 +30,7 @@
 	let customScope = $state('');
 	let isHelloMode = $state(true); // this only matters if hello dev flag is set
 	let mounted = $state(false);
-	let showErrorNotification = $state(false);
+	let showErrorNotification = $state(true);
 	let authzResponse = $state({
 		url: null,
 		token: null,
@@ -89,7 +90,7 @@
 		if (params.has('id_token')) await processIdToken(params);
 		else if (params.has('code')) await processCode(params);
 		else if (params.has('error')) processError(params);
-		else if (params.has('beta')) selectedAuthzServer = BETA_SERVER;
+		else if (params.has('beta')) selectBetaServer();
 
 		cleanUrl();
 		removeLoader();
@@ -229,6 +230,8 @@
 		} catch (err) {
 			console.error(err);
 			showErrorNotification = true;
+		} finally {
+			focusAuthzResponseSection();
 		}
 	}
 
@@ -251,12 +254,19 @@
 		} catch (err) {
 			console.error(err);
 			showErrorNotification = true;
+		} finally {
+			focusAuthzResponseSection();
 		}
 	}
 
 	function processError(params) {
 		authzResponse.url = params.toString();
 		showErrorNotification = true;
+	}
+
+	function selectBetaServer() {
+		selectedAuthzServer = BETA_SERVER;
+		dropdowns.server = true; // expand to show selected beta server
 	}
 </script>
 
