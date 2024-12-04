@@ -1,3 +1,5 @@
+import { createAuthRequest } from '@hellocoop/helper-browser'
+
 function cleanUrl() {
     if (window.location.search) {
         window.history.replaceState({}, document.title, '/');
@@ -30,10 +32,32 @@ function handleLegacyState() {
     return reset()
 }
 
+async function generatePkce() {
+    try {
+        const { url, nonce, code_verifier } = await createAuthRequest({
+            // we just need nonce & code_verifier
+            client_id: "x",
+            redirect_uri: "x",
+        });
+        // because helper-browser only returns code_verifier in url
+        const code_challenge = new URL(url).searchParams.get(
+            "code_challenge",
+        );
+        return {
+            nonce,
+            code_verifier,
+            code_challenge
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 export {
     cleanUrl,
     removeLoader,
     lineBreakUrl,
     reset,
-    handleLegacyState
+    handleLegacyState,
+    generatePkce
 }

@@ -7,13 +7,14 @@
     import InviteRequest from "$components/Request/InviteRequest.svelte";
     import FileIssue from "$components/FileIssue.svelte";
     import { init as initShiki } from "$lib/shiki.js";
-    import { cleanUrl, handleLegacyState, removeLoader } from "$lib/utils.js";
-    import { makeAuthzUrl, makeInviteUrl } from "$lib/request.js";
     import {
-        createAuthRequest,
-        parseToken,
-        validateToken,
-    } from "@hellocoop/helper-browser";
+        cleanUrl,
+        handleLegacyState,
+        removeLoader,
+        generatePkce,
+    } from "$lib/utils.js";
+    import { makeAuthzUrl, makeInviteUrl } from "$lib/request.js";
+    import { parseToken, validateToken } from "@hellocoop/helper-browser";
     import Notification from "$lib/components/Notification.svelte";
 
     // states
@@ -45,7 +46,7 @@
         request: true,
     });
 
-    // derived
+    // derived - (re-computed when states change)
     const claims = $derived(
         // id_token flow            // code flow
         authzResponse.introspect || authzResponse.parsed,
@@ -78,15 +79,8 @@
     $effect(saveStateToLocalStorage);
 
     onMount(async () => {
-        loadStateFromLocalStorage();
-
-        const pkceChallengeExist =
-            selectedProtocolParamsValues.code_challenge &&
-            selectedProtocolParamsValues.code_verifier;
-        if (!pkceChallengeExist) {
-            // pkce flow challenge does not exist -- generate
-            await generatePkce();
-        }
+        // then fn also generates pkce challenges if it does not exist
+        await loadStateFromLocalStorage();
 
         const { search } = window.location;
         const hash = window.location.hash.substring(1);
@@ -149,24 +143,17 @@
         } catch (err) {
             // no states
         }
-    }
 
-    async function generatePkce() {
-        try {
-            const { url, nonce, code_verifier } = await createAuthRequest({
-                // we just need nonce & code_verifier
-                client_id: "x",
-                redirect_uri: "x",
-            });
-            // because helper-browser only returns code_verifier in url
-            const code_challenge = new URL(url).searchParams.get(
-                "code_challenge",
-            );
+        const pkceChallengeExist =
+            selectedProtocolParamsValues.code_challenge &&
+            selectedProtocolParamsValues.code_verifier;
+        if (!pkceChallengeExist) {
+            // pkce flow challenge does not exist -- generate
+            const { nonce, code_verifier, code_challenge } =
+                await generatePkce();
             selectedProtocolParamsValues.nonce = nonce;
             selectedProtocolParamsValues.code_verifier = code_verifier;
             selectedProtocolParamsValues.code_challenge = code_challenge;
-        } catch (err) {
-            console.error(err);
         }
     }
 
@@ -184,24 +171,10 @@
 
                 // this creates a copy
                 // we do not want to modify the states & save locally for iss flows
-                protocolParams: [
-                    ...selectedProtocolParams.concat(
-                        loginHint ? ["login_hint"] : [],
-                    ),
-                ],
-                protocolParamsValues: {
-                    ...selectedProtocolParamsValues,
-                    login_hint: loginHint || undefined,
-                },
-                helloParams: [
-                    ...selectedHelloParams.concat(
-                        domainHint ? ["domain_hint"] : [],
-                    ),
-                ],
-                helloParamsValues: {
-                    ...selectedHelloParamsValues,
-                    domain_hint: domainHint || undefined,
-                },
+                protocolParams: [...selectedProtocolParams.concat(loginHint ? ["login_hint"] : [])],
+                protocolParamsValues: { ...selectedProtocolParamsValues, login_hint: loginHint || undefined },
+                helloParams: [...selectedHelloParams.concat(domainHint ? ["domain_hint"] : [])],
+                helloParamsValues: {...selectedHelloParamsValues, domain_hint: domainHint || undefined},
             });
             return (window.location.href = url);
         } catch (err) {
