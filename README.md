@@ -19,7 +19,7 @@ This repo contains the source code powering [https://playground.hello.dev/](http
 ### Running docs locally
 
 1. `npm run dev` to start the hot-reloading development server (powered by [Vite](https://vitejs.dev/))
-1. `open http://localhost:3000` to open the site in your favorite browser
+1. `open http://localhost:5173` to open the site in your favorite browser
 
 ## License
 

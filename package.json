@@ -1,41 +1,30 @@
 {
-	"name": "vite-project",
+	"name": "playground",
 	"private": true,
-	"version": "0.0.0",
-	"type": "commonjs",
+	"version": "1.0.0",
+	"type": "module",
 	"scripts": {
-		"postinstall": "./scripts/pre-requisties.sh",
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test": "echo \"Error: no test specified\" && exit 0",
-		"pr": "./scripts/pr.sh",
-		"rebase": "git pull origin main --rebase",
-		"review": "npm run rebase && npm run test && npm run pr",
-		"lint": "prettier --check --plugin-search-dir=. . && eslint . --fix",
-		"format": "prettier --write --plugin-search-dir=. ."
-	},
-	"engines": {
-		"node": "~18",
-		"npm": "~10"
+		"format": "prettier --write .",
+		"lint": "prettier --check . && eslint .",
+		"test": "echo \"Error: no test specified\" && exit 0"
 	},
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
-		"@tailwindcss/forms": "^0.5.0",
-		"autoprefixer": "^10.4.4",
-		"eslint": "^8.41.0",
-		"eslint-config-prettier": "^8.8.0",
-		"eslint-plugin-import": "^2.27.5",
-		"eslint-plugin-svelte3": "^4.0.0",
-		"postcss": "^8.4.12",
-		"prettier": "^2.8.8",
-		"prettier-plugin-svelte": "^2.10.1",
-		"shiki": "^1.12.1",
-		"svelte": "^3.44.0",
-		"tailwindcss": "^3.0.23",
-		"vite": "^2.9.0"
-	},
-	"dependencies": {
-		"sveltejs-tippy": "^3.0.0"
+		"@hellocoop/helper-browser": "^2.4.3",
+		"@sveltejs/vite-plugin-svelte": "^5.0.1",
+		"@tailwindcss/forms": "^0.5.9",
+		"autoprefixer": "^10.4.20",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-svelte": "^2.46.1",
+		"postcss": "^8.4.49",
+		"prettier": "^3.3.2",
+		"prettier-plugin-svelte": "^3.2.4",
+		"shiki": "^1.24.0",
+		"svelte": "^5.4.0",
+		"sveltejs-tippy": "^3.0.0",
+		"tailwindcss": "^3.4.15",
+		"vite": "^6.0.2"
 	}
 }
