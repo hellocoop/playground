@@ -1,29 +1,15 @@
 <script>
-	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { PARAMS } from '$lib/constants.js';
 
-	const {
-		HELLO_PARAM: { PARAMS: HELLO_PARAMS }
-	} = PARAMS;
+	let { selected, value = $bindable() } = $props();
 
-	let { selected, value = $bindable(), isHelloMode } = $props();
-
-	let debouncer = $state();
 	let invalidSlugs = $state([]);
-
-	// validate on input load as well
-	onMount(validate);
-
-	const DOMAIN_HINT = HELLO_PARAMS.find((i) => i.NAME === 'domain_hint');
-	function validate() {}
 </script>
 
 <input
 	type="text"
 	class="border w-full form-input h-6 px-2"
 	class:opacity-50={!selected}
-	oninput={validate}
 	bind:value
 />
 

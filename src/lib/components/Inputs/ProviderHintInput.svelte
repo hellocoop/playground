@@ -7,7 +7,7 @@
 		HELLO_PARAM: { PARAMS: HELLO_PARAMS }
 	} = PARAMS;
 
-	let { selected, value = $bindable(), isHelloMode } = $props();
+	let { selected, value = $bindable() } = $props();
 
 	let debouncer = $state();
 	let invalidSlugs = $state([]);

@@ -57,7 +57,7 @@ function makeAuthzUrl({
 		}
 
 		return url.href;
-	} catch (err) {
+	} catch (_) {
 		// do nothing with err since common flow
 		// (user can enter custom authz server url)
 		return 'Invalid URL';

@@ -62,7 +62,7 @@ function validateHelloParams({ param, protocolParams, helloParams, helloParamsVa
 	return true;
 }
 
-async function validateAuthzServer(url) {
+async function validateAuthzServer(_) {
 	// TBD CORS -- no way for browser to know for sure that a URL exists
 	// try {
 	//     const res = await fetch(url, {

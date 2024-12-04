@@ -1,5 +1,3 @@
-import { createAuthRequest } from '@hellocoop/helper-browser';
-
 const PROFILE_CLAIMS = ['name', 'email', 'picture'];
 
 const SCOPE_PARAM = {

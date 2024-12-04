@@ -127,7 +127,7 @@
 			if (states.hello_params_values) selectedHelloParamsValues = states.hello_params_values;
 			if (states.custom_scope_value) customScope = states.custom_scope_value;
 			if (states.custom_authz_server_value) customAuthzServer = states.custom_authz_server_value;
-		} catch (err) {
+		} catch (_) {
 			// no states
 		}
 

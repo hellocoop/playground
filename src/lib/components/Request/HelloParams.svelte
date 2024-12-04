@@ -58,17 +58,9 @@
 					</div>
 					<div class="flex flex-col w-full">
 						{#if param.NAME === 'provider_hint'}
-							<ProviderHintInput
-								{selected}
-								bind:value={selectedHelloParamsValues.provider_hint}
-								{isHelloMode}
-							/>
+							<ProviderHintInput {selected} bind:value={selectedHelloParamsValues.provider_hint} />
 						{:else if param.NAME === 'domain_hint'}
-							<DomainHintInput
-								{selected}
-								bind:value={selectedHelloParamsValues.domain_hint}
-								{isHelloMode}
-							/>
+							<DomainHintInput {selected} bind:value={selectedHelloParamsValues.domain_hint} />
 						{:else}
 							<input
 								type="text"
