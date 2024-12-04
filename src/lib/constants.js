@@ -84,7 +84,7 @@ const PROTOCOL_PARAM = {
 	],
 	DEFAULT_VALUES: {
 		client_id: 'app_HelloDeveloperPlayground_Iq2',
-		redirect_uri: 'http://localhost:5173',
+		redirect_uri: 'https://playground.hello.dev/',
 		response_type: 'code',
 		response_mode: 'fragment',
 		prompt: 'consent'
