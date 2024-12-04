@@ -13,6 +13,7 @@
 			href="https://unpkg.com/prism-themes@1.6.0/themes/prism-duotone-dark.css"
 		/>
 		<script src="https://cdn.hello.coop/js/hello-dev-wc-footer.js" defer></script>
+		<script src="/purge-cache.js" defer></script>
 		<style type="text/css">
 			html,
 			body {
@@ -78,19 +79,5 @@
 		<div id="load-spinner" class="spinner"></div>
 		<div id="app" class="h-full flex flex-col"></div>
 		<script type="module" src="/src/main.js"></script>
-		<script>
-			/**
-			 * If browser back button was used, flush cache
-			 * This ensures that user will always see an accurate, up-to-date view based on their state
-			 * https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
-			 */
-			(function () {
-				window.onpageshow = function (event) {
-					if (event.persisted) {
-						window.location.reload();
-					}
-				};
-			})();
-		</script>
 	</body>
 </html>
