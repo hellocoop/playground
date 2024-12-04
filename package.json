@@ -8,7 +8,8 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"lint": "prettier --check . && eslint .",
+		"test": "echo \"Error: no test specified\" && exit 0"
 	},
 	"devDependencies": {
 		"@hellocoop/helper-browser": "^2.4.3",
