@@ -30,7 +30,7 @@
 	let customScope = $state('');
 	let isHelloMode = $state(true); // this only matters if hello dev flag is set
 	let mounted = $state(false);
-	let showErrorNotification = $state(true);
+	let showErrorNotification = $state(false);
 	let authzResponse = $state({
 		url: null,
 		token: null,
