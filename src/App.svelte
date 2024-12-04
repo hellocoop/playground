@@ -98,6 +98,10 @@
 		await initShiki(); // syntax highlighting
 
 		mounted = true;
+
+		// focus authz response section for better mobile UX
+		// runs after 'mounted' to ensure UI is rendered
+		if (claims) focusAuthzResponseSection();
 	});
 
 	function saveStateToLocalStorage() {
@@ -230,8 +234,6 @@
 		} catch (err) {
 			console.error(err);
 			showErrorNotification = true;
-		} finally {
-			focusAuthzResponseSection();
 		}
 	}
 
@@ -254,8 +256,6 @@
 		} catch (err) {
 			console.error(err);
 			showErrorNotification = true;
-		} finally {
-			focusAuthzResponseSection();
 		}
 	}
 

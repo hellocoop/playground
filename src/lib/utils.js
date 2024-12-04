@@ -1,3 +1,4 @@
+import { tick } from 'svelte';
 import { createAuthRequest } from '@hellocoop/helper-browser';
 
 function cleanUrl() {
@@ -78,7 +79,8 @@ async function sendPlausibleEvent() {
 	}
 }
 
-function focusAuthzResponseSection() {
+async function focusAuthzResponseSection() {
+	await tick(); // ensures UI updates are complete
 	const ele = document.querySelector('#authz-response-container');
 	if (ele) ele.scrollIntoView();
 }
