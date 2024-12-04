@@ -37,7 +37,7 @@
 		class="absolute -top-3 right-2 px-3 py-0.5 rounded-md border border-charcoal dark:border-gray-800 text-xs bg-white dark:bg-[#151515]"
 		>Reset</button
 	>
-	<div class="columns-1 md:columns-2 xl:columns-3 4xl:columns-4 gap-x-12 space-y-6">
+	<div class="columns-1 md:columns-2 2xl:columns-3 4xl:columns-4 gap-x-12 space-y-6">
 		<ScopeParam
 			bind:selectedScopes
 			bind:customScope
