@@ -43,7 +43,7 @@
 					helloParams: selectedHelloParams,
 					helloParamsValues: selectedHelloParamsValues
 				})}
-				<li class="flex flex-row items-start">
+				<li class="flex flex-col md:flex-row items-start">
 					<div class="flex items-center space-x-2">
 						<input
 							type="checkbox"

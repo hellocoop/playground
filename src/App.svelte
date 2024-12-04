@@ -156,7 +156,7 @@
 			if (!iss) throw params;
 			const wallet = iss.replace('issuer', 'wallet');
 			const authorize = new URL('/authorize', wallet).href;
-			selectedAuthzServer = authorize // save locally to call correct endpoints after iss flow
+			selectedAuthzServer = authorize; // save locally to call correct endpoints after iss flow
 			const loginHint = params.get('login_hint');
 			const domainHint = params.get('domain_hint');
 			const url = makeAuthzUrl({

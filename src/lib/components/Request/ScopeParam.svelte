@@ -43,12 +43,12 @@
 			...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
 		]}
 		<div
-			class="flex mt-2"
+			class="flex mt-2 space-x-2"
 			transition:slide={{ duration: 150 }}
 			class:opacity-50={isOverwritten}
 			class:pointer-events-none={isOverwritten}
 		>
-			<ul class="space-y-2 w-48">
+			<ul class="space-y-2 w-40 md:w-48">
 				{#each ALL_STANDARD_SCOEPS as stdScope}
 					{@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
 					{@const selected = selectedScopes.includes(stdScope)}
@@ -62,14 +62,14 @@
 							bind:group={selectedScopes}
 							value={stdScope}
 						/>
-						<label for={stdScope} class:text-red-500={!requiredOk}
+						<label for={stdScope} class:text-red-500={!requiredOk} class="truncate"
 							>{stdScope} {required ? '*' : ''}</label
 						>
 					</li>
 				{/each}
 			</ul>
 
-			<ul class="space-y-2 w-48">
+			<ul class="space-y-2 w-40 md:w-48">
 				{#each ALL_NON_STANDARD_SCOPES as nonStdScope}
 					<li class="flex flex-row items-center space-x-2">
 						<input
@@ -79,7 +79,7 @@
 							value={nonStdScope}
 							bind:group={selectedScopes}
 						/>
-						<label for={nonStdScope} class="italic">{nonStdScope}</label>
+						<label for={nonStdScope} class="italic truncate">{nonStdScope}</label>
 					</li>
 				{/each}
 
@@ -95,7 +95,7 @@
 						class:opacity-50={!selectedScopes.includes('custom-scope')}
 						form="custom-scope"
 						type="text"
-						class="h-6 px-2 w-36 form-input italic"
+						class="h-6 px-2 w-32 md:w-40 form-input italic"
 						autocomplete="off"
 						autocorrect="off"
 						autocapitalize="off"

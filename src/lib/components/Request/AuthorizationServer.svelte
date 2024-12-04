@@ -40,8 +40,10 @@
 					{#await validate(server)}
 						<span class="ml-2">Checking ...</span>
 					{:then validateOk}
-						<label for={server} class="ml-2 break-all" class:text-red-500={!validateOk}
-							>{server}</label
+						<label
+							for={server}
+							class="ml-2 break-all w-full md:w-auto truncate"
+							class:text-red-500={!validateOk}>{server}</label
 						>
 						<CopyButton content={server} css="opacity-70 ml-1" />
 					{/await}

@@ -41,22 +41,23 @@
 					helloParamsValues: selectedHelloParamsValues
 				})}
 				{@const error = !requiredOk || !needsOk}
-				<li class="flex flex-row items-center space-x-2">
-					<input
-						type="checkbox"
-						id={param.NAME}
-						name="param"
-						bind:group={selectedProtocolParams}
-						class:invisible={param.CHECKBOX_HIDDEN}
-						value={param.NAME}
-					/>
-					<label
-						for={param.NAME}
-						class="font-normal w-48"
-						class:pointer-events-none={param.CHECKBOX_HIDDEN}
-						class:text-red-500={error}>{param.NAME} {required ? '*' : ''}</label
-					>
-
+				<li class="flex flex-col md:flex-row items-start">
+					<div class="flex items-center space-x-2">
+						<input
+							type="checkbox"
+							id={param.NAME}
+							name="param"
+							bind:group={selectedProtocolParams}
+							class:invisible={param.CHECKBOX_HIDDEN}
+							value={param.NAME}
+						/>
+						<label
+							for={param.NAME}
+							class="font-normal w-48"
+							class:pointer-events-none={param.CHECKBOX_HIDDEN}
+							class:text-red-500={error}>{param.NAME} {required ? '*' : ''}</label
+						>
+					</div>
 					{#if Array.isArray(param.POSSIBLE_VALUE)}
 						<ul
 							class="xl:h-8 p-1 space-y-0.5 xl:space-y-0 xl:space-x-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
@@ -85,7 +86,7 @@
 									{/if}
 									<label
 										for={value}
-										class="peer-checked:bg-charcoal peer-checked:ring-1 ring-charcoal dark:ring-gray-800 block flex justify-center items-center w-full cursor-pointer"
+										class="peer-checked:bg-charcoal peer-checked:ring-1 ring-charcoal dark:ring-gray-800 block flex justify-center items-center w-full cursor-pointer peer-checked:text-white peer-checked:dark:text-[#d4d4d4]"
 									>
 										{value}
 									</label>

@@ -11,7 +11,10 @@
 	}
 </script>
 
-<button onclick={copy} class="w-4 {css}">
+<button
+	onclick={copy}
+	class="w-6 h-6 flex items-center justify-center {css} rounded-md bg-white dark:bg-charcoal"
+>
 	{#if copied}
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
