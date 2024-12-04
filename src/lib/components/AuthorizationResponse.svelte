@@ -1,6 +1,7 @@
 <script>
 	import UrlResponse from '$components/Response/UrlResponse.svelte';
 	import JsonResponse from '$components/Response/JsonResponse.svelte';
+	import Claims from '$components/Response/Claims.svelte';
 
 	let { authzUrl, authzResponse } = $props();
 </script>
@@ -34,6 +35,10 @@
 
 			{#if authzResponse.userinfo}
 				<JsonResponse label={new URL('/oauth/userinfo', authzUrl)} json={authzResponse.userinfo} />
+			{/if}
+
+			{#if authzResponse.parsed || authzResponse.introspect}
+				<Claims payload={authzResponse.parsed || authzResponse.introspect} />
 			{/if}
 		</div>
 	{:else}
