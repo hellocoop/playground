@@ -1,18 +1,18 @@
 <script>
-	import { slide } from "svelte/transition";
-	import ExternalLinkIcon from "./Icons/ExternalLinkIcon.svelte";
-    import MenuIcon from "./Icons/MenuIcon.svelte";
-    import CloseIcon from "./Icons/CloseIcon.svelte";
+	import { slide } from 'svelte/transition';
+	import ExternalLinkIcon from './Icons/ExternalLinkIcon.svelte';
+	import MenuIcon from './Icons/MenuIcon.svelte';
+	import CloseIcon from './Icons/CloseIcon.svelte';
 
 	const navLinks = [
 		{
-			text: "Documentation",
-			link: "https://hello.dev/docs/",
+			text: 'Documentation',
+			link: 'https://hello.dev/docs/'
 		},
 		{
-			text: "Console",
-			link: "https://console.hello.coop/",
-		},
+			text: 'Console',
+			link: 'https://console.hello.coop/'
+		}
 	];
 
 	let mobileMenu = $state(false);
@@ -22,14 +22,11 @@
 	class="text-white dark:text-gray flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg"
 >
 	<div class="w-1/3 inline-flex items-center">
-		<button
-			onclick={() => (mobileMenu = !mobileMenu)}
-			class="md:hidden mr-2 group"
-		>
+		<button onclick={() => (mobileMenu = !mobileMenu)} class="md:hidden mr-2 group">
 			{#if mobileMenu}
-				<CloseIcon/>
+				<CloseIcon />
 			{:else}
-				<MenuIcon/>
+				<MenuIcon />
 			{/if}
 		</button>
 		<a
@@ -48,11 +45,7 @@
 		<ul class="hidden md:flex space-x-4">
 			{#each navLinks as { text, link }}
 				<li class="nav-link text-sm font-normal relative">
-					<a
-						href={link}
-						target="_blank"
-						class="inline-flex items-center hover:underline"
-					>
+					<a href={link} target="_blank" class="inline-flex items-center hover:underline">
 						{text}
 						<ExternalLinkIcon />
 					</a>
@@ -64,7 +57,7 @@
 	{#if mobileMenu}
 		<div
 			class="bg-charcoal md:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]"
-			transition:slide={{duration:150}}
+			transition:slide={{ duration: 150 }}
 		>
 			<ul class="flex flex-col gap-y-3 pb-4 text-base">
 				<li class="nav-link relative">
@@ -98,7 +91,7 @@
 			tabindex="0"
 			onclick={() => (mobileMenu = false)}
 			onkeydown={(e) => {
-				if (e.key === "Enter" || e.key === " ") {
+				if (e.key === 'Enter' || e.key === ' ') {
 					mobileMenu = false;
 				}
 			}}

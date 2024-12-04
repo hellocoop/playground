@@ -1,10 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
 	darkMode: 'media',
-	content: [
-		"./index.html",
-		"./src/**/*.{svelte,js,ts,jsx,tsx}",
-	],
+	content: ['./index.html', './src/**/*.{svelte,js,ts,jsx,tsx}'],
 	theme: {
 		extend: {
 			spacing: {
@@ -32,4 +29,4 @@ export default {
 			strategy: 'class'
 		})
 	]
-}
+};
