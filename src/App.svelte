@@ -156,15 +156,9 @@
 			if (!iss) throw params;
 			const wallet = iss.replace('issuer', 'wallet');
 			const authorize = new URL('/authorize', wallet).href;
+			selectedAuthzServer = authorize // save locally to call correct endpoints after iss flow
 			const loginHint = params.get('login_hint');
 			const domainHint = params.get('domain_hint');
-
-			// generate new pkce challenges for iss flow
-			const { nonce, code_verifier, code_challenge } = await generatePkce();
-			selectedProtocolParamsValues.nonce = nonce;
-			selectedProtocolParamsValues.code_verifier = code_verifier;
-			selectedProtocolParamsValues.code_challenge = code_challenge;
-
 			const url = makeAuthzUrl({
 				authzServer: authorize,
 				scopes: selectedScopes,
