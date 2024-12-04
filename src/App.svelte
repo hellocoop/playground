@@ -84,7 +84,7 @@
 		const params = new URLSearchParams(search || hash);
 		const iss = params.get('iss');
 
-		if (iss && iss?.startsWith('https://issuer.hello')) processIssuer(params);
+		if (iss && iss?.startsWith('https://issuer.hello')) await processIssuer(params);
 
 		if (params.has('id_token')) await processIdToken(params);
 		else if (params.has('code')) await processCode(params);
@@ -150,7 +150,7 @@
 		}
 	}
 
-	function processIssuer(params = {}) {
+	async function processIssuer(params = {}) {
 		try {
 			const iss = params.get('iss');
 			if (!iss) throw params;
@@ -158,6 +158,13 @@
 			const authorize = new URL('/authorize', wallet).href;
 			const loginHint = params.get('login_hint');
 			const domainHint = params.get('domain_hint');
+
+			// generate new pkce challenges for iss flow
+			const { nonce, code_verifier, code_challenge } = await generatePkce();
+			selectedProtocolParamsValues.nonce = nonce;
+			selectedProtocolParamsValues.code_verifier = code_verifier;
+			selectedProtocolParamsValues.code_challenge = code_challenge;
+
 			const url = makeAuthzUrl({
 				authzServer: authorize,
 				scopes: selectedScopes,
