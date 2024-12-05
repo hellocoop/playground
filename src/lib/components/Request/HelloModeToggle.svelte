@@ -27,6 +27,6 @@
 
 <style>
 	label {
-		@apply cursor-pointer select-none px-3 h-[22px] w-14 block flex border-y items-center justify-center border-charcoal dark:border-gray-800 text-xs bg-white dark:bg-[#151515] peer-checked:bg-charcoal peer-checked:text-white;
+		@apply cursor-pointer select-none px-3 h-[22px] w-14 block flex border-y items-center justify-center border-charcoal dark:border-gray-800 text-xs bg-white dark:bg-gray-1000 peer-checked:bg-charcoal peer-checked:text-white;
 	}
 </style>

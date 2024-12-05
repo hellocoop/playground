@@ -11,8 +11,8 @@ export default {
 				charcoal: '#303030',
 				gray: {
 					DEFAULT: '#D4D4D4',
-					1000: '#151515',
-					800: '#808080'
+					800: '#808080',
+					1000: '#151515'
 				}
 			},
 			strokeWidth: {

@@ -86,7 +86,7 @@
 									{/if}
 									<label
 										for={value}
-										class="peer-checked:bg-charcoal peer-checked:ring-1 ring-charcoal dark:ring-gray-800 block flex justify-center items-center w-full cursor-pointer peer-checked:text-white peer-checked:dark:text-[#d4d4d4]"
+										class="peer-checked:bg-charcoal peer-checked:ring-1 ring-charcoal dark:ring-gray-800 block flex justify-center items-center w-full cursor-pointer peer-checked:text-white peer-checked:dark:text-gray"
 									>
 										{value}
 									</label>

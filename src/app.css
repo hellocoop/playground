@@ -41,19 +41,19 @@ button {
 }
 
 input[type='url'] {
-	@apply text-charcoal dark:text-[#d4d4d4];
+	@apply text-charcoal dark:text-gray;
 }
 
 @tailwind components;
 
 .btn {
-	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-[#808080] rounded-sm hover:ring-2;
+	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-gray-800 rounded-sm hover:ring-2;
 }
 
 .form-input {
 	@apply rounded-sm bg-transparent ring-1 border-none hover:ring-2;
 	@apply ring-charcoal !important;
-	@apply dark:ring-[#808080] !important;
+	@apply dark:ring-gray-800 !important;
 }
 
 .form-input::placeholder,
@@ -70,12 +70,12 @@ pre {
 }
 
 input[type='checkbox'] {
-	@apply form-checkbox w-[14px] h-[14px] text-charcoal dark:text-[#808080] border-charcoal dark:border-[#808080] rounded-sm bg-transparent;
+	@apply form-checkbox w-[14px] h-[14px] text-charcoal dark:text-gray-800 border-charcoal dark:border-gray-800 rounded-sm bg-transparent;
 	@apply hover:border-2 focus:ring-0 focus:outline-none focus:ring-offset-0;
 }
 
 input[type='radio'] {
-	@apply form-radio w-[14px] h-[14px] text-charcoal dark:text-[#808080] border-charcoal dark:border-[#808080] bg-transparent;
+	@apply form-radio w-[14px] h-[14px] text-charcoal dark:text-gray-800 border-charcoal dark:border-gray-800 bg-transparent;
 	@apply hover:border-2 focus:ring-0 focus:outline-none focus:ring-offset-0;
 }
 
