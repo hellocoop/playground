@@ -1,26 +1,30 @@
 # Playground
 
-This repo contains the source code powering [https://playground.hello.dev/](https://playground.hello.dev/).
+This repository contains the source code for [https://playground.hello.dev/](https://playground.hello.dev/).
 
-## Getting started
+## Getting Started
 
 ### Prerequisites
 
-1. Git
-1. Node (>= 18)
-1. A fork of the repo (for any contributions)
-1. A clone of the [playground repo](https://github.com/hellocoop/playground) on your local machine
+1. **Git**
+1. **Node.js** (version 18 or higher)
+1. A fork of this repository (required for contributions)
+1. A local clone of the [Playground repository](https://github.com/hellocoop/playground)
+1. A Hellō account (Create one at [Hellō Wallet](https://wallet.hello.coop/))
+1. A `client_id` for a Hellō application with `http://localhost:*` development redirect URI enabled (Create one at the [Hellō Developer Console](https://console.hello.coop/))
 
 ### Installation
 
-1. `cd playground` to go into the project root
-1. `npm i` to install the npm dependencies
+1. Run `cd playground` to navigate to the project root
+1. Run `npm i` to install the necessary npm dependencies
 
-### Running locally
+### Running Locally
 
-1. `npm run dev` to start the hot-reloading development server (powered by [Vite](https://vitejs.dev/))
-1. `open http://localhost:5173` to open the site in your favorite browser
+1. Run `npm run dev` to start the hot-reloading development server (powered by [Vite](https://vitejs.dev/))
+1. Open [http://localhost:5173](http://localhost:5173) in your preferred browser
+1. Use your application's `client_id` and update the value in the **Protocol Parameters** section
+1. Update the `redirect_uri` in the **Protocol Parameters** section to be `http://localhost:5173`
 
 ## License
 
-[MIT](LICENSE)
+This project is licensed under the [MIT License](LICENSE).
