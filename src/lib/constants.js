@@ -13,7 +13,7 @@ const SCOPE_PARAM = {
 	NON_STANDARD: ['ethereum', 'discord', 'twitter', 'github', 'gitlab'],
 
 	// Hellō Dev Mode
-	HELLO_EXTEND_STANDARD: ['preferred_username'],
+	HELLO_EXTEND_STANDARD: [],
 	HELLO_EXTEND_NON_STANDARD: ['recovery', 'verified_name', 'existing_name', 'existing_username'],
 
 	REQUIRED: ['openid'],
