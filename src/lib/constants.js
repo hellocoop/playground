@@ -121,7 +121,8 @@ const HELLO_PARAM = {
 			HINT: [...PROVIDER_HINTS, 'apple--', 'microsoft--', 'google-', 'email--', 'passkey--'].join(
 				' '
 			),
-			ONLY_ONE: false
+			ONLY_ONE: false,
+			PLACEHOLDER: 'space separated'
 		},
 		{
 			NAME: 'domain_hint',

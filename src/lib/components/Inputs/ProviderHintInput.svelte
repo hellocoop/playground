@@ -32,6 +32,7 @@
 	class="border w-full form-input h-6 px-2"
 	class:opacity-50={!selected}
 	oninput={validate}
+	placeholder={PROVIDER_HINT?.PLACEHOLDER}
 	bind:value
 />
 
