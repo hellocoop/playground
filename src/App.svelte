@@ -299,5 +299,6 @@
 		<FileIssue />
 	</main>
 
+	<!-- Web component imported in index.html from Hellō CDN -->
 	<wc-footer></wc-footer>
 {/if}
