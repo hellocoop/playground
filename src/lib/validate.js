@@ -63,7 +63,7 @@ function validateHelloParams({ param, protocolParams, helloParams, helloParamsVa
 }
 
 async function validateAuthzServer(url) {
-	const healthCheckUrl = new URL('/api/v1/health_check/playground', url);
+	const healthCheckUrl = new URL('/api/v1/health_check/playground', url).href;
 	try {
 		const res = await fetch(healthCheckUrl);
 		return res.status === 200;
