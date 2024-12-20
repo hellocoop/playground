@@ -62,19 +62,15 @@ function validateHelloParams({ param, protocolParams, helloParams, helloParamsVa
 	return true;
 }
 
-async function validateAuthzServer(_) {
-	// TBD CORS -- no way for browser to know for sure that a URL exists
-	// try {
-	//     const res = await fetch(url, {
-	//         method: 'HEAD', // Only fetch headers, no body
-	//         cache: 'no-cache' // To avoid using cached responses
-	//     });
-	//     return res.status === 200
-	// } catch (error) {
-	//     console.error('Failed to validate', url)
-	//     return false;
-	// }
-	return true;
+async function validateAuthzServer(url) {
+	const healthCheckUrl = new URL('/api/v1/health_check/playground', url);
+	try {
+		const res = await fetch(healthCheckUrl);
+		return res.status === 200;
+	} catch (error) {
+		console.warn('Failed to validate', healthCheckUrl);
+		return false;
+	}
 }
 
 export { validateScopes, validateProtocolParams, validateHelloParams, validateAuthzServer };

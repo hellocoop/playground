@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { PARAMS, AUTHZ_SERVERS, BETA_SERVER } from '$lib/constants.js';
+	import { PARAMS, AUTHZ_SERVERS } from '$lib/constants.js';
 	import Header from '$components/Header.svelte';
 	import AuthorizationRequest from '$components/AuthorizationRequest.svelte';
 	import AuthorizationResponse from '$components/AuthorizationResponse.svelte';
@@ -90,7 +90,6 @@
 		if (params.has('id_token')) await processIdToken(params);
 		else if (params.has('code')) await processCode(params);
 		else if (params.has('error')) processError(params);
-		else if (params.has('beta')) selectBetaServer();
 
 		cleanUrl();
 		removeLoader();
@@ -262,11 +261,6 @@
 	function processError(params) {
 		authzResponse.url = params.toString();
 		showErrorNotification = true;
-	}
-
-	function selectBetaServer() {
-		selectedAuthzServer = BETA_SERVER;
-		dropdowns.server = true; // expand to show selected beta server
 	}
 </script>
 

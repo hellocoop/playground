@@ -158,9 +158,7 @@ const PARAMS = {
 	HELLO_PARAM
 };
 
-const BETA_SERVER = 'https://wallet.hello-beta.net/authorize';
-
-const SERVERS = ['https://wallet.hello.coop/authorize', BETA_SERVER];
+const SERVERS = ['https://wallet.hello.coop/authorize'];
 
 const AUTHZ_SERVERS = {
 	SERVERS,
@@ -174,4 +172,4 @@ const AUTHZ_SERVERS = {
 	]
 };
 
-export { PARAMS, AUTHZ_SERVERS, BETA_SERVER, PROFILE_CLAIMS };
+export { PARAMS, AUTHZ_SERVERS, PROFILE_CLAIMS };
