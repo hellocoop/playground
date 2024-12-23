@@ -1,6 +1,6 @@
 <script>
 	import { slide } from 'svelte/transition';
-	import { AUTHZ_SERVERS } from '$lib/constants.js';
+	import { AUTHZ_SERVERS, HAS_HELLO_DEV_FLAG } from '$lib/constants.js';
 	import ChevronY from '$components/ChevronY.svelte';
 	import CopyButton from '../CopyButton.svelte';
 	import { validateAuthzServer as validate } from '$lib/validate';
@@ -22,9 +22,10 @@
 		<ChevronY dir={dropdowns.server ? 'up' : 'down'} />
 	</button>
 	{#if dropdowns.server}
+		{@const showHelloExtended = HAS_HELLO_DEV_FLAG && isHelloMode}
 		{@const ALL_AUTHZ_SERVERS = [
 			...AUTHZ_SERVERS.SERVERS,
-			...(isHelloMode ? AUTHZ_SERVERS.HELLO_EXTEND_SERVERS : [])
+			...(showHelloExtended ? AUTHZ_SERVERS.HELLO_EXTEND_SERVERS : [])
 		]}
 		<ul class="space-y-2 mt-2" transition:slide|local={{ duration: 150 }}>
 			{#each ALL_AUTHZ_SERVERS as server}

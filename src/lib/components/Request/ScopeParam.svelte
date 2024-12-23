@@ -1,6 +1,6 @@
 <script>
 	import { slide } from 'svelte/transition';
-	import { PARAMS } from '$lib/constants.js';
+	import { PARAMS, HAS_HELLO_DEV_FLAG } from '$lib/constants.js';
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
 	import { validateScopes as validate } from '$lib/validate.js';
@@ -24,7 +24,7 @@
 	>
 		<span class="font-medium text-base"> Scope Parameter </span>
 		<ChevronY dir={dropdowns.scope ? 'up' : 'down'} />
-		<Tooltip content="Scope Parameter Docs" , href="https://www.hello.dev/docs/scopes/" />
+		<Tooltip content="Scope Parameter Docs" href="https://www.hello.dev/docs/scopes/" />
 	</button>
 
 	{#if isOverridden}
@@ -34,13 +34,14 @@
 	{/if}
 
 	{#if dropdowns.scope}
+		{@const showHelloExtended = HAS_HELLO_DEV_FLAG && isHelloMode}
 		{@const ALL_STANDARD_SCOEPS = [
 			...PARAMS.SCOPE_PARAM.STANDARD,
-			...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD : [])
+			...(showHelloExtended ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_STANDARD : [])
 		]}
 		{@const ALL_NON_STANDARD_SCOPES = [
 			...PARAMS.SCOPE_PARAM.NON_STANDARD,
-			...(isHelloMode ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
+			...(showHelloExtended ? PARAMS.SCOPE_PARAM.HELLO_EXTEND_NON_STANDARD : [])
 		]}
 		<div
 			class="flex mt-2 space-x-2"

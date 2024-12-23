@@ -1,6 +1,6 @@
 <script>
 	import { slide } from 'svelte/transition';
-	import { PARAMS } from '$lib/constants.js';
+	import { PARAMS, HAS_HELLO_DEV_FLAG } from '$lib/constants.js';
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
 	import ProviderHintInput from '$components/Inputs/ProviderHintInput.svelte';
@@ -29,9 +29,10 @@
 		/>
 	</button>
 	{#if dropdowns.hello}
+		{@const showHelloExtended = HAS_HELLO_DEV_FLAG && isHelloMode}
 		{@const ALL_HELLO_PARAMS = [
 			...PARAMS.HELLO_PARAM.PARAMS,
-			...(isHelloMode ? PARAMS.HELLO_PARAM.HELLO_EXTEND_PARAMS : [])
+			...(showHelloExtended ? PARAMS.HELLO_PARAM.HELLO_EXTEND_PARAMS : [])
 		]}
 		<ul class="flex flex-col justify-center mt-2 space-y-2" transition:slide={{ duration: 150 }}>
 			{#each ALL_HELLO_PARAMS as param}

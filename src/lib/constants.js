@@ -172,4 +172,6 @@ const AUTHZ_SERVERS = {
 	]
 };
 
-export { PARAMS, AUTHZ_SERVERS, PROFILE_CLAIMS };
+const HAS_HELLO_DEV_FLAG = localStorage.getItem('plausible_ignore') === 'true';
+
+export { PARAMS, AUTHZ_SERVERS, PROFILE_CLAIMS, HAS_HELLO_DEV_FLAG };
