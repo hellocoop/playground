@@ -110,7 +110,6 @@ const PROVIDER_HINTS = [
 	'email',
 	'ethereum',
 	'qrcode',
-	'passkey'
 ].sort();
 
 const HELLO_PARAM = {
@@ -118,7 +117,7 @@ const HELLO_PARAM = {
 		{
 			NAME: 'provider_hint',
 			POSSIBLE_VALUE: PROVIDER_HINTS,
-			HINT: [...PROVIDER_HINTS, 'apple--', 'microsoft--', 'google-', 'email--', 'passkey--'].join(
+			HINT: [...PROVIDER_HINTS, 'apple--', 'microsoft--', 'google-', 'email--'].join(
 				' '
 			),
 			ONLY_ONE: false,
