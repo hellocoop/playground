@@ -19,10 +19,10 @@
 </script>
 
 <header
-	class="text-white dark:text-gray flex-shrink-0 bg-charcoal h-12 flex items-center justify-between px-4 font-medium text-lg"
+	class="flex h-12 flex-shrink-0 items-center justify-between bg-charcoal px-4 text-lg font-medium text-white dark:text-gray"
 >
-	<div class="w-1/3 inline-flex items-center">
-		<button onclick={() => (mobileMenu = !mobileMenu)} class="md:hidden mr-2 group">
+	<div class="inline-flex w-1/3 items-center">
+		<button onclick={() => (mobileMenu = !mobileMenu)} class="group mr-2 md:hidden">
 			{#if mobileMenu}
 				<CloseIcon />
 			{:else}
@@ -32,19 +32,19 @@
 		<a
 			href="https://hello.dev"
 			target="_blank"
-			class="hidden md:inline-flex items-center relative nav-link font-normal hover:underline"
+			class="nav-link relative hidden items-center font-normal hover:underline md:inline-flex"
 		>
 			<span>hello.dev</span>
 			<ExternalLinkIcon />
 		</a>
 	</div>
-	<span class="md:w-1/3 flex justify-center flex-shrink-0">
+	<span class="flex flex-shrink-0 justify-center md:w-1/3">
 		<img src="logo.svg" alt="Hellō Playground" />
 	</span>
-	<div class="w-1/3 flex justify-end space-x-4">
-		<ul class="hidden md:flex space-x-4">
+	<div class="flex w-1/3 justify-end space-x-4">
+		<ul class="hidden space-x-4 md:flex">
 			{#each navLinks as { text, link }}
-				<li class="nav-link text-sm font-normal relative">
+				<li class="nav-link relative text-sm font-normal">
 					<a href={link} target="_blank" class="inline-flex items-center hover:underline">
 						{text}
 						<ExternalLinkIcon />
@@ -56,7 +56,7 @@
 
 	{#if mobileMenu}
 		<div
-			class="bg-charcoal md:hidden absolute left-0 top-12 w-full px-4 z-50 min-w-[320px]"
+			class="absolute left-0 top-12 z-50 w-full min-w-[320px] bg-charcoal px-4 md:hidden"
 			transition:slide={{ duration: 150 }}
 		>
 			<ul class="flex flex-col gap-y-3 pb-4 text-base">
@@ -95,7 +95,7 @@
 					mobileMenu = false;
 				}
 			}}
-			class="md:hidden fixed top-12 left-0 z-40 bg-black bg-opacity-60 w-full h-full"
+			class="fixed left-0 top-12 z-40 h-full w-full bg-black bg-opacity-60 md:hidden"
 		></div>
 	{/if}
 </header>

@@ -26,7 +26,7 @@
 				viewBox="0 0 24 24"
 				stroke-width="3"
 				stroke="currentColor"
-				class="w-4 h-4"
+				class="h-4 w-4"
 				class:rotate-180={dropdowns.request}
 			>
 				<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
@@ -36,7 +36,7 @@
 	{#if dropdowns.request}
 		<div class="relative" transition:slide={{ duration: 150 }}>
 			<div
-				class="bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words mt-2 relative overflow-x-auto"
+				class="relative mt-2 overflow-x-auto break-words rounded-sm bg-[#F2F6FB] p-4 dark:bg-charcoal"
 			>
 				<span class="absolute right-4 top-4">
 					<CopyButton content={authzUrl} />
@@ -51,7 +51,7 @@
 	<!-- class:hello-btn-hover-flare={darkMode} -->
 	<button
 		onclick={continueWithHello}
-		class="hello-btn-black-and-static hello-btn-hover-flare w-full flex mt-3"
+		class="hello-btn-black-and-static hello-btn-hover-flare mt-3 flex w-full"
 		class:hello-btn-loader={continueWithHelloAjax}
 		disabled={continueWithHelloAjax}>ō&nbsp;&nbsp;&nbsp;Continue with Hellō</button
 	>

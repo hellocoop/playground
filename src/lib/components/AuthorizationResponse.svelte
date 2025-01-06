@@ -8,10 +8,10 @@
 
 <section
 	id="authz-response-container"
-	class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6 scroll-mt-5"
+	class="relative w-full scroll-mt-5 rounded-sm border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800"
 >
 	<span
-		class="absolute -mt-8 bg-white dark:bg-gray-1000 px-2 -mx-2 text-charcoal/70 dark:text-gray/70 uppercase text-xs font-mono"
+		class="absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70"
 		>Authorization Response</span
 	>
 
@@ -42,6 +42,6 @@
 			{/if}
 		</div>
 	{:else}
-		<p class="text-sm text-center my-4 opacity-70">Nothing to see here yet</p>
+		<p class="my-4 text-center text-sm opacity-70">Nothing to see here yet</p>
 	{/if}
 </section>

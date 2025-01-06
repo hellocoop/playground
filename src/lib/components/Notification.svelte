@@ -5,7 +5,7 @@
 </script>
 
 <div
-	class="bg-red-500 px-2.5 h-11 md:h-9 text-center text-white flex items-center justify-center"
+	class="flex h-11 items-center justify-center bg-red-500 px-2.5 text-center text-white md:h-9"
 	out:slide
 >
 	<span class="text-sm"
@@ -19,7 +19,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="2"
 			stroke="currentColor"
-			class="w-5 h-5"
+			class="h-5 w-5"
 		>
 			<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 		</svg>

@@ -21,7 +21,7 @@
 		class="inline-flex items-center space-x-2"
 		onclick={() => (dropdowns.hello = !dropdowns.hello)}
 	>
-		<span class="font-medium text-base"> Hellō Parameters </span>
+		<span class="text-base font-medium"> Hellō Parameters </span>
 		<ChevronY dir={dropdowns.hello ? 'up' : 'down'} />
 		<Tooltip
 			content="Hellō Parameters Docs"
@@ -34,7 +34,7 @@
 			...PARAMS.HELLO_PARAM.PARAMS,
 			...(showHelloExtended ? PARAMS.HELLO_PARAM.HELLO_EXTEND_PARAMS : [])
 		]}
-		<ul class="flex flex-col justify-center mt-2 space-y-2" transition:slide={{ duration: 150 }}>
+		<ul class="mt-2 flex flex-col justify-center space-y-2" transition:slide={{ duration: 150 }}>
 			{#each ALL_HELLO_PARAMS as param}
 				{@const required = PARAMS.HELLO_PARAM.REQUIRED.includes(param.NAME)}
 				{@const selected = selectedHelloParams.includes(param.NAME)}
@@ -49,7 +49,7 @@
 					<hr class="border-charcoal dark:border-gray-800" />
 				{/if}
 
-				<li class="flex flex-col md:flex-row items-start">
+				<li class="flex flex-col items-start md:flex-row">
 					<div class="flex items-center space-x-2">
 						<input
 							type="checkbox"
@@ -58,11 +58,11 @@
 							bind:group={selectedHelloParams}
 							value={param.NAME}
 						/>
-						<label for={param.NAME} class="font-normal w-48" class:text-red-500={!validateOk}
+						<label for={param.NAME} class="w-48 font-normal" class:text-red-500={!validateOk}
 							>{param.NAME} {required ? '*' : ''}</label
 						>
 					</div>
-					<div class="flex flex-col w-full">
+					<div class="flex w-full flex-col">
 						{#if param.NAME === 'provider_hint'}
 							<ProviderHintInput {selected} bind:value={selectedHelloParamsValues.provider_hint} />
 						{:else if param.NAME === 'domain_hint'}
@@ -70,14 +70,14 @@
 						{:else}
 							<input
 								type="text"
-								class="border w-full form-input h-6 px-2"
+								class="form-input h-6 w-full border px-2"
 								class:opacity-50={!selected}
 								bind:value={selectedHelloParamsValues[param.NAME]}
 								placeholder={param.PLACEHOLDER}
 							/>
 						{/if}
 						{#if param.HINT}
-							<p class="text-xs opacity-70 mt-1">
+							<p class="mt-1 text-xs opacity-70">
 								{param.HINT}
 							</p>
 						{/if}

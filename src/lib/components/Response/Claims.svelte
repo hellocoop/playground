@@ -19,19 +19,19 @@
 	<div class="flex flex-col items-start text-left">
 		<span class="font-medium" style="word-break: break-word;">Claims</span>
 	</div>
-	<ul class="mt-2 break-words text-sm font-sans flex flex-col overflow-x-auto">
+	<ul class="mt-2 flex flex-col overflow-x-auto break-words font-sans text-sm">
 		{#each ALL_SCOPES.filter((i) => payload[i]) as claim}
 			{@const isString = typeof payload[claim] == 'string'}
 			<li
-				class="py-2 flex flex-col md:flex-row items-start md:items-center odd:bg-[#F2F6FB] odd:dark:bg-charcoal/60 rounded-md px-2"
+				class="flex flex-col items-start rounded-md px-2 py-2 odd:bg-[#F2F6FB] md:flex-row md:items-center odd:dark:bg-charcoal/60"
 			>
-				<div class="w-full md:w-1/3 flex-shrink-0 font-medium">{claim}</div>
+				<div class="w-full flex-shrink-0 font-medium md:w-1/3">{claim}</div>
 				<div class="flex items-center space-x-2">
 					{#if claim === 'picture' && payload[claim]}
 						<!-- svelte-ignore a11y_img_redundant_alt -->
 						<img
 							src={payload[claim]}
-							class="h-10 w-10 rounded-full object-fit"
+							class="object-fit h-10 w-10 rounded-full"
 							alt="Picture claim"
 						/>
 						<a href={payload[claim]} target="_blank" class="text-xs opacity-70 hover:underline"

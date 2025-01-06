@@ -13,16 +13,16 @@
 </script>
 
 <section
-	class="relative border border-charcoal dark:border-gray-800 rounded-sm w-full px-4 pb-4 pt-6"
+	class="relative w-full rounded-sm border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800"
 >
 	<span
-		class="absolute -mt-8 bg-white dark:bg-gray-1000 px-2 -mx-2 text-charcoal/70 dark:text-gray/70 uppercase text-xs font-mono"
+		class="absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70"
 		>Invite Request</span
 	>
-	<div class="max-w-lg mx-auto">
+	<div class="mx-auto max-w-lg">
 		{#if canInvite}
 			<div
-				class="overflow-x-auto bg-[#F2F6FB] dark:bg-charcoal rounded-sm p-4 break-words relative"
+				class="relative overflow-x-auto break-words rounded-sm bg-[#F2F6FB] p-4 dark:bg-charcoal"
 			>
 				<span class="absolute right-4 top-4">
 					<CopyButton content={inviteUrl} />
@@ -36,11 +36,11 @@
 
 		<button
 			onclick={inviteWithHello}
-			class="hello-btn-black-and-static hello-btn-hover-flare w-full disabled:opacity-30 mt-3"
+			class="hello-btn-black-and-static hello-btn-hover-flare mt-3 w-full disabled:opacity-30"
 			class:hello-btn-loader={inviteWithHelloAjax}
 			disabled={inviteWithHelloAjax || !canInvite}>Invite others to Playground</button
 		>
-		<p class="text-sm text-center mt-2 opacity-70">
+		<p class="mt-2 text-center text-sm opacity-70">
 			{#if canInvite}
 				Use this to test sending invitations
 			{:else}
