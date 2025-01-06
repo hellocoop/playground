@@ -271,7 +271,7 @@
 		<Notification close={() => (showErrorNotification = false)} />
 	{/if}
 
-	<main class="py-6 px-4 space-y-6 flex-1">
+	<main class="flex-1 space-y-6 px-4 py-6">
 		<AuthorizationRequest
 			bind:selectedScopes
 			bind:selectedProtocolParams

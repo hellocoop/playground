@@ -29,7 +29,7 @@
 
 <input
 	type="text"
-	class="border w-full form-input h-6 px-2"
+	class="form-input h-6 w-full border px-2"
 	class:opacity-50={!selected}
 	oninput={validate}
 	placeholder={PROVIDER_HINT?.PLACEHOLDER}
@@ -37,7 +37,7 @@
 />
 
 {#if invalidSlugs?.length}
-	<p class="text-red-500 text-xs mt-2" transition:slide={{ duration: 150 }}>
+	<p class="mt-2 text-xs text-red-500" transition:slide={{ duration: 150 }}>
 		{invalidSlugs}
 		{invalidSlugs.length > 1 ? 'are unsupported values' : 'is an unsupported value'}
 	</p>

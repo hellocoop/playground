@@ -19,7 +19,7 @@
 		class="inline-flex items-center space-x-2"
 		onclick={() => (dropdowns.protocol = !dropdowns.protocol)}
 	>
-		<span class="font-medium text-base"> Protocol Parameters </span>
+		<span class="text-base font-medium"> Protocol Parameters </span>
 		<ChevronY dir={dropdowns.protocol ? 'up' : 'down'} />
 		<Tooltip
 			content="Protocol Parameters Docs"
@@ -27,7 +27,7 @@
 		/>
 	</button>
 	{#if dropdowns.protocol}
-		<ul class="flex flex-col mt-2 space-y-2" transition:slide={{ duration: 150 }}>
+		<ul class="mt-2 flex flex-col space-y-2" transition:slide={{ duration: 150 }}>
 			{#each PARAMS.PROTOCOL_PARAM.PARAMS as param}
 				{@const required = PARAMS.PROTOCOL_PARAM.REQUIRED.includes(param.NAME)}
 				{@const selected = selectedProtocolParams.includes(param.NAME)}
@@ -41,7 +41,7 @@
 					helloParamsValues: selectedHelloParamsValues
 				})}
 				{@const error = !requiredOk || !needsOk}
-				<li class="flex flex-col md:flex-row items-start">
+				<li class="flex flex-col items-start md:flex-row">
 					<div class="flex items-center space-x-2">
 						<input
 							type="checkbox"
@@ -53,14 +53,14 @@
 						/>
 						<label
 							for={param.NAME}
-							class="font-normal w-48"
+							class="w-48 font-normal"
 							class:pointer-events-none={param.CHECKBOX_HIDDEN}
 							class:text-red-500={error}>{param.NAME} {required ? '*' : ''}</label
 						>
 					</div>
 					{#if Array.isArray(param.POSSIBLE_VALUE)}
 						<ul
-							class="xl:h-8 p-1 gap-1 w-full ring-1 ring-charcoal dark:ring-gray-800 flex flex-col xl:flex-row items-center rounded-sm"
+							class="flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 ring-charcoal xl:h-8 xl:flex-row dark:ring-gray-800"
 							class:opacity-50={!selected}
 						>
 							{#each param.POSSIBLE_VALUE as value}
@@ -72,7 +72,7 @@
 											id={value}
 											{value}
 											bind:group={selectedProtocolParamsValues[param.NAME]}
-											class="!hidden peer"
+											class="peer !hidden"
 										/>
 									{:else}
 										<input
@@ -81,12 +81,12 @@
 											id={value}
 											{value}
 											bind:group={selectedProtocolParamsValues[param.NAME]}
-											class="!hidden peer"
+											class="peer !hidden"
 										/>
 									{/if}
 									<label
 										for={value}
-										class="peer-checked:bg-charcoal peer-checked:ring-1 ring-charcoal dark:ring-gray-800 block flex justify-center items-center w-full cursor-pointer peer-checked:text-white peer-checked:dark:text-gray"
+										class="block flex w-full cursor-pointer items-center justify-center ring-charcoal peer-checked:bg-charcoal peer-checked:text-white peer-checked:ring-1 dark:ring-gray-800 peer-checked:dark:text-gray"
 									>
 										{value}
 									</label>
@@ -96,7 +96,7 @@
 					{:else}
 						<input
 							type="text"
-							class="border w-full form-input h-6 px-2"
+							class="form-input h-6 w-full border px-2"
 							class:opacity-50={!selected}
 							bind:value={selectedProtocolParamsValues[param.NAME]}
 							placeholder={param.PLACEHOLDER}

@@ -15,7 +15,7 @@
 <button
 	onclick={copy}
 	use:tippy={{ content: 'Copy', placement: 'right' }}
-	class="w-6 h-6 flex items-center justify-center {css} rounded-md bg-white dark:bg-charcoal"
+	class="flex h-6 w-6 items-center justify-center {css} rounded-md bg-white dark:bg-charcoal"
 >
 	{#if copied}
 		<svg

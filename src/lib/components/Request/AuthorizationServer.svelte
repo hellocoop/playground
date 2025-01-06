@@ -18,7 +18,7 @@
 		class="inline-flex items-center space-x-2"
 		onclick={() => (dropdowns.server = !dropdowns.server)}
 	>
-		<span class="font-medium text-base"> Authorization Server </span>
+		<span class="text-base font-medium"> Authorization Server </span>
 		<ChevronY dir={dropdowns.server ? 'up' : 'down'} />
 	</button>
 	{#if dropdowns.server}
@@ -27,7 +27,7 @@
 			...AUTHZ_SERVERS.SERVERS,
 			...(showHelloExtended ? AUTHZ_SERVERS.HELLO_EXTEND_SERVERS : [])
 		]}
-		<ul class="space-y-2 mt-2" transition:slide|local={{ duration: 150 }}>
+		<ul class="mt-2 space-y-2" transition:slide|local={{ duration: 150 }}>
 			{#each ALL_AUTHZ_SERVERS as server}
 				<li class="flex items-center">
 					<input
@@ -43,7 +43,7 @@
 					{:then validateOk}
 						<label
 							for={server}
-							class="ml-2 break-all w-full md:w-auto truncate"
+							class="ml-2 w-full truncate break-all md:w-auto"
 							class:text-red-500={!validateOk}>{server}</label
 						>
 						<CopyButton content={server} css="opacity-70 ml-1" />
@@ -63,7 +63,7 @@
 					form="custom-authz-server"
 					type="url"
 					name="authz-server"
-					class="h-6 ml-2 w-full text-charcoal form-input"
+					class="form-input ml-2 h-6 w-full text-charcoal"
 					placeholder="https://domain.example/"
 					oninput={() => (selectedAuthzServer = 'custom-authz-server')}
 					bind:value={customAuthzServer}
