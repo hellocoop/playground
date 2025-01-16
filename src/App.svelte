@@ -251,7 +251,7 @@
 				nonce: selectedProtocolParamsValues.nonce,
 
 				// because helper-browser adds ''/authorize'
-				wallet: selectedAuthzServer.replace('/authorize', '')
+				wallet: authzServer.replace('/authorize', '')
 			});
 			authzResponse.introspect = payload;
 		} catch (err) {
