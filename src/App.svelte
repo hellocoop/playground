@@ -47,6 +47,9 @@
 	});
 
 	// derived - (re-computed when states change)
+	const authzServer = $derived(
+		selectedAuthzServer === 'custom-authz-server' ? customAuthzServer : selectedAuthzServer
+	);
 	const claims = $derived(
 		// id_token flow            // code flow
 		authzResponse.introspect || authzResponse.parsed
@@ -54,8 +57,7 @@
 	const canInvite = $derived(Boolean(claims?.sub && claims?.name && claims?.email));
 	const authzUrl = $derived(
 		makeAuthzUrl({
-			authzServer: selectedAuthzServer,
-			customAuthzServer,
+			authzServer,
 			scopes: selectedScopes,
 			customScope,
 			protocolParams: selectedProtocolParams,
@@ -66,7 +68,7 @@
 	);
 	const inviteUrl = $derived(
 		makeInviteUrl({
-			authzServer: selectedAuthzServer,
+			authzServer,
 			claims,
 			protocolParamsValues: selectedProtocolParamsValues
 		})
@@ -194,7 +196,7 @@
 			const code = params.get('code');
 			if (!code) throw new Error('Missing code');
 
-			const tokenRes = await fetch(new URL('/oauth/token', selectedAuthzServer), {
+			const tokenRes = await fetch(new URL('/oauth/token', authzServer), {
 				method: 'POST',
 				mode: 'cors',
 				cache: 'no-cache',
@@ -221,7 +223,7 @@
 			if (!profile) throw new Error('Did not get profile from token');
 			authzResponse.parsed = profile;
 
-			const userinfoRes = await fetch(new URL('/oauth/userinfo', selectedAuthzServer), {
+			const userinfoRes = await fetch(new URL('/oauth/userinfo', authzServer), {
 				method: 'POST',
 				mode: 'cors',
 				cache: 'no-cache',

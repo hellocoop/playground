@@ -1,6 +1,5 @@
 function makeAuthzUrl({
 	authzServer,
-	customAuthzServer = null,
 	scopes,
 	customScope = null,
 	protocolParams,
@@ -9,8 +8,7 @@ function makeAuthzUrl({
 	helloParamsValues
 }) {
 	try {
-		const server = authzServer === 'custom-authz-server' ? customAuthzServer : authzServer;
-		const url = new URL(server);
+		const url = new URL(authzServer);
 
 		// scope is not overridden in protocol params section
 		if (scopes.length && !protocolParams.includes('scope')) {
