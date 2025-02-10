@@ -41,8 +41,7 @@
 				{@const validateOk = validate({
 					param,
 					protocolParams: selectedProtocolParams,
-					helloParams: selectedHelloParams,
-					helloParamsValues: selectedHelloParamsValues
+					helloParams: selectedHelloParams
 				})}
 
 				{#if param.NAME === 'custom'}

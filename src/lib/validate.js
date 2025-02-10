@@ -9,13 +9,7 @@ function validateScopes(scope, selectedScopes) {
 	return true;
 }
 
-function validateProtocolParams({
-	param,
-	protocolParams,
-	protocolParamsValues,
-	helloParams,
-	helloParamsValues
-}) {
+function validateProtocolParams({ param, protocolParams, protocolParamsValues, helloParams }) {
 	const { NAME } = param;
 	if (NAME === 'code_challenge') {
 		// skip if response_type=id_token and code_challenge unselected
@@ -39,25 +33,23 @@ function validateProtocolParams({
 		const responseMode = protocolParamsValues.response_mode;
 		if (responseType === 'id_token' && responseMode === 'query') return false;
 	} else if (NAME === 'login_hint') {
-		// invalidate if domain_hint is custom domain (not personal or managed)
+		// login_hint takes precedence
 		const loginHintSelected = protocolParams.includes('login_hint');
 		const domainHintSelected = helloParams.includes('domain_hint');
 		if (!loginHintSelected || !domainHintSelected) return true;
-		const domainHint = helloParamsValues.domain_hint;
-		if (!['personal', 'managed'].includes(domainHint.trim())) return false;
+		return false;
 	}
 	return true;
 }
 
-function validateHelloParams({ param, protocolParams, helloParams, helloParamsValues }) {
+function validateHelloParams({ param, protocolParams, helloParams }) {
 	const { NAME } = param;
 	if (NAME === 'domain_hint') {
-		// invalidate if domain_hint is custom domain (not personal or managed)
+		// login_hint takes precedence
 		const loginHintSelected = protocolParams.includes('login_hint');
 		const domainHintSelected = helloParams.includes('domain_hint');
 		if (!loginHintSelected || !domainHintSelected) return true;
-		const domainHint = helloParamsValues.domain_hint;
-		if (!['personal', 'managed'].includes(domainHint.trim())) return false;
+		return false;
 	}
 	return true;
 }
