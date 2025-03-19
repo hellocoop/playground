@@ -6,6 +6,7 @@
 	} = PARAMS;
 	const ALL_SCOPES = [
 		'sub',
+		'tenant',
 		STANDARD,
 		NON_STANDARD,
 		HELLO_EXTEND_STANDARD,
