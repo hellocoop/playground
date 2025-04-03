@@ -32,7 +32,8 @@ const PROTOCOL_PARAM = {
 		},
 		{
 			NAME: 'nonce',
-			POSSIBLE_VALUE: ''
+			POSSIBLE_VALUE: '',
+			REGENERATE: true
 		},
 		{
 			NAME: 'response_type',
@@ -41,7 +42,8 @@ const PROTOCOL_PARAM = {
 		},
 		{
 			NAME: 'code_challenge',
-			POSSIBLE_VALUE: ''
+			POSSIBLE_VALUE: '',
+			REGENERATE: true
 		},
 		{
 			NAME: 'code_verifier',
