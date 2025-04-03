@@ -1,9 +1,11 @@
 <script>
 	import { slide } from 'svelte/transition';
 	import { PARAMS } from '$lib/constants.js';
+	import { validateProtocolParams as validate } from '$lib/validate.js';
+	import { generatePkce } from '$lib/utils';
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
-	import { validateProtocolParams as validate } from '$lib/validate.js';
+	import RedoIcon from '../Icons/RedoIcon.svelte';
 
 	let {
 		selectedProtocolParams = $bindable(),
@@ -12,6 +14,19 @@
 		selectedHelloParamsValues,
 		dropdowns = $bindable()
 	} = $props();
+
+	async function regen(param) {
+		if (param === 'nonce') {
+			const { nonce } = await generatePkce();
+			selectedProtocolParamsValues.nonce = nonce;
+		} else if (param === 'code_challenge') {
+			const { code_challenge, code_verifier } = await generatePkce();
+			selectedProtocolParamsValues.code_challenge = code_challenge;
+			selectedProtocolParamsValues.code_verifier = code_verifier;
+		} else {
+			console.error('Unknown parameter for regeneration', param);
+		}
+	}
 </script>
 
 <section class="break-inside-avoid-column">
@@ -94,13 +109,23 @@
 							{/each}
 						</ul>
 					{:else}
-						<input
-							type="text"
-							class="form-input h-6 w-full border px-2"
-							class:opacity-50={!selected}
-							bind:value={selectedProtocolParamsValues[param.NAME]}
-							placeholder={param.PLACEHOLDER}
-						/>
+						<div class="relative flex w-full items-center" class:opacity-50={!selected}>
+							{#if param.REGENERATE}
+								<button
+									onclick={() => regen(param.NAME)}
+									class="absolute right-0.5 z-10 inline-flex h-5 w-5 items-center justify-center border border-charcoal bg-charcoal dark:border-gray-800"
+								>
+									<RedoIcon />
+								</button>
+							{/if}
+							<input
+								type="text"
+								class="form-input h-6 w-full border px-2"
+								class:pr-6={param.REGENERATE}
+								bind:value={selectedProtocolParamsValues[param.NAME]}
+								placeholder={param.PLACEHOLDER}
+							/>
+						</div>
 					{/if}
 				</li>
 			{/each}
