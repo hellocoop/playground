@@ -113,7 +113,7 @@
 							{#if param.REGENERATE}
 								<button
 									onclick={() => regen(param.NAME)}
-									class="absolute right-0.5 z-10 inline-flex h-5 w-5 items-center justify-center border border-charcoal bg-charcoal dark:border-gray-800"
+									class="absolute right-0.5 z-10 inline-flex h-5 w-5 items-center justify-center border border-charcoal bg-charcoal text-white dark:border-gray-800"
 								>
 									<RedoIcon />
 								</button>
