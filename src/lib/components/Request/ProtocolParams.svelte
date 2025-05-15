@@ -68,10 +68,21 @@
 						/>
 						<label
 							for={param.NAME}
-							class="w-48 font-normal"
+							class="flex w-48 items-center space-x-2 font-normal"
 							class:pointer-events-none={param.CHECKBOX_HIDDEN}
-							class:text-red-500={error}>{param.NAME} {required ? '*' : ''}</label
+							class:text-red-500={error}
 						>
+							<span>{param.NAME} {required ? '*' : ''}</span>
+							{#if param.REGENERATE}
+								<button
+									onclick={() => regen(param.NAME)}
+									class:opacity-50={!selected}
+									class="z-10 inline-flex h-4 w-4 items-center justify-center border border-charcoal bg-charcoal text-white dark:border-gray-800"
+								>
+									<RedoIcon />
+								</button>
+							{/if}
+						</label>
 					</div>
 					{#if Array.isArray(param.POSSIBLE_VALUE)}
 						<ul
@@ -110,14 +121,6 @@
 						</ul>
 					{:else}
 						<div class="relative flex w-full items-center" class:opacity-50={!selected}>
-							{#if param.REGENERATE}
-								<button
-									onclick={() => regen(param.NAME)}
-									class="absolute right-0.5 z-10 inline-flex h-5 w-5 items-center justify-center border border-charcoal bg-charcoal text-white dark:border-gray-800"
-								>
-									<RedoIcon />
-								</button>
-							{/if}
 							<input
 								type="text"
 								class="form-input h-6 w-full border px-2"
