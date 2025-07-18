@@ -33,7 +33,7 @@
 				/>
 			{/if}
 
-			{#if authzResponse.userinfo}
+			{#if authzResponse.token?.id_token && authzResponse.userinfo}
 				<JsonResponse label={new URL('/oauth/userinfo', authzUrl)} json={authzResponse.userinfo} />
 			{/if}
 

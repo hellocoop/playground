@@ -218,8 +218,8 @@
 			// const token = await fetchToken()
 			if (!token) throw new Error('Did not get response from token endpoint');
 			authzResponse.token = token;
-
-			const { payload: profile } = parseToken(token.id_token);
+			if (!token.id_token && !token.access_token) throw new Error('Did not get token');
+			const { payload: profile } = parseToken(token.id_token || token.access_token);
 			if (!profile) throw new Error('Did not get profile from token');
 			authzResponse.parsed = profile;
 
