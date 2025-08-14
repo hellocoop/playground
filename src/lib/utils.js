@@ -1,6 +1,5 @@
 import { tick } from 'svelte';
 import { createAuthRequest } from '@hellocoop/helper-browser';
-import * as jose from 'jose';
 
 function cleanUrl() {
 	if (window.location.search) {

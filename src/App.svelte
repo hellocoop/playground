@@ -208,23 +208,23 @@
 			const url = new URL('/oauth/token', authzServer);
 
 			let dpopToken;
-			if (true) {
-				const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
-				// Create a valid DPoP token according to RFC 9449
-				const dpopPayload = {
-					code,
-					htu: url.href,
-					htm: 'POST'
-				};
-				// Sign the DPoP token as per RFC 9449
-				dpopToken = await new jose.SignJWT(dpopPayload)
-					.setProtectedHeader({
-						alg: 'ES256',
-						typ: 'dpop+jwt',
-						jwk: await jose.exportJWK(publicKey)
-					})
-					.sign(privateKey);
-			}
+
+			const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
+			// Create a valid DPoP token according to RFC 9449
+			const dpopPayload = {
+				code,
+				htu: url.href,
+				htm: 'POST'
+			};
+			// Sign the DPoP token as per RFC 9449
+			dpopToken = await new jose.SignJWT(dpopPayload)
+				.setProtectedHeader({
+					alg: 'ES256',
+					typ: 'dpop+jwt',
+					jwk: await jose.exportJWK(publicKey)
+				})
+				.sign(privateKey);
+
 			const headers = {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			};
