@@ -23,10 +23,10 @@
 </script>
 
 <section
-	class="relative w-full rounded-sm border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800"
+	class="border-charcoal relative w-full rounded-sm border px-4 pb-4 pt-6 dark:border-gray-800"
 >
 	<span
-		class="absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70"
+		class="text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70 absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase"
 		>Authorization Request</span
 	>
 	{#if localStorage.plausible_ignore}
@@ -34,10 +34,10 @@
 	{/if}
 	<button
 		onclick={reset}
-		class="absolute -top-3 right-2 rounded-md border border-charcoal bg-white px-3 py-0.5 text-xs dark:border-gray-800 dark:bg-gray-1000"
+		class="border-charcoal dark:bg-gray-1000 absolute -top-3 right-2 rounded-md border bg-white px-3 py-0.5 text-xs dark:border-gray-800"
 		>Reset</button
 	>
-	<div class="columns-1 gap-x-12 space-y-6 md:columns-2 2xl:columns-3 4xl:columns-4">
+	<div class="4xl:columns-4 columns-1 gap-x-12 space-y-6 md:columns-2 2xl:columns-3">
 		<ScopeParam
 			bind:selectedScopes
 			bind:customScope
@@ -52,6 +52,7 @@
 			bind:dropdowns
 			{selectedHelloParams}
 			{selectedHelloParamsValues}
+			{selectedScopes}
 		/>
 
 		<HelloParams

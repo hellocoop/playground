@@ -55,7 +55,7 @@
 					{@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
 					{@const selected = selectedScopes.includes(stdScope)}
 					{@const requiredOk = !required || selected}
-					{@const validateOk = validate(stdScope, selectedScopes)}
+					{@const validateOk = validate(stdScope, selectedScopes, selectedProtocolParams)}
 					<li class="flex flex-row items-center space-x-2" class:opacity-50={!validateOk}>
 						<input
 							type="checkbox"
@@ -64,7 +64,7 @@
 							bind:group={selectedScopes}
 							value={stdScope}
 						/>
-						<label for={stdScope} class:text-red-500={!requiredOk} class="truncate"
+						<label for={stdScope} class:text-red-500={!requiredOk || !validateOk} class="truncate"
 							>{stdScope} {required ? '*' : ''}</label
 						>
 					</li>
@@ -86,6 +86,7 @@
 				{/each}
 
 				{#each PARAMS.SCOPE_PARAM.EXPERIMENTAL as experimentalScope}
+					{@const validateOk = validate(experimentalScope, selectedScopes, selectedProtocolParams)}
 					<li class="flex flex-row items-center space-x-2">
 						<input
 							type="checkbox"
@@ -94,7 +95,7 @@
 							value={experimentalScope}
 							bind:group={selectedScopes}
 						/>
-						<label for={experimentalScope} class="truncate italic">
+						<label for={experimentalScope} class:text-red-500={!validateOk} class="truncate italic">
 							{experimentalScope}
 							<ExperimentalIcon content="Experimental" href="#" />
 						</label>

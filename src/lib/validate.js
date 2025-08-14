@@ -1,10 +1,11 @@
 import { PROFILE_CLAIMS } from './constants.js';
 
-function validateScopes(scope, selectedScopes) {
-	if (scope === 'profile') {
-		if (PROFILE_CLAIMS.every((scope) => selectedScopes.includes(scope))) return false;
-	} else if (PROFILE_CLAIMS.includes(scope)) {
-		if (selectedScopes.includes('profile')) return false;
+function validateScopes(scope, selectedScopes, selectedProtocolParams) {
+	if (scope === 'dpop') {
+		// dpop scope should be red when dpop_jkt param is selected but dpop scope is not
+		const dpopScopeSelected = selectedScopes.includes('dpop');
+		const dpopJktSelected = selectedProtocolParams?.includes('dpop_jkt');
+		if (!dpopScopeSelected && dpopJktSelected) return false;
 	}
 	return true;
 }
@@ -14,7 +15,8 @@ function validateProtocolParams({
 	protocolParams,
 	protocolParamsValues,
 	helloParams,
-	helloParamsValues
+	helloParamsValues,
+	selectedScopes
 }) {
 	const { NAME } = param;
 	if (NAME === 'code_challenge') {
@@ -45,6 +47,11 @@ function validateProtocolParams({
 		if (!loginHintSelected || !domainHintSelected) return true;
 		const domainHint = helloParamsValues.domain_hint;
 		if (!['personal', 'managed'].includes(domainHint.trim())) return false;
+	} else if (NAME === 'dpop_jkt') {
+		// dpop_jkt param should be red when dpop scope is selected but dpop_jkt param is not
+		const dpopScopeSelected = selectedScopes?.includes('dpop');
+		const dpopJktSelected = protocolParams.includes('dpop_jkt');
+		if (dpopScopeSelected && !dpopJktSelected) return false;
 	}
 	return true;
 }

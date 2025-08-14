@@ -15,7 +15,7 @@
 		sendPlausibleEvent,
 		focusAuthzResponseSection
 	} from '$lib/utils.js';
-	import { generateDpopJkt } from '$lib/dpop.js';
+	import { generateDpopJkt, getCurrentDpopJkt } from '$lib/dpop.js';
 	import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js';
 	import { parseToken, validateToken } from '@hellocoop/helper-browser';
 	import Notification from '$lib/components/Notification.svelte';
@@ -158,10 +158,15 @@
 		}
 
 		const dpopJktExist = selectedProtocolParamsValues.dpop_jkt;
-		if (!dpopJktExist) {
-			// dpop jkt does not exist -- generate
+		const currentJkt = await getCurrentDpopJkt();
+
+		if (!dpopJktExist || !currentJkt) {
+			// Either dpop_jkt or keypair is missing -- generate both
 			const dpopJkt = await generateDpopJkt();
 			selectedProtocolParamsValues.dpop_jkt = dpopJkt;
+		} else if (selectedProtocolParamsValues.dpop_jkt !== currentJkt) {
+			// jkt exists but doesn't match current keypair -- align with keypair
+			selectedProtocolParamsValues.dpop_jkt = currentJkt;
 		}
 	}
 
@@ -207,28 +212,42 @@
 
 			const url = new URL('/oauth/token', authzServer);
 
-			let dpopToken;
-
-			const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
-			// Import the private JWK to a CryptoKey for signing
-			const signingKey = await jose.importJWK(privateKey, 'ES256');
-			// Create a minimal DPoP proof JWT (RFC 9449)
-			const dpopPayload = {
-				htu: url.href,
-				htm: 'POST'
-			};
-			dpopToken = await new jose.SignJWT(dpopPayload)
-				.setProtectedHeader({
-					alg: 'ES256',
-					typ: 'dpop+jwt',
-					jwk: publicKey
-				})
-				.sign(signingKey);
-
 			const headers = {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			};
-			if (dpopToken) headers['dpop'] = dpopToken;
+
+			// Only generate DPoP proof if both dpop scope and dpop_jkt param are selected
+			const isDpopEnabled =
+				selectedScopes.includes('dpop') && selectedProtocolParams.includes('dpop_jkt');
+			if (isDpopEnabled) {
+				const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
+				// Import the private JWK to a CryptoKey for signing
+				const signingKey = await jose.importJWK(privateKey, 'ES256');
+				// Create a minimal DPoP proof JWT (RFC 9449)
+				const dpopPayload = {
+					code,
+					jti: crypto.randomUUID(),
+					iat: Math.floor(Date.now() / 1000),
+					htu: url.href,
+					htm: 'POST'
+				};
+				// Restrict public JWK in header to RFC 7638 members only
+				const publicJwkMinimal = {
+					kty: publicKey.kty,
+					crv: publicKey.crv,
+					x: publicKey.x,
+					y: publicKey.y
+				};
+				const dpopToken = await new jose.SignJWT(dpopPayload)
+					.setProtectedHeader({
+						alg: 'ES256',
+						typ: 'dpop+jwt',
+						jwk: publicJwkMinimal
+					})
+					.sign(signingKey);
+
+				headers['dpop'] = dpopToken;
+			}
 
 			const tokenRes = await fetch(url.href, {
 				method: 'POST',

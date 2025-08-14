@@ -3,7 +3,7 @@
 	import { PARAMS } from '$lib/constants.js';
 	import { validateProtocolParams as validate } from '$lib/validate.js';
 	import { generatePkce } from '$lib/utils';
-	import { generateDpopJkt } from '$lib/dpop.js';
+	import { regenerateDpopJkt } from '$lib/dpop.js';
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
 	import RedoIcon from '../Icons/RedoIcon.svelte';
@@ -14,6 +14,7 @@
 		selectedProtocolParamsValues = $bindable(),
 		selectedHelloParams,
 		selectedHelloParamsValues,
+		selectedScopes,
 		dropdowns = $bindable()
 	} = $props();
 
@@ -26,7 +27,7 @@
 			selectedProtocolParamsValues.code_challenge = code_challenge;
 			selectedProtocolParamsValues.code_verifier = code_verifier;
 		} else if (param === 'dpop_jkt') {
-			const dpopJkt = await generateDpopJkt();
+			const dpopJkt = await regenerateDpopJkt();
 			selectedProtocolParamsValues.dpop_jkt = dpopJkt;
 		} else {
 			console.error('Unknown parameter for regeneration', param);
@@ -58,7 +59,8 @@
 					protocolParams: selectedProtocolParams,
 					protocolParamsValues: selectedProtocolParamsValues,
 					helloParams: selectedHelloParams,
-					helloParamsValues: selectedHelloParamsValues
+					helloParamsValues: selectedHelloParamsValues,
+					selectedScopes: selectedScopes
 				})}
 				{@const error = !requiredOk || !needsOk}
 				<li class="flex flex-col items-start md:flex-row">
@@ -85,7 +87,7 @@
 								<button
 									onclick={() => regen(param.NAME)}
 									class:opacity-50={!selected}
-									class="z-10 inline-flex h-4 w-4 items-center justify-center border border-charcoal bg-charcoal text-white dark:border-gray-800"
+									class="border-charcoal bg-charcoal z-10 inline-flex h-4 w-4 items-center justify-center border text-white dark:border-gray-800"
 								>
 									<RedoIcon />
 								</button>
@@ -94,7 +96,7 @@
 					</div>
 					{#if Array.isArray(param.POSSIBLE_VALUE)}
 						<ul
-							class="flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 ring-charcoal xl:h-8 xl:flex-row dark:ring-gray-800"
+							class="ring-charcoal flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 xl:h-8 xl:flex-row dark:ring-gray-800"
 							class:opacity-50={!selected}
 						>
 							{#each param.POSSIBLE_VALUE as value}
@@ -120,7 +122,7 @@
 									{/if}
 									<label
 										for={value}
-										class="block flex w-full cursor-pointer items-center justify-center ring-charcoal peer-checked:bg-charcoal peer-checked:text-white peer-checked:ring-1 dark:ring-gray-800 peer-checked:dark:text-gray"
+										class="ring-charcoal peer-checked:bg-charcoal peer-checked:dark:text-gray block flex w-full cursor-pointer items-center justify-center peer-checked:text-white peer-checked:ring-1 dark:ring-gray-800"
 									>
 										{value}
 									</label>
