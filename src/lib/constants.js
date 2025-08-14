@@ -11,6 +11,7 @@ const SCOPE_PARAM = {
 		'phone'
 	],
 	NON_STANDARD: ['ethereum', 'discord', 'twitter', 'github', 'gitlab'],
+	EXPERIMENTAL: ['dpop'],
 
 	// Hellō Dev Mode
 	HELLO_EXTEND_STANDARD: [],
@@ -54,6 +55,12 @@ const PROTOCOL_PARAM = {
 			NAME: 'response_mode',
 			POSSIBLE_VALUE: ['fragment', 'query'],
 			ONLY_ONE: true
+		},
+		{
+			NAME: 'dpop_jkt',
+			POSSIBLE_VALUE: '',
+			REGENERATE: true,
+			EXPERIMENTAL: true
 		},
 		{
 			NAME: 'state',

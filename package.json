@@ -27,5 +27,8 @@
 		"sveltejs-tippy": "^3.0.0",
 		"tailwindcss": "^3.4.15",
 		"vite": "^6.0.2"
+	},
+	"dependencies": {
+		"jose": "^6.0.12"
 	}
 }

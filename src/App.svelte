@@ -15,9 +15,11 @@
 		sendPlausibleEvent,
 		focusAuthzResponseSection
 	} from '$lib/utils.js';
+	import { generateDpopJkt, getCurrentDpopJkt } from '$lib/dpop.js';
 	import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js';
 	import { parseToken, validateToken } from '@hellocoop/helper-browser';
 	import Notification from '$lib/components/Notification.svelte';
+	import * as jose from 'jose';
 
 	// states
 	let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED);
@@ -154,6 +156,18 @@
 			selectedProtocolParamsValues.code_verifier = code_verifier;
 			selectedProtocolParamsValues.code_challenge = code_challenge;
 		}
+
+		const dpopJktExist = selectedProtocolParamsValues.dpop_jkt;
+		const currentJkt = await getCurrentDpopJkt();
+
+		if (!dpopJktExist || !currentJkt) {
+			// Either dpop_jkt or keypair is missing -- generate both
+			const dpopJkt = await generateDpopJkt();
+			selectedProtocolParamsValues.dpop_jkt = dpopJkt;
+		} else if (selectedProtocolParamsValues.dpop_jkt !== currentJkt) {
+			// jkt exists but doesn't match current keypair -- align with keypair
+			selectedProtocolParamsValues.dpop_jkt = currentJkt;
+		}
 	}
 
 	async function processIssuer(params = {}) {
@@ -196,13 +210,50 @@
 			const code = params.get('code');
 			if (!code) throw new Error('Missing code');
 
-			const tokenRes = await fetch(new URL('/oauth/token', authzServer), {
+			const url = new URL('/oauth/token', authzServer);
+
+			const headers = {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			};
+
+			// Only generate DPoP proof if both dpop scope and dpop_jkt param are selected
+			const isDpopEnabled =
+				selectedScopes.includes('dpop') && selectedProtocolParams.includes('dpop_jkt');
+			if (isDpopEnabled) {
+				const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
+				// Import the private JWK to a CryptoKey for signing
+				const signingKey = await jose.importJWK(privateKey, 'ES256');
+				// Create a minimal DPoP proof JWT (RFC 9449)
+				const dpopPayload = {
+					code,
+					jti: crypto.randomUUID(),
+					iat: Math.floor(Date.now() / 1000),
+					htu: url.href,
+					htm: 'POST'
+				};
+				// Restrict public JWK in header to RFC 7638 members only
+				const publicJwkMinimal = {
+					kty: publicKey.kty,
+					crv: publicKey.crv,
+					x: publicKey.x,
+					y: publicKey.y
+				};
+				const dpopToken = await new jose.SignJWT(dpopPayload)
+					.setProtectedHeader({
+						alg: 'ES256',
+						typ: 'dpop+jwt',
+						jwk: publicJwkMinimal
+					})
+					.sign(signingKey);
+
+				headers['dpop'] = dpopToken;
+			}
+
+			const tokenRes = await fetch(url.href, {
 				method: 'POST',
 				mode: 'cors',
 				cache: 'no-cache',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
+				headers,
 				body: new URLSearchParams({
 					code,
 					code_verifier: selectedProtocolParamsValues.code_verifier,

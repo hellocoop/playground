@@ -3,15 +3,18 @@
 	import { PARAMS } from '$lib/constants.js';
 	import { validateProtocolParams as validate } from '$lib/validate.js';
 	import { generatePkce } from '$lib/utils';
+	import { regenerateDpopJkt } from '$lib/dpop.js';
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
 	import RedoIcon from '../Icons/RedoIcon.svelte';
+	import ExperimentalIcon from '../Icons/ExperimentalIcon.svelte';
 
 	let {
 		selectedProtocolParams = $bindable(),
 		selectedProtocolParamsValues = $bindable(),
 		selectedHelloParams,
 		selectedHelloParamsValues,
+		selectedScopes,
 		dropdowns = $bindable()
 	} = $props();
 
@@ -23,6 +26,9 @@
 			const { code_challenge, code_verifier } = await generatePkce();
 			selectedProtocolParamsValues.code_challenge = code_challenge;
 			selectedProtocolParamsValues.code_verifier = code_verifier;
+		} else if (param === 'dpop_jkt') {
+			const dpopJkt = await regenerateDpopJkt();
+			selectedProtocolParamsValues.dpop_jkt = dpopJkt;
 		} else {
 			console.error('Unknown parameter for regeneration', param);
 		}
@@ -53,7 +59,8 @@
 					protocolParams: selectedProtocolParams,
 					protocolParamsValues: selectedProtocolParamsValues,
 					helloParams: selectedHelloParams,
-					helloParamsValues: selectedHelloParamsValues
+					helloParamsValues: selectedHelloParamsValues,
+					selectedScopes: selectedScopes
 				})}
 				{@const error = !requiredOk || !needsOk}
 				<li class="flex flex-col items-start md:flex-row">
@@ -73,6 +80,9 @@
 							class:text-red-500={error}
 						>
 							<span>{param.NAME} {required ? '*' : ''}</span>
+							{#if param.EXPERIMENTAL}
+								<ExperimentalIcon content="Experimental" href="#" />
+							{/if}
 							{#if param.REGENERATE}
 								<button
 									onclick={() => regen(param.NAME)}

@@ -4,12 +4,14 @@
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
 	import { validateScopes as validate } from '$lib/validate.js';
+	import ExperimentalIcon from '../Icons/ExperimentalIcon.svelte';
 
 	let {
 		selectedScopes = $bindable(),
 		dropdowns = $bindable(),
 		customScope = $bindable(),
 		selectedProtocolParams,
+		selectedProtocolParamsValues,
 		isHelloMode
 	} = $props();
 
@@ -54,7 +56,12 @@
 					{@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
 					{@const selected = selectedScopes.includes(stdScope)}
 					{@const requiredOk = !required || selected}
-					{@const validateOk = validate(stdScope, selectedScopes)}
+					{@const validateOk = validate(
+						stdScope,
+						selectedScopes,
+						selectedProtocolParams,
+						selectedProtocolParamsValues
+					)}
 					<li class="flex flex-row items-center space-x-2" class:opacity-50={!validateOk}>
 						<input
 							type="checkbox"
@@ -63,7 +70,7 @@
 							bind:group={selectedScopes}
 							value={stdScope}
 						/>
-						<label for={stdScope} class:text-red-500={!requiredOk} class="truncate"
+						<label for={stdScope} class:text-red-500={!requiredOk || !validateOk} class="truncate"
 							>{stdScope} {required ? '*' : ''}</label
 						>
 					</li>
@@ -81,6 +88,28 @@
 							bind:group={selectedScopes}
 						/>
 						<label for={nonStdScope} class="truncate italic">{nonStdScope}</label>
+					</li>
+				{/each}
+
+				{#each PARAMS.SCOPE_PARAM.EXPERIMENTAL as experimentalScope}
+					{@const validateOk = validate(
+						experimentalScope,
+						selectedScopes,
+						selectedProtocolParams,
+						selectedProtocolParamsValues
+					)}
+					<li class="flex flex-row items-center space-x-2">
+						<input
+							type="checkbox"
+							id={experimentalScope}
+							name="scope"
+							value={experimentalScope}
+							bind:group={selectedScopes}
+						/>
+						<label for={experimentalScope} class:text-red-500={!validateOk} class="truncate italic">
+							{experimentalScope}
+							<ExperimentalIcon content="Experimental" href="#" />
+						</label>
 					</li>
 				{/each}
 

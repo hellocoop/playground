@@ -1,10 +1,14 @@
-import { PROFILE_CLAIMS } from './constants.js';
+function validateScopes(scope, selectedScopes, selectedProtocolParams, protocolParamsValues) {
+	if (scope === 'dpop') {
+		const dpopScopeSelected = selectedScopes.includes('dpop');
+		const dpopJktSelected = selectedProtocolParams?.includes('dpop_jkt');
 
-function validateScopes(scope, selectedScopes) {
-	if (scope === 'profile') {
-		if (PROFILE_CLAIMS.every((scope) => selectedScopes.includes(scope))) return false;
-	} else if (PROFILE_CLAIMS.includes(scope)) {
-		if (selectedScopes.includes('profile')) return false;
+		// dpop scope should be red when dpop_jkt param is selected but dpop scope is not
+		if (!dpopScopeSelected && dpopJktSelected) return false;
+
+		// dpop scope should be red when it's selected but response_type is id_token (dpop only works with code flow)
+		const responseType = protocolParamsValues?.response_type;
+		if (dpopScopeSelected && responseType === 'id_token') return false;
 	}
 	return true;
 }
@@ -14,7 +18,8 @@ function validateProtocolParams({
 	protocolParams,
 	protocolParamsValues,
 	helloParams,
-	helloParamsValues
+	helloParamsValues,
+	selectedScopes
 }) {
 	const { NAME } = param;
 	if (NAME === 'code_challenge') {
@@ -45,6 +50,16 @@ function validateProtocolParams({
 		if (!loginHintSelected || !domainHintSelected) return true;
 		const domainHint = helloParamsValues.domain_hint;
 		if (!['personal', 'managed'].includes(domainHint.trim())) return false;
+	} else if (NAME === 'dpop_jkt') {
+		const dpopScopeSelected = selectedScopes?.includes('dpop');
+		const dpopJktSelected = protocolParams.includes('dpop_jkt');
+
+		// dpop_jkt param should be red when dpop scope is selected but dpop_jkt param is not
+		if (dpopScopeSelected && !dpopJktSelected) return false;
+
+		// dpop_jkt param should be red when it's selected but response_type is id_token (dpop only works with code flow)
+		const responseType = protocolParamsValues?.response_type;
+		if (dpopJktSelected && responseType === 'id_token') return false;
 	}
 	return true;
 }

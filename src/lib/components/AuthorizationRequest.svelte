@@ -43,6 +43,7 @@
 			bind:customScope
 			bind:dropdowns
 			{selectedProtocolParams}
+			{selectedProtocolParamsValues}
 			{isHelloMode}
 		/>
 
@@ -52,6 +53,7 @@
 			bind:dropdowns
 			{selectedHelloParams}
 			{selectedHelloParamsValues}
+			{selectedScopes}
 		/>
 
 		<HelloParams
