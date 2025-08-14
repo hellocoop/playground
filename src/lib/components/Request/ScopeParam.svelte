@@ -4,6 +4,7 @@
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
 	import { validateScopes as validate } from '$lib/validate.js';
+	import ExperimentalIcon from '../Icons/ExperimentalIcon.svelte';
 
 	let {
 		selectedScopes = $bindable(),
@@ -81,6 +82,22 @@
 							bind:group={selectedScopes}
 						/>
 						<label for={nonStdScope} class="truncate italic">{nonStdScope}</label>
+					</li>
+				{/each}
+
+				{#each PARAMS.SCOPE_PARAM.EXPERIMENTAL as experimentalScope}
+					<li class="flex flex-row items-center space-x-2">
+						<input
+							type="checkbox"
+							id={experimentalScope}
+							name="scope"
+							value={experimentalScope}
+							bind:group={selectedScopes}
+						/>
+						<label for={experimentalScope} class="truncate italic">
+							{experimentalScope}
+							<ExperimentalIcon content="Experimental" href="#" />
+						</label>
 					</li>
 				{/each}
 

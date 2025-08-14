@@ -3,9 +3,11 @@
 	import { PARAMS } from '$lib/constants.js';
 	import { validateProtocolParams as validate } from '$lib/validate.js';
 	import { generatePkce } from '$lib/utils';
+	import { generateDpopJkt } from '$lib/dpop.js';
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
 	import RedoIcon from '../Icons/RedoIcon.svelte';
+	import ExperimentalIcon from '../Icons/ExperimentalIcon.svelte';
 
 	let {
 		selectedProtocolParams = $bindable(),
@@ -23,6 +25,9 @@
 			const { code_challenge, code_verifier } = await generatePkce();
 			selectedProtocolParamsValues.code_challenge = code_challenge;
 			selectedProtocolParamsValues.code_verifier = code_verifier;
+		} else if (param === 'dpop_jkt') {
+			const dpopJkt = await generateDpopJkt();
+			selectedProtocolParamsValues.dpop_jkt = dpopJkt;
 		} else {
 			console.error('Unknown parameter for regeneration', param);
 		}
@@ -73,6 +78,9 @@
 							class:text-red-500={error}
 						>
 							<span>{param.NAME} {required ? '*' : ''}</span>
+							{#if param.EXPERIMENTAL}
+								<ExperimentalIcon content="Experimental" href="#" />
+							{/if}
 							{#if param.REGENERATE}
 								<button
 									onclick={() => regen(param.NAME)}

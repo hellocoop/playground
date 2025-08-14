@@ -15,9 +15,11 @@
 		sendPlausibleEvent,
 		focusAuthzResponseSection
 	} from '$lib/utils.js';
+	import { generateDpopJkt } from '$lib/dpop.js';
 	import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js';
 	import { parseToken, validateToken } from '@hellocoop/helper-browser';
 	import Notification from '$lib/components/Notification.svelte';
+	import * as jose from 'jose';
 
 	// states
 	let selectedScopes = $state(PARAMS.SCOPE_PARAM.DEFAULT_SELECTED);
@@ -154,6 +156,13 @@
 			selectedProtocolParamsValues.code_verifier = code_verifier;
 			selectedProtocolParamsValues.code_challenge = code_challenge;
 		}
+
+		const dpopJktExist = selectedProtocolParamsValues.dpop_jkt;
+		if (!dpopJktExist) {
+			// dpop jkt does not exist -- generate
+			const dpopJkt = await generateDpopJkt();
+			selectedProtocolParamsValues.dpop_jkt = dpopJkt;
+		}
 	}
 
 	async function processIssuer(params = {}) {
@@ -196,13 +205,36 @@
 			const code = params.get('code');
 			if (!code) throw new Error('Missing code');
 
+			const url = new URL('/oauth/token', authzServer);
+
+			let dpopToken;
+			if (true) {
+				const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
+				// Create a valid DPoP token according to RFC 9449
+				const dpopPayload = {
+					code,
+					htu: url.href,
+					htm: 'POST'
+				};
+				// Sign the DPoP token as per RFC 9449
+				dpopToken = await new jose.SignJWT(dpopPayload)
+					.setProtectedHeader({
+						alg: 'ES256',
+						typ: 'dpop+jwt',
+						jwk: await jose.exportJWK(publicKey)
+					})
+					.sign(privateKey);
+			}
+			const headers = {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			};
+			if (dpopToken) headers['dpop'] = dpopToken;
+
 			const tokenRes = await fetch(new URL('/oauth/token', authzServer), {
 				method: 'POST',
 				mode: 'cors',
 				cache: 'no-cache',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
+				headers,
 				body: new URLSearchParams({
 					code,
 					code_verifier: selectedProtocolParamsValues.code_verifier,
