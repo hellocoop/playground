@@ -11,6 +11,7 @@
 		dropdowns = $bindable(),
 		customScope = $bindable(),
 		selectedProtocolParams,
+		selectedProtocolParamsValues,
 		isHelloMode
 	} = $props();
 
@@ -55,7 +56,12 @@
 					{@const required = PARAMS.SCOPE_PARAM.REQUIRED.includes(stdScope)}
 					{@const selected = selectedScopes.includes(stdScope)}
 					{@const requiredOk = !required || selected}
-					{@const validateOk = validate(stdScope, selectedScopes, selectedProtocolParams)}
+					{@const validateOk = validate(
+						stdScope,
+						selectedScopes,
+						selectedProtocolParams,
+						selectedProtocolParamsValues
+					)}
 					<li class="flex flex-row items-center space-x-2" class:opacity-50={!validateOk}>
 						<input
 							type="checkbox"
@@ -86,7 +92,12 @@
 				{/each}
 
 				{#each PARAMS.SCOPE_PARAM.EXPERIMENTAL as experimentalScope}
-					{@const validateOk = validate(experimentalScope, selectedScopes, selectedProtocolParams)}
+					{@const validateOk = validate(
+						experimentalScope,
+						selectedScopes,
+						selectedProtocolParams,
+						selectedProtocolParamsValues
+					)}
 					<li class="flex flex-row items-center space-x-2">
 						<input
 							type="checkbox"

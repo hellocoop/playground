@@ -87,7 +87,7 @@
 								<button
 									onclick={() => regen(param.NAME)}
 									class:opacity-50={!selected}
-									class="border-charcoal bg-charcoal z-10 inline-flex h-4 w-4 items-center justify-center border text-white dark:border-gray-800"
+									class="z-10 inline-flex h-4 w-4 items-center justify-center border border-charcoal bg-charcoal text-white dark:border-gray-800"
 								>
 									<RedoIcon />
 								</button>
@@ -96,7 +96,7 @@
 					</div>
 					{#if Array.isArray(param.POSSIBLE_VALUE)}
 						<ul
-							class="ring-charcoal flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 xl:h-8 xl:flex-row dark:ring-gray-800"
+							class="flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 ring-charcoal xl:h-8 xl:flex-row dark:ring-gray-800"
 							class:opacity-50={!selected}
 						>
 							{#each param.POSSIBLE_VALUE as value}
@@ -122,7 +122,7 @@
 									{/if}
 									<label
 										for={value}
-										class="ring-charcoal peer-checked:bg-charcoal peer-checked:dark:text-gray block flex w-full cursor-pointer items-center justify-center peer-checked:text-white peer-checked:ring-1 dark:ring-gray-800"
+										class="block flex w-full cursor-pointer items-center justify-center ring-charcoal peer-checked:bg-charcoal peer-checked:text-white peer-checked:ring-1 dark:ring-gray-800 peer-checked:dark:text-gray"
 									>
 										{value}
 									</label>
