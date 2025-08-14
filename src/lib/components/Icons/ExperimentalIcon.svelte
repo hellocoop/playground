@@ -1,10 +1,10 @@
 <script>
 	import tippy from 'sveltejs-tippy';
 
-	let { content, href, placement = 'top' } = $props();
+	let { content, placement = 'top' } = $props();
 </script>
 
-<a use:tippy={{ content, placement }} {href} target="_blank" aria-label="tooltip">
+<span use:tippy={{ content, placement }} target="_blank" aria-label="tooltip">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 24 24"
@@ -17,4 +17,4 @@
 			clip-rule="evenodd"
 		/>
 	</svg>
-</a>
+</span>

@@ -108,7 +108,7 @@
 						/>
 						<label for={experimentalScope} class:text-red-500={!validateOk} class="truncate italic">
 							{experimentalScope}
-							<ExperimentalIcon content="Experimental" href="#" />
+							<ExperimentalIcon content="Experimental" />
 						</label>
 					</li>
 				{/each}

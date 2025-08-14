@@ -81,7 +81,7 @@
 						>
 							<span>{param.NAME} {required ? '*' : ''}</span>
 							{#if param.EXPERIMENTAL}
-								<ExperimentalIcon content="Experimental" href="#" />
+								<ExperimentalIcon content="Experimental" />
 							{/if}
 							{#if param.REGENERATE}
 								<button
