@@ -210,27 +210,27 @@
 			let dpopToken;
 
 			const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
-			// Create a valid DPoP token according to RFC 9449
+			// Import the private JWK to a CryptoKey for signing
+			const signingKey = await jose.importJWK(privateKey, 'ES256');
+			// Create a minimal DPoP proof JWT (RFC 9449)
 			const dpopPayload = {
-				code,
 				htu: url.href,
 				htm: 'POST'
 			};
-			// Sign the DPoP token as per RFC 9449
 			dpopToken = await new jose.SignJWT(dpopPayload)
 				.setProtectedHeader({
 					alg: 'ES256',
 					typ: 'dpop+jwt',
-					jwk: await jose.exportJWK(publicKey)
+					jwk: publicKey
 				})
-				.sign(privateKey);
+				.sign(signingKey);
 
 			const headers = {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			};
 			if (dpopToken) headers['dpop'] = dpopToken;
 
-			const tokenRes = await fetch(new URL('/oauth/token', authzServer), {
+			const tokenRes = await fetch(url.href, {
 				method: 'POST',
 				mode: 'cors',
 				cache: 'no-cache',
