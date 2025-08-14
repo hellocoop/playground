@@ -5,6 +5,7 @@
 	import Tooltip from '$components/Tooltip.svelte';
 	import { validateScopes as validate } from '$lib/validate.js';
 	import ExperimentalIcon from '../Icons/ExperimentalIcon.svelte';
+	import RequiredIcon from '../Icons/RequiredIcon.svelte';
 
 	let {
 		selectedScopes = $bindable(),
@@ -71,7 +72,8 @@
 							value={stdScope}
 						/>
 						<label for={stdScope} class:text-red-500={!requiredOk || !validateOk} class="truncate"
-							>{stdScope} {required ? '*' : ''}</label
+							>{stdScope}
+							{#if required}<RequiredIcon />{/if}</label
 						>
 					</li>
 				{/each}

@@ -8,6 +8,7 @@
 	import Tooltip from '$components/Tooltip.svelte';
 	import RedoIcon from '../Icons/RedoIcon.svelte';
 	import ExperimentalIcon from '../Icons/ExperimentalIcon.svelte';
+	import RequiredIcon from '../Icons/RequiredIcon.svelte';
 
 	let {
 		selectedProtocolParams = $bindable(),
@@ -79,7 +80,12 @@
 							class:pointer-events-none={param.CHECKBOX_HIDDEN}
 							class:text-red-500={error}
 						>
-							<span>{param.NAME} {required ? '*' : ''}</span>
+							<span>
+								{param.NAME}
+								{#if required}
+									<RequiredIcon />
+								{/if}
+							</span>
 							{#if param.EXPERIMENTAL}
 								<ExperimentalIcon content="Experimental" />
 							{/if}

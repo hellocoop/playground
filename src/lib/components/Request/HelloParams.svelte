@@ -6,6 +6,7 @@
 	import ProviderHintInput from '$components/Inputs/ProviderHintInput.svelte';
 	import DomainHintInput from '$components/Inputs/DomainHintInput.svelte';
 	import { validateHelloParams as validate } from '$lib/validate.js';
+	import RequiredIcon from '../Icons/RequiredIcon.svelte';
 
 	let {
 		selectedHelloParams = $bindable(),
@@ -59,7 +60,8 @@
 							value={param.NAME}
 						/>
 						<label for={param.NAME} class="w-48 font-normal" class:text-red-500={!validateOk}
-							>{param.NAME} {required ? '*' : ''}</label
+							>{param.NAME}
+							{#if required}<RequiredIcon />{/if}</label
 						>
 					</div>
 					<div class="flex w-full flex-col">
