@@ -1,6 +1,6 @@
 <script>
 	import { slide } from 'svelte/transition';
-	import { PARAMS, HAS_HELLO_DEV_FLAG } from '$lib/constants.js';
+	import { PARAMS, HAS_HELLO_DEV_FLAG, PROFILE_CLAIMS } from '$lib/constants.js';
 	import ChevronY from '$components/ChevronY.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
 	import { validateScopes as validate } from '$lib/validate.js';
@@ -18,6 +18,12 @@
 
 	// scope input selected in protocol params
 	const isOverridden = $derived(selectedProtocolParams.includes('scope'));
+	
+	// Check if profile scope is selected
+	const isProfileSelected = $derived(selectedScopes.includes('profile'));
+	
+	// Check if all individual profile claims are selected
+	const allProfileClaimsSelected = $derived(PROFILE_CLAIMS.every(claim => selectedScopes.includes(claim)));
 </script>
 
 <section class="break-inside-avoid-column">
@@ -63,7 +69,9 @@
 						selectedProtocolParams,
 						selectedProtocolParamsValues
 					)}
-					<li class="flex flex-row items-center space-x-2" class:opacity-50={!validateOk}>
+					{@const isProfileClaim = PROFILE_CLAIMS.includes(stdScope)}
+					{@const showReducedOpacity = (stdScope === 'profile' && allProfileClaimsSelected) || (isProfileClaim && isProfileSelected)}
+					<li class="flex flex-row items-center space-x-2" class:opacity-50={!validateOk || showReducedOpacity}>
 						<input
 							type="checkbox"
 							id={stdScope}

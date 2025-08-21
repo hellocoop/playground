@@ -21,6 +21,8 @@ function validateProtocolParams({
 	helloParamsValues,
 	selectedScopes
 }) {
+
+
 	const { NAME } = param;
 	if (NAME === 'code_challenge') {
 		// skip if response_type=id_token and code_challenge unselected
