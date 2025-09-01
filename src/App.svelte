@@ -224,8 +224,16 @@
 				// Import the private JWK to a CryptoKey for signing
 				const signingKey = await jose.importJWK(privateKey, 'ES256');
 				// Create a minimal DPoP proof JWT (RFC 9449)
+				// Generate SHA256 hash of the code for c_hash
+				// Convert to BASE64URL as per spec section 1.8
+				const codeHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code))
+					.then(hash => btoa(String.fromCharCode(...new Uint8Array(hash)))
+						.replace(/\+/g, '-')
+						.replace(/\//g, '_')
+						.replace(/=/g, ''));
+				
 				const dpopPayload = {
-					code,
+					c_hash: codeHash,
 					jti: crypto.randomUUID(),
 					iat: Math.floor(Date.now() / 1000),
 					htu: url.href,
@@ -272,6 +280,17 @@
 			if (!token.id_token && !token.access_token) throw new Error('Did not get token');
 			const { payload: profile } = parseToken(token.id_token || token.access_token);
 			if (!profile) throw new Error('Did not get profile from token');
+			
+			// // Log the profile to check for cnf claim when DPoP is enabled
+			// if (isDpopEnabled) {
+			// 	console.log('DPoP enabled - checking for cnf claim in ID Token:', profile);
+			// 	if (profile && typeof profile === 'object' && 'cnf' in profile) {
+			// 		console.log('cnf claim found:', profile.cnf);
+			// 	} else {
+			// 		console.log('No cnf claim found in ID Token');
+			// 	}
+			// }
+			
 			authzResponse.parsed = profile;
 
 			const userinfoRes = await fetch(new URL('/oauth/userinfo', authzServer), {
