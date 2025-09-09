@@ -222,12 +222,7 @@
 			if (isDpopEnabled) {
 				const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
 				// Import the private JWK to a CryptoKey for signing
-				// Add the algorithm parameter if it's missing (required by JOSE)
-				const privateKeyWithAlg = { ...privateKey };
-				if (!privateKeyWithAlg.alg) {
-					privateKeyWithAlg.alg = 'EdDSA';
-				}
-				const signingKey = await jose.importJWK(privateKeyWithAlg, 'EdDSA');
+				const signingKey = await jose.importJWK(privateKey, 'ES256');
 				// Create a minimal DPoP proof JWT (RFC 9449)
 				// Generate SHA256 hash of the code for c_hash
 				// Convert to BASE64URL as per spec section 1.8
@@ -245,15 +240,15 @@
 					htm: 'POST'
 				};
 				// Restrict public JWK in header to RFC 7638 members only
-				// For EdDSA (Ed25519), we need kty, crv, and x parameters
 				const publicJwkMinimal = {
 					kty: publicKey.kty,
 					crv: publicKey.crv,
-					x: publicKey.x
+					x: publicKey.x,
+					y: publicKey.y
 				};
 				const dpopToken = await new jose.SignJWT(dpopPayload)
 					.setProtectedHeader({
-						alg: 'EdDSA',
+						alg: 'ES256',
 						typ: 'dpop+jwt',
 						jwk: publicJwkMinimal
 					})
