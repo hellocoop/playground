@@ -216,9 +216,9 @@
 				'Content-Type': 'application/x-www-form-urlencoded'
 			};
 
-			// Only generate DPoP proof if both dpop scope and dpop_jkt param are selected
+			// Only generate DPoP proof if both bound_key scope and dpop_jkt param are selected
 			const isDpopEnabled =
-				selectedScopes.includes('dpop') && selectedProtocolParams.includes('dpop_jkt');
+				selectedScopes.includes('bound_key') && selectedProtocolParams.includes('dpop_jkt');
 			if (isDpopEnabled) {
 				const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
 				// Import the private JWK to a CryptoKey for signing
