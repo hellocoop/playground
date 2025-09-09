@@ -9,14 +9,9 @@ async function generateDpopJkt() {
 	}
 
 	let publicJwk;
-	// Check if stored keys are EdDSA compatible
-	if (stored?.publicKey && 
-	    stored?.privateKey && 
-	    stored.privateKey.kty === 'OKP' && 
-	    stored.privateKey.crv === 'Ed25519') {
+	if (stored?.publicKey && stored?.privateKey) {
 		publicJwk = stored.publicKey;
 	} else {
-		// Keys are missing or incompatible (e.g., old ES256 keys), generate new ones
 		const keyPair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, [
 			'sign',
 			'verify'

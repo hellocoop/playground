@@ -15,7 +15,7 @@
 		sendPlausibleEvent,
 		focusAuthzResponseSection
 	} from '$lib/utils.js';
-	import { generateDpopJkt, getCurrentDpopJkt, regenerateDpopJkt } from '$lib/dpop.js';
+	import { generateDpopJkt, getCurrentDpopJkt } from '$lib/dpop.js';
 	import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js';
 	import { parseToken, validateToken } from '@hellocoop/helper-browser';
 	import Notification from '$lib/components/Notification.svelte';
@@ -220,25 +220,7 @@
 			const isDpopEnabled =
 				selectedScopes.includes('bound_key') && selectedProtocolParams.includes('dpop_jkt');
 			if (isDpopEnabled) {
-				let storedKeys;
-				try {
-					storedKeys = JSON.parse(localStorage.getItem('dpop_keypair'));
-				} catch (e) {
-					// Invalid stored keys, regenerate
-					storedKeys = null;
-				}
-
-				// Check if stored keys are EdDSA compatible, if not regenerate
-				if (!storedKeys || 
-				    !storedKeys.privateKey || 
-				    storedKeys.privateKey.kty !== 'OKP' || 
-				    storedKeys.privateKey.crv !== 'Ed25519') {
-					// Keys are missing or incompatible (e.g., old ES256 keys), regenerate
-					await regenerateDpopJkt();
-					storedKeys = JSON.parse(localStorage.getItem('dpop_keypair'));
-				}
-
-				const { publicKey, privateKey } = storedKeys;
+				const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
 				// Import the private JWK to a CryptoKey for signing
 				// Add the algorithm parameter if it's missing (required by JOSE)
 				const privateKeyWithAlg = { ...privateKey };
