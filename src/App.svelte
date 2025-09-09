@@ -15,7 +15,7 @@
 		sendPlausibleEvent,
 		focusAuthzResponseSection
 	} from '$lib/utils.js';
-	import { generateDpopJkt, getCurrentDpopJkt } from '$lib/dpop.js';
+	import { generateDpopJkt, getCurrentDpopJkt, regenerateDpopJkt } from '$lib/dpop.js';
 	import { makeAuthzUrl, makeInviteUrl } from '$lib/request.js';
 	import { parseToken, validateToken } from '@hellocoop/helper-browser';
 	import Notification from '$lib/components/Notification.svelte';
@@ -220,9 +220,32 @@
 			const isDpopEnabled =
 				selectedScopes.includes('bound_key') && selectedProtocolParams.includes('dpop_jkt');
 			if (isDpopEnabled) {
-				const { publicKey, privateKey } = JSON.parse(localStorage.getItem('dpop_keypair'));
+				let storedKeys;
+				try {
+					storedKeys = JSON.parse(localStorage.getItem('dpop_keypair'));
+				} catch (e) {
+					// Invalid stored keys, regenerate
+					storedKeys = null;
+				}
+
+				// Check if stored keys are EdDSA compatible, if not regenerate
+				if (!storedKeys || 
+				    !storedKeys.privateKey || 
+				    storedKeys.privateKey.kty !== 'OKP' || 
+				    storedKeys.privateKey.crv !== 'Ed25519') {
+					// Keys are missing or incompatible (e.g., old ES256 keys), regenerate
+					await regenerateDpopJkt();
+					storedKeys = JSON.parse(localStorage.getItem('dpop_keypair'));
+				}
+
+				const { publicKey, privateKey } = storedKeys;
 				// Import the private JWK to a CryptoKey for signing
-				const signingKey = await jose.importJWK(privateKey, 'ES256');
+				// Add the algorithm parameter if it's missing (required by JOSE)
+				const privateKeyWithAlg = { ...privateKey };
+				if (!privateKeyWithAlg.alg) {
+					privateKeyWithAlg.alg = 'EdDSA';
+				}
+				const signingKey = await jose.importJWK(privateKeyWithAlg, 'EdDSA');
 				// Create a minimal DPoP proof JWT (RFC 9449)
 				// Generate SHA256 hash of the code for c_hash
 				// Convert to BASE64URL as per spec section 1.8
@@ -240,15 +263,15 @@
 					htm: 'POST'
 				};
 				// Restrict public JWK in header to RFC 7638 members only
+				// For EdDSA (Ed25519), we need kty, crv, and x parameters
 				const publicJwkMinimal = {
 					kty: publicKey.kty,
 					crv: publicKey.crv,
-					x: publicKey.x,
-					y: publicKey.y
+					x: publicKey.x
 				};
 				const dpopToken = await new jose.SignJWT(dpopPayload)
 					.setProtectedHeader({
-						alg: 'ES256',
+						alg: 'EdDSA',
 						typ: 'dpop+jwt',
 						jwk: publicJwkMinimal
 					})

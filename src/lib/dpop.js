@@ -1,4 +1,5 @@
-// Get existing ES256 keypair from storage or create a new one if missing
+// Get existing EdDSA (Ed25519) keypair from storage or create a new one if missing
+// EdDSA provides better performance and security compared to ES256
 async function generateDpopJkt() {
 	let stored = null;
 	try {
@@ -8,15 +9,23 @@ async function generateDpopJkt() {
 	}
 
 	let publicJwk;
-	if (stored?.publicKey && stored?.privateKey) {
+	// Check if stored keys are EdDSA compatible
+	if (stored?.publicKey && 
+	    stored?.privateKey && 
+	    stored.privateKey.kty === 'OKP' && 
+	    stored.privateKey.crv === 'Ed25519') {
 		publicJwk = stored.publicKey;
 	} else {
-		const keyPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, [
+		// Keys are missing or incompatible (e.g., old ES256 keys), generate new ones
+		const keyPair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, [
 			'sign',
 			'verify'
 		]);
 		const newPublicJwk = await crypto.subtle.exportKey('jwk', keyPair.publicKey);
 		const newPrivateJwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
+		// Add algorithm parameter to JWKs for JOSE compatibility
+		newPublicJwk.alg = 'EdDSA';
+		newPrivateJwk.alg = 'EdDSA';
 		localStorage.setItem(
 			'dpop_keypair',
 			JSON.stringify({
@@ -34,12 +43,15 @@ async function generateDpopJkt() {
 
 // Explicitly rotate the DPoP keypair and return the new jkt
 async function regenerateDpopJkt() {
-	const keyPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, [
+	const keyPair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, [
 		'sign',
 		'verify'
 	]);
 	const publicJwk = await crypto.subtle.exportKey('jwk', keyPair.publicKey);
 	const privateJwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
+	// Add algorithm parameter to JWKs for JOSE compatibility
+	publicJwk.alg = 'EdDSA';
+	privateJwk.alg = 'EdDSA';
 	localStorage.setItem(
 		'dpop_keypair',
 		JSON.stringify({
