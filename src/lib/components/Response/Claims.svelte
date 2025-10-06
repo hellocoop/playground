@@ -13,6 +13,11 @@
 		HELLO_EXTEND_NON_STANDARD
 	].flat();
 
+	// `phone` scope maps to `phone_number` claim
+	const index = ALL_SCOPES.indexOf('phone');
+	ALL_SCOPES.splice(index, 1);
+	ALL_SCOPES.splice(index, 0, 'phone_number');
+
 	let { payload } = $props();
 </script>
 
