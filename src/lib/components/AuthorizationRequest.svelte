@@ -54,6 +54,7 @@
 			{selectedHelloParams}
 			{selectedHelloParamsValues}
 			{selectedScopes}
+			{isHelloMode}
 		/>
 
 		<HelloParams

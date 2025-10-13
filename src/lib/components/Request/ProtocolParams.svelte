@@ -1,6 +1,6 @@
 <script>
 	import { slide } from 'svelte/transition';
-	import { PARAMS } from '$lib/constants.js';
+	import { PARAMS, HAS_HELLO_DEV_FLAG } from '$lib/constants.js';
 	import { validateProtocolParams as validate } from '$lib/validate.js';
 	import { generatePkce } from '$lib/utils';
 	import { regenerateDpopJkt } from '$lib/dpop.js';
@@ -16,7 +16,8 @@
 		selectedHelloParams,
 		selectedHelloParamsValues,
 		selectedScopes,
-		dropdowns = $bindable()
+		dropdowns = $bindable(),
+		isHelloMode
 	} = $props();
 
 	async function regen(param) {
@@ -100,52 +101,68 @@
 							{/if}
 						</label>
 					</div>
-					{#if Array.isArray(param.POSSIBLE_VALUE)}
-						<ul
-							class="flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 ring-charcoal xl:h-8 xl:flex-row dark:ring-gray-800"
-							class:opacity-50={!selected}
-						>
-							{#each param.POSSIBLE_VALUE as value}
-								<li class="w-full">
-									{#if param.ONLY_ONE}
-										<input
-											type="radio"
-											name={param.NAME}
-											id={value}
+					<div class="flex-1">
+						{#if Array.isArray(param.POSSIBLE_VALUE)}
+							<ul
+								class="flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 ring-charcoal xl:h-8 xl:flex-row dark:ring-gray-800"
+								class:opacity-50={!selected}
+							>
+								{#each param.POSSIBLE_VALUE as value}
+									<li class="w-full">
+										{#if param.ONLY_ONE}
+											<input
+												type="radio"
+												name={param.NAME}
+												id={value}
+												{value}
+												bind:group={selectedProtocolParamsValues[param.NAME]}
+												class="peer !hidden"
+											/>
+										{:else}
+											<input
+												type="checkbox"
+												name={param.NAME}
+												id={value}
+												{value}
+												bind:group={selectedProtocolParamsValues[param.NAME]}
+												class="peer !hidden"
+											/>
+										{/if}
+										<label
+											for={value}
+											class="block flex w-full cursor-pointer items-center justify-center ring-charcoal peer-checked:bg-charcoal peer-checked:text-white peer-checked:ring-1 dark:ring-gray-800 peer-checked:dark:text-gray"
+										>
 											{value}
-											bind:group={selectedProtocolParamsValues[param.NAME]}
-											class="peer !hidden"
-										/>
-									{:else}
-										<input
-											type="checkbox"
-											name={param.NAME}
-											id={value}
-											{value}
-											bind:group={selectedProtocolParamsValues[param.NAME]}
-											class="peer !hidden"
-										/>
-									{/if}
-									<label
-										for={value}
-										class="block flex w-full cursor-pointer items-center justify-center ring-charcoal peer-checked:bg-charcoal peer-checked:text-white peer-checked:ring-1 dark:ring-gray-800 peer-checked:dark:text-gray"
+										</label>
+									</li>
+								{/each}
+							</ul>
+						{:else}
+							<div class="relative flex w-full items-center" class:opacity-50={!selected}>
+								<input
+									type="text"
+									class="form-input h-6 w-full border px-2"
+									class:pr-6={param.REGENERATE}
+									bind:value={selectedProtocolParamsValues[param.NAME]}
+									placeholder={param.PLACEHOLDER}
+								/>
+							</div>
+						{/if}
+						{#if param.HINT && HAS_HELLO_DEV_FLAG && isHelloMode}
+							<div class="mt-1 flex flex-wrap gap-1">
+								{#each param.HINT as hint, index}
+									<button
+										class="text-xs opacity-70 hover:underline"
+										onclick={() => {
+											selectedProtocolParamsValues[param.NAME] = hint.value;
+										}}
 									>
-										{value}
-									</label>
-								</li>
-							{/each}
-						</ul>
-					{:else}
-						<div class="relative flex w-full items-center" class:opacity-50={!selected}>
-							<input
-								type="text"
-								class="form-input h-6 w-full border px-2"
-								class:pr-6={param.REGENERATE}
-								bind:value={selectedProtocolParamsValues[param.NAME]}
-								placeholder={param.PLACEHOLDER}
-							/>
-						</div>
-					{/if}
+										{hint.name}{index !== param.HINT.length - 1 ? ', ' : ''}
+									</button>
+								{/each}
+							</div>
+						{/if}
+					</div>
 				</li>
 			{/each}
 		</ul>

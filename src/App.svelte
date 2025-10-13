@@ -220,18 +220,23 @@
 			const isDpopEnabled =
 				selectedScopes.includes('bound_key') && selectedProtocolParams.includes('dpop_jkt');
 			if (isDpopEnabled) {
-				const { publicKey, privateKey, algorithm } = JSON.parse(localStorage.getItem('dpop_keypair'));
+				const { publicKey, privateKey, algorithm } = JSON.parse(
+					localStorage.getItem('dpop_keypair')
+				);
 				// Import the private JWK to a CryptoKey for signing using the stored algorithm
 				const signingKey = await jose.importJWK(privateKey, algorithm || 'EdDSA');
 				// Create a minimal DPoP proof JWT (RFC 9449)
 				// Generate SHA256 hash of the code for c_hash
 				// Convert to BASE64URL as per spec section 1.8
-				const codeHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code))
-					.then(hash => btoa(String.fromCharCode(...new Uint8Array(hash)))
-						.replace(/\+/g, '-')
-						.replace(/\//g, '_')
-						.replace(/=/g, ''));
-				
+				const codeHash = await crypto.subtle
+					.digest('SHA-256', new TextEncoder().encode(code))
+					.then((hash) =>
+						btoa(String.fromCharCode(...new Uint8Array(hash)))
+							.replace(/\+/g, '-')
+							.replace(/\//g, '_')
+							.replace(/=/g, '')
+					);
+
 				const dpopPayload = {
 					c_hash: codeHash,
 					jti: crypto.randomUUID(),
@@ -239,7 +244,7 @@
 					htu: url.href,
 					htm: 'POST'
 				};
-				
+
 				// Restrict public JWK in header to RFC 7638 members only
 				// For Ed25519, we only need kty, crv, and x (no y coordinate)
 				// For P-256, we need kty, crv, x, and y
@@ -248,12 +253,12 @@
 					crv: publicKey.crv,
 					x: publicKey.x
 				};
-				
+
 				// Add y coordinate for ECDSA P-256
 				if (algorithm === 'ES256' && publicKey.y) {
 					publicJwkMinimal.y = publicKey.y;
 				}
-				
+
 				const dpopToken = await new jose.SignJWT(dpopPayload)
 					.setProtectedHeader({
 						alg: algorithm || 'EdDSA',
@@ -288,7 +293,7 @@
 			if (!token.id_token && !token.access_token) throw new Error('Did not get token');
 			const { payload: profile } = parseToken(token.id_token || token.access_token);
 			if (!profile) throw new Error('Did not get profile from token');
-			
+
 			// // Log the profile to check for cnf claim when DPoP is enabled
 			// if (isDpopEnabled) {
 			// 	console.log('DPoP enabled - checking for cnf claim in ID Token:', profile);
@@ -298,7 +303,7 @@
 			// 		console.log('No cnf claim found in ID Token');
 			// 	}
 			// }
-			
+
 			authzResponse.parsed = profile;
 
 			const userinfoRes = await fetch(new URL('/oauth/userinfo', authzServer), {

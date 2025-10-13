@@ -24,12 +24,9 @@ async function generateDpopJkt() {
 		// Check if EdDSA is supported, fallback to ECDSA if not
 		const useEdDSA = await isEdDSASupported();
 		let keyPair;
-		
+
 		if (useEdDSA) {
-			keyPair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, [
-				'sign',
-				'verify'
-			]);
+			keyPair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, ['sign', 'verify']);
 		} else {
 			// Fallback to ECDSA P-256 for better browser compatibility
 			keyPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, [
@@ -37,10 +34,10 @@ async function generateDpopJkt() {
 				'verify'
 			]);
 		}
-		
+
 		const newPublicJwk = await crypto.subtle.exportKey('jwk', keyPair.publicKey);
 		const newPrivateJwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
-		
+
 		// Store algorithm info with the keypair for later use
 		localStorage.setItem(
 			'dpop_keypair',
@@ -63,12 +60,9 @@ async function regenerateDpopJkt() {
 	// Check if EdDSA is supported, fallback to ECDSA if not
 	const useEdDSA = await isEdDSASupported();
 	let keyPair;
-	
+
 	if (useEdDSA) {
-		keyPair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, [
-			'sign',
-			'verify'
-		]);
+		keyPair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, ['sign', 'verify']);
 	} else {
 		// Fallback to ECDSA P-256 for better browser compatibility
 		keyPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, [
@@ -76,10 +70,10 @@ async function regenerateDpopJkt() {
 			'verify'
 		]);
 	}
-	
+
 	const publicJwk = await crypto.subtle.exportKey('jwk', keyPair.publicKey);
 	const privateJwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
-	
+
 	// Store algorithm info with the keypair for later use
 	localStorage.setItem(
 		'dpop_keypair',

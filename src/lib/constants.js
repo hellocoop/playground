@@ -25,7 +25,45 @@ const PROTOCOL_PARAM = {
 	PARAMS: [
 		{
 			NAME: 'client_id',
-			POSSIBLE_VALUE: ''
+			POSSIBLE_VALUE: '',
+			HINT: [
+				{
+					name: 'Playground',
+					value: 'app_HelloDeveloperPlayground_Iq2'
+				},
+				{
+					name: 'B2B SaaS',
+					value: 'app_B2BSaaSDemonstrationAppX_HaQ'
+				},
+				{
+					name: 'Greenfield',
+					value: 'app_GreenfieldFitnessDemoApp_s9z'
+				},
+				{
+					name: 'App Manager',
+					value: 'app_hello_application_manager'
+				},
+				{
+					name: 'GitHub Manager',
+					value: 'app_hello_github_manager'
+				},
+				{
+					name: 'Console',
+					value: 'hello_console_app'
+				},
+				{
+					name: 'MCP HTTP',
+					value: 'hello_mcp_http_app'
+				},
+				{
+					name: 'MCP STDIO',
+					value: 'hello_mcp_stdio_app'
+				},
+				{
+					name: 'Quickstart',
+					value: 'hello_quick_start_app'
+				}
+			]
 		},
 		{
 			NAME: 'redirect_uri',

@@ -18,12 +18,14 @@
 
 	// scope input selected in protocol params
 	const isOverridden = $derived(selectedProtocolParams.includes('scope'));
-	
+
 	// Check if profile scope is selected
 	const isProfileSelected = $derived(selectedScopes.includes('profile'));
-	
+
 	// Check if all individual profile claims are selected
-	const allProfileClaimsSelected = $derived(PROFILE_CLAIMS.every(claim => selectedScopes.includes(claim)));
+	const allProfileClaimsSelected = $derived(
+		PROFILE_CLAIMS.every((claim) => selectedScopes.includes(claim))
+	);
 </script>
 
 <section class="break-inside-avoid-column">
@@ -70,8 +72,13 @@
 						selectedProtocolParamsValues
 					)}
 					{@const isProfileClaim = PROFILE_CLAIMS.includes(stdScope)}
-					{@const showReducedOpacity = (stdScope === 'profile' && allProfileClaimsSelected) || (isProfileClaim && isProfileSelected)}
-					<li class="flex flex-row items-center space-x-2" class:opacity-50={!validateOk || showReducedOpacity}>
+					{@const showReducedOpacity =
+						(stdScope === 'profile' && allProfileClaimsSelected) ||
+						(isProfileClaim && isProfileSelected)}
+					<li
+						class="flex flex-row items-center space-x-2"
+						class:opacity-50={!validateOk || showReducedOpacity}
+					>
 						<input
 							type="checkbox"
 							id={stdScope}
