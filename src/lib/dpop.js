@@ -89,9 +89,9 @@ async function regenerateDpopJkt() {
 
 // Use jose library's thumbprint calculation to match server
 async function calculateJwkThumbprint(jwk) {
-	const { calculateJwkThumbprint: joseThumbprint, base64url } = await import('jose');
-	const thumbprint = await joseThumbprint(jwk);
-	return base64url.encode(thumbprint);
+	const { calculateJwkThumbprint: joseThumbprint } = await import('jose');
+	// jose.calculateJwkThumbprint already returns a base64url-encoded string
+	return await joseThumbprint(jwk);
 }
 
 async function getCurrentDpopJkt() {
@@ -104,4 +104,4 @@ async function getCurrentDpopJkt() {
 	}
 }
 
-export { generateDpopJkt, regenerateDpopJkt, getCurrentDpopJkt };
+export { generateDpopJkt, regenerateDpopJkt, getCurrentDpopJkt, calculateJwkThumbprint };
