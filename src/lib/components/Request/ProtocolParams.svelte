@@ -101,7 +101,7 @@
 							{/if}
 						</label>
 					</div>
-					<div class="flex-1">
+					<div class="flex w-full flex-col">
 						{#if Array.isArray(param.POSSIBLE_VALUE)}
 							<ul
 								class="flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 ring-charcoal xl:h-8 xl:flex-row dark:ring-gray-800"
