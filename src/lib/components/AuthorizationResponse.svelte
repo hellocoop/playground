@@ -3,7 +3,18 @@
 	import JsonResponse from '$components/Response/JsonResponse.svelte';
 	import Claims from '$components/Response/Claims.svelte';
 
-	let { authzUrl, authzResponse } = $props();
+	let { authzUrl, authzResponse, refreshIdToken } = $props();
+
+	let isRefreshing = $state(false);
+
+	async function handleRefresh() {
+		isRefreshing = true;
+		try {
+			await refreshIdToken();
+		} finally {
+			isRefreshing = false;
+		}
+	}
 </script>
 
 <section
@@ -21,6 +32,22 @@
 
 			{#if authzResponse.token}
 				<JsonResponse label={new URL('/oauth/token', authzUrl)} json={authzResponse.token} />
+			{/if}
+
+			{#if authzResponse.token?.refresh_token}
+				<div class="py-4">
+					<div class="flex flex-col items-start text-left">
+						<span class="font-medium">Refresh id_token</span>
+						<button
+							class="hello-btn-black-and-static mt-2 h-10 w-32 text-sm disabled:opacity-50"
+							class:hello-btn-loader={isRefreshing}
+							disabled={isRefreshing}
+							onclick={handleRefresh}
+						>
+							Refresh
+						</button>
+					</div>
+				</div>
 			{/if}
 
 			<!-- code flow parses token locally, id_token calls introspect -->

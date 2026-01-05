@@ -11,7 +11,7 @@ const SCOPE_PARAM = {
 		'phone'
 	],
 	NON_STANDARD: ['ethereum', 'discord', 'twitter', 'github', 'gitlab'],
-	EXPERIMENTAL: ['bound_key'],
+	EXPERIMENTAL: ['bound_key', 'offline_access'],
 
 	// Hellō Dev Mode
 	HELLO_EXTEND_STANDARD: [],
