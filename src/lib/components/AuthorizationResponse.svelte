@@ -2,8 +2,21 @@
 	import UrlResponse from '$components/Response/UrlResponse.svelte';
 	import JsonResponse from '$components/Response/JsonResponse.svelte';
 	import Claims from '$components/Response/Claims.svelte';
+	import CopyText from '$components/CopyText.svelte';
+	import { highlight } from '$lib/shiki.js';
 
-	let { authzUrl, authzResponse } = $props();
+	let { authzUrl, authzResponse, refreshIdToken } = $props();
+
+	let isRefreshing = $state(false);
+
+	async function handleRefresh() {
+		isRefreshing = true;
+		try {
+			await refreshIdToken();
+		} finally {
+			isRefreshing = false;
+		}
+	}
 </script>
 
 <section
@@ -21,6 +34,29 @@
 
 			{#if authzResponse.token}
 				<JsonResponse label={new URL('/oauth/token', authzUrl)} json={authzResponse.token} />
+			{/if}
+
+			{#if authzResponse.token?.refresh_token}
+				<div class="py-4">
+					<div class="flex flex-col items-start text-left">
+						<button
+							class="hello-btn-black-and-static mt-2 h-10 w-36 text-sm disabled:opacity-50"
+							class:hello-btn-loader={isRefreshing}
+							disabled={isRefreshing}
+							onclick={handleRefresh}
+						>
+							Refresh token
+						</button>
+					</div>
+					{#if authzResponse.refreshResponse}
+						<div class="mt-4 flex flex-col items-start text-left">
+							<CopyText content={JSON.stringify(authzResponse.refreshResponse, null, 2)} />
+						</div>
+						<p class="mt-2 break-words font-sans text-sm">
+							{@html highlight('json', JSON.stringify(authzResponse.refreshResponse, null, 2))}
+						</p>
+					{/if}
+				</div>
 			{/if}
 
 			<!-- code flow parses token locally, id_token calls introspect -->

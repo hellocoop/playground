@@ -38,7 +38,8 @@
 		token: null,
 		parsed: null, // code flow does not call introspect -- parses locally
 		introspect: null, // id_token flow calls introspect
-		userinfo: null
+		userinfo: null,
+		refreshResponse: null // refresh token response
 	});
 	let dropdowns = $state({
 		scope: true,
@@ -347,6 +348,83 @@
 		authzResponse.url = params.toString();
 		showErrorNotification = true;
 	}
+
+	async function refreshIdToken() {
+		try {
+			const refreshToken = authzResponse.token?.refresh_token;
+			if (!refreshToken) throw new Error('No refresh token available');
+
+			const url = new URL('/oauth/token', authzServer);
+
+			const headers = {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			};
+
+			// Generate DPoP proof for refresh (no c_hash needed)
+			const isDpopEnabled =
+				selectedScopes.includes('bound_key') && selectedProtocolParams.includes('dpop_jkt');
+			if (isDpopEnabled) {
+				const { publicKey, privateKey, algorithm } = JSON.parse(
+					localStorage.getItem('dpop_keypair')
+				);
+				// Import the private JWK to a CryptoKey for signing using the stored algorithm
+				const signingKey = await jose.importJWK(privateKey, algorithm || 'EdDSA');
+
+				const dpopPayload = {
+					jti: crypto.randomUUID(),
+					iat: Math.floor(Date.now() / 1000),
+					htu: url.href,
+					htm: 'POST'
+				};
+
+				// Restrict public JWK in header to RFC 7638 members only
+				// For Ed25519, we only need kty, crv, and x (no y coordinate)
+				// For P-256, we need kty, crv, x, and y
+				const publicJwkMinimal = {
+					kty: publicKey.kty,
+					crv: publicKey.crv,
+					x: publicKey.x
+				};
+
+				// Add y coordinate for ECDSA P-256
+				if (algorithm === 'ES256' && publicKey.y) {
+					publicJwkMinimal.y = publicKey.y;
+				}
+
+				const dpopToken = await new jose.SignJWT(dpopPayload)
+					.setProtectedHeader({
+						alg: algorithm || 'EdDSA',
+						typ: 'dpop+jwt',
+						jwk: publicJwkMinimal
+					})
+					.sign(signingKey);
+
+				headers['dpop'] = dpopToken;
+			}
+
+			const tokenRes = await fetch(url.href, {
+				method: 'POST',
+				mode: 'cors',
+				cache: 'no-cache',
+				headers,
+				body: new URLSearchParams({
+					grant_type: 'refresh_token',
+					refresh_token: refreshToken,
+					client_id: selectedProtocolParamsValues.client_id
+				}).toString()
+			});
+
+			const token = await tokenRes.json();
+			if (!token) throw new Error('Did not get response from token endpoint');
+			if (token.error) throw new Error(token.error_description || token.error);
+
+			// Store refresh response separately (don't update original token or parsed claims)
+			authzResponse.refreshResponse = token;
+		} catch (err) {
+			console.error(err);
+			showErrorNotification = true;
+		}
+	}
 </script>
 
 {#if mounted}
@@ -371,7 +449,7 @@
 			{authzUrl}
 		/>
 
-		<AuthorizationResponse {authzUrl} {authzResponse} />
+		<AuthorizationResponse {authzUrl} {authzResponse} {refreshIdToken} />
 
 		<InviteRequest {canInvite} {inviteUrl} />
 

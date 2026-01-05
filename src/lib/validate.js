@@ -10,6 +10,14 @@ function validateScopes(scope, selectedScopes, selectedProtocolParams, protocolP
 		const responseType = protocolParamsValues?.response_type;
 		if (boundKeyScopeSelected && responseType === 'id_token') return false;
 	}
+	if (scope === 'offline_access') {
+		const offlineAccessSelected = selectedScopes.includes('offline_access');
+		const boundKeyScopeSelected = selectedScopes.includes('bound_key');
+		const dpopJktSelected = selectedProtocolParams?.includes('dpop_jkt');
+
+		// offline_access scope should be red when it's selected but bound_key scope or dpop_jkt param is not selected
+		if (offlineAccessSelected && (!boundKeyScopeSelected || !dpopJktSelected)) return false;
+	}
 	return true;
 }
 
