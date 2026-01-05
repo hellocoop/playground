@@ -39,14 +39,13 @@
 			{#if authzResponse.token?.refresh_token}
 				<div class="py-4">
 					<div class="flex flex-col items-start text-left">
-						<span class="font-medium">Refresh token</span>
 						<button
-							class="hello-btn-black-and-static mt-2 h-10 w-32 text-sm disabled:opacity-50"
+							class="hello-btn-black-and-static mt-2 h-10 w-36 text-sm disabled:opacity-50"
 							class:hello-btn-loader={isRefreshing}
 							disabled={isRefreshing}
 							onclick={handleRefresh}
 						>
-							Refresh
+							Refresh token
 						</button>
 					</div>
 					{#if authzResponse.refreshResponse}
