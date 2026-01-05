@@ -38,7 +38,8 @@
 		token: null,
 		parsed: null, // code flow does not call introspect -- parses locally
 		introspect: null, // id_token flow calls introspect
-		userinfo: null
+		userinfo: null,
+		refreshResponse: null // refresh token response
 	});
 	let dropdowns = $state({
 		scope: true,
@@ -417,8 +418,8 @@
 			if (!token) throw new Error('Did not get response from token endpoint');
 			if (token.error) throw new Error(token.error_description || token.error);
 
-			// Update token response in place (don't update parsed claims or JSON payload)
-			authzResponse.token = token;
+			// Store refresh response separately (don't update original token or parsed claims)
+			authzResponse.refreshResponse = token;
 		} catch (err) {
 			console.error(err);
 			showErrorNotification = true;

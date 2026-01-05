@@ -2,6 +2,8 @@
 	import UrlResponse from '$components/Response/UrlResponse.svelte';
 	import JsonResponse from '$components/Response/JsonResponse.svelte';
 	import Claims from '$components/Response/Claims.svelte';
+	import CopyText from '$components/CopyText.svelte';
+	import { highlight } from '$lib/shiki.js';
 
 	let { authzUrl, authzResponse, refreshIdToken } = $props();
 
@@ -37,7 +39,7 @@
 			{#if authzResponse.token?.refresh_token}
 				<div class="py-4">
 					<div class="flex flex-col items-start text-left">
-						<span class="font-medium">Refresh id_token</span>
+						<span class="font-medium">Refresh token</span>
 						<button
 							class="hello-btn-black-and-static mt-2 h-10 w-32 text-sm disabled:opacity-50"
 							class:hello-btn-loader={isRefreshing}
@@ -47,6 +49,14 @@
 							Refresh
 						</button>
 					</div>
+					{#if authzResponse.refreshResponse}
+						<div class="mt-4 flex flex-col items-start text-left">
+							<CopyText content={JSON.stringify(authzResponse.refreshResponse, null, 2)} />
+						</div>
+						<p class="mt-2 break-words font-sans text-sm">
+							{@html highlight('json', JSON.stringify(authzResponse.refreshResponse, null, 2))}
+						</p>
+					{/if}
 				</div>
 			{/if}
 
