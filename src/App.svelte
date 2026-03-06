@@ -227,7 +227,7 @@
 				// Import the private JWK to a CryptoKey for signing using the stored algorithm
 				const signingKey = await jose.importJWK(privateKey, algorithm || 'EdDSA');
 				// Create a minimal DPoP proof JWT (RFC 9449)
-				// Generate SHA256 hash of the code for c_hash
+				// Generate SHA256 hash of the code for c_s256
 				// Convert to BASE64URL as per spec section 1.8
 				const codeHash = await crypto.subtle
 					.digest('SHA-256', new TextEncoder().encode(code))
@@ -239,7 +239,7 @@
 					);
 
 				const dpopPayload = {
-					c_hash: codeHash,
+					c_s256: codeHash,
 					jti: crypto.randomUUID(),
 					iat: Math.floor(Date.now() / 1000),
 					htu: url.href,
@@ -360,7 +360,7 @@
 				'Content-Type': 'application/x-www-form-urlencoded'
 			};
 
-			// Generate DPoP proof for refresh (no c_hash needed)
+			// Generate DPoP proof for refresh (no c_s256 needed)
 			const isDpopEnabled =
 				selectedScopes.includes('bound_key') && selectedProtocolParams.includes('dpop_jkt');
 			if (isDpopEnabled) {
