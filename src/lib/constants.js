@@ -40,12 +40,8 @@ const PROTOCOL_PARAM = {
 					value: 'app_GreenfieldFitnessDemoApp_s9z'
 				},
 				{
-					name: 'App Manager',
-					value: 'app_hello_application_manager'
-				},
-				{
-					name: 'GitHub Manager',
-					value: 'app_hello_github_manager'
+					name: 'Lifecycle',
+					value: 'app_hello_lifecycle'
 				},
 				{
 					name: 'Console',
