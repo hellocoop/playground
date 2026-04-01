@@ -23,7 +23,7 @@
 </script>
 
 <section
-	class="relative w-full rounded-sm border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800"
+	class="relative w-full rounded-xs border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800"
 >
 	<span
 		class="absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70"

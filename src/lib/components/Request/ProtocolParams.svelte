@@ -104,7 +104,7 @@
 					<div class="flex w-full flex-col">
 						{#if Array.isArray(param.POSSIBLE_VALUE)}
 							<ul
-								class="flex w-full flex-col items-center gap-1 rounded-sm p-1 ring-1 ring-charcoal xl:h-8 xl:flex-row dark:ring-gray-800"
+								class="flex w-full flex-col items-center gap-1 rounded-xs p-1 ring-1 ring-charcoal xl:h-8 xl:flex-row dark:ring-gray-800"
 								class:opacity-50={!selected}
 							>
 								{#each param.POSSIBLE_VALUE as value}

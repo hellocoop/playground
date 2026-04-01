@@ -26,6 +26,7 @@
 </div>
 
 <style>
+	@reference "../../../app.css";
 	label {
 		@apply block flex h-[22px] w-14 cursor-pointer select-none items-center justify-center border-y border-charcoal bg-white px-3 text-xs peer-checked:bg-charcoal peer-checked:text-white dark:border-gray-800 dark:bg-gray-1000;
 	}

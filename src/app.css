@@ -1,4 +1,22 @@
-@tailwind base;
+@import "tailwindcss";
+
+@plugin "@tailwindcss/forms" {
+	strategy: class;
+}
+
+@theme {
+	--color-charcoal: #303030;
+	--color-gray: #D4D4D4;
+	--color-gray-800: #808080;
+	--color-gray-1000: #151515;
+
+	--spacing-18: 4.5rem;
+
+	--stroke-width-3: 3px;
+
+	--breakpoint-xs: 450px;
+	--breakpoint-4xl: 2000px;
+}
 
 /* hello.dev nextra default colors */
 :root {
@@ -37,23 +55,21 @@ pre[class*='language-'] {
 }
 
 button {
-	@apply rounded-sm;
+	@apply cursor-pointer;
 }
 
 input[type='url'] {
 	@apply text-charcoal dark:text-gray;
 }
 
-@tailwind components;
-
-.btn {
-	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-gray-800 rounded-sm hover:ring-2;
+@utility btn {
+	@apply ring-1 border-none bg-transparent ring-charcoal dark:ring-gray-800 rounded-xs hover:ring-2;
 }
 
 .form-input {
-	@apply rounded-sm bg-transparent ring-1 border-none hover:ring-2;
-	@apply ring-charcoal !important;
-	@apply dark:ring-gray-800 !important;
+	@apply rounded-xs bg-transparent ring-1 border-none hover:ring-2;
+	@apply !ring-charcoal;
+	@apply dark:!ring-gray-800;
 }
 
 .form-input::placeholder,
@@ -70,13 +86,29 @@ pre {
 }
 
 input[type='checkbox'] {
-	@apply form-checkbox w-[14px] h-[14px] text-charcoal dark:text-gray-800 border-charcoal dark:border-gray-800 rounded-sm bg-transparent;
+	@apply form-checkbox w-[14px] h-[14px] text-charcoal dark:text-gray-800 border-charcoal dark:border-gray-800 rounded-xs bg-transparent;
 	@apply hover:border-2 focus:ring-0 focus:outline-none focus:ring-offset-0;
+}
+input[type='checkbox']:checked {
+	appearance: none !important;
+	background-color: currentColor !important;
+	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e") !important;
+	background-size: 100% 100% !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+	border-color: transparent !important;
 }
 
 input[type='radio'] {
 	@apply form-radio w-[14px] h-[14px] text-charcoal dark:text-gray-800 border-charcoal dark:border-gray-800 bg-transparent;
 	@apply hover:border-2 focus:ring-0 focus:outline-none focus:ring-offset-0;
 }
-
-@tailwind utilities;
+input[type='radio']:checked {
+	appearance: none !important;
+	background-color: currentColor !important;
+	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e") !important;
+	background-size: 100% 100% !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+	border-color: transparent !important;
+}
