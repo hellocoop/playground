@@ -19,7 +19,7 @@
 </script>
 
 <header
-	class="flex h-12 flex-shrink-0 items-center justify-between bg-charcoal px-4 text-lg font-medium text-white dark:text-gray"
+	class="bg-charcoal dark:text-gray flex h-12 flex-shrink-0 items-center justify-between px-4 text-lg font-medium text-white"
 >
 	<div class="inline-flex w-1/3 items-center">
 		<button onclick={() => (mobileMenu = !mobileMenu)} class="group mr-2 md:hidden">
@@ -56,7 +56,7 @@
 
 	{#if mobileMenu}
 		<div
-			class="absolute left-0 top-12 z-50 w-full min-w-[320px] bg-charcoal px-4 md:hidden"
+			class="bg-charcoal absolute top-12 left-0 z-50 w-full min-w-[320px] px-4 md:hidden"
 			transition:slide={{ duration: 150 }}
 		>
 			<ul class="flex flex-col gap-y-3 pb-4 text-base">
@@ -95,7 +95,7 @@
 					mobileMenu = false;
 				}
 			}}
-			class="fixed left-0 top-12 z-40 h-full w-full bg-black/60 md:hidden"
+			class="fixed top-12 left-0 z-40 h-full w-full bg-black/60 md:hidden"
 		></div>
 	{/if}
 </header>

@@ -11,7 +11,7 @@
 		<span class="font-medium" style="word-break: break-word;">{label}</span>
 		<CopyText content={url} />
 	</div>
-	<p class="mt-2 break-words text-sm">
+	<p class="mt-2 text-sm break-words">
 		{@html highlight('http', lineBreakUrl(url))}
 	</p>
 </section>

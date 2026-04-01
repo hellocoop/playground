@@ -25,11 +25,11 @@
 	<div class="flex flex-col items-start text-left">
 		<span class="font-medium" style="word-break: break-word;">Claims</span>
 	</div>
-	<ul class="mt-2 flex flex-col overflow-x-auto break-words font-sans text-sm">
+	<ul class="mt-2 flex flex-col overflow-x-auto font-sans text-sm break-words">
 		{#each ALL_SCOPES.filter((i) => payload[i]) as claim}
 			{@const isString = typeof payload[claim] == 'string'}
 			<li
-				class="flex flex-col items-start rounded-md px-2 py-2 odd:bg-[#F2F6FB] md:flex-row md:items-center odd:dark:bg-charcoal/60"
+				class="odd:dark:bg-charcoal/60 flex flex-col items-start rounded-md px-2 py-2 odd:bg-[#F2F6FB] md:flex-row md:items-center"
 			>
 				<div class="w-full flex-shrink-0 font-medium md:w-1/3">{claim}</div>
 				<div class="flex items-center space-x-2">

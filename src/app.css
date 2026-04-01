@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "@tailwindcss/forms" {
 	strategy: class;
@@ -6,7 +6,7 @@
 
 @theme {
 	--color-charcoal: #303030;
-	--color-gray: #D4D4D4;
+	--color-gray: #d4d4d4;
 	--color-gray-800: #808080;
 	--color-gray-1000: #151515;
 

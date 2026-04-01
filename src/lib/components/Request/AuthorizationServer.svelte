@@ -63,7 +63,7 @@
 					form="custom-authz-server"
 					type="url"
 					name="authz-server"
-					class="form-input ml-2 h-6 w-full text-charcoal"
+					class="form-input text-charcoal ml-2 h-6 w-full"
 					placeholder="https://domain.example/"
 					oninput={() => (selectedAuthzServer = 'custom-authz-server')}
 					bind:value={customAuthzServer}

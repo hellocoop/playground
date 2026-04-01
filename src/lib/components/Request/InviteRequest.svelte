@@ -13,18 +13,18 @@
 </script>
 
 <section
-	class="relative w-full rounded-xs border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800"
+	class="border-charcoal relative w-full rounded-xs border px-4 pt-6 pb-4 dark:border-gray-800"
 >
 	<span
-		class="absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70"
+		class="text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70 absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase"
 		>Invite Request</span
 	>
 	<div class="mx-auto max-w-lg">
 		{#if canInvite}
 			<div
-				class="relative overflow-x-auto break-words rounded-xs bg-[#F2F6FB] p-4 dark:bg-charcoal"
+				class="dark:bg-charcoal relative overflow-x-auto rounded-xs bg-[#F2F6FB] p-4 break-words"
 			>
-				<span class="absolute right-4 top-4">
+				<span class="absolute top-4 right-4">
 					<CopyButton content={inviteUrl} />
 				</span>
 				<h2 class="inline-flex items-center space-x-1 font-medium">Invite URL</h2>

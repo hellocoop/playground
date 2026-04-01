@@ -2,7 +2,7 @@
 	let { isHelloMode = $bindable() } = $props();
 </script>
 
-<div class="absolute absolute right-2 top-4 flex items-center md:-top-3 md:right-18">
+<div class="absolute absolute top-4 right-2 flex items-center md:-top-3 md:right-18">
 	<div>
 		<input
 			id="mode-hello"
@@ -11,7 +11,7 @@
 			class="peer !hidden"
 			bind:group={isHelloMode}
 		/>
-		<label for="mode-hello" class="rounded-l-md border-l border-r">Hellō</label>
+		<label for="mode-hello" class="rounded-l-md border-r border-l">Hellō</label>
 	</div>
 	<div>
 		<input
@@ -28,6 +28,6 @@
 <style>
 	@reference "../../../app.css";
 	label {
-		@apply block flex h-[22px] w-14 cursor-pointer select-none items-center justify-center border-y border-charcoal bg-white px-3 text-xs peer-checked:bg-charcoal peer-checked:text-white dark:border-gray-800 dark:bg-gray-1000;
+		@apply border-charcoal peer-checked:bg-charcoal dark:bg-gray-1000 block flex h-[22px] w-14 cursor-pointer items-center justify-center border-y bg-white px-3 text-xs select-none peer-checked:text-white dark:border-gray-800;
 	}
 </style>

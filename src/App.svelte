@@ -428,36 +428,36 @@
 </script>
 
 {#if mounted}
-<div class="flex min-h-screen flex-col">
-	<Header />
+	<div class="flex min-h-screen flex-col">
+		<Header />
 
-	{#if showErrorNotification}
-		<Notification close={() => (showErrorNotification = false)} />
-	{/if}
+		{#if showErrorNotification}
+			<Notification close={() => (showErrorNotification = false)} />
+		{/if}
 
-	<main class="flex-1 space-y-6 px-4 py-6">
-		<AuthorizationRequest
-			bind:selectedScopes
-			bind:selectedProtocolParams
-			bind:selectedProtocolParamsValues
-			bind:selectedHelloParams
-			bind:selectedHelloParamsValues
-			bind:dropdowns
-			bind:isHelloMode
-			bind:selectedAuthzServer
-			bind:customScope
-			bind:customAuthzServer
-			{authzUrl}
-		/>
+		<main class="flex-1 space-y-6 px-4 py-6">
+			<AuthorizationRequest
+				bind:selectedScopes
+				bind:selectedProtocolParams
+				bind:selectedProtocolParamsValues
+				bind:selectedHelloParams
+				bind:selectedHelloParamsValues
+				bind:dropdowns
+				bind:isHelloMode
+				bind:selectedAuthzServer
+				bind:customScope
+				bind:customAuthzServer
+				{authzUrl}
+			/>
 
-		<AuthorizationResponse {authzUrl} {authzResponse} {refreshIdToken} />
+			<AuthorizationResponse {authzUrl} {authzResponse} {refreshIdToken} />
 
-		<InviteRequest {canInvite} {inviteUrl} />
+			<InviteRequest {canInvite} {inviteUrl} />
 
-		<FileIssue />
-	</main>
+			<FileIssue />
+		</main>
 
-	<!-- Web component imported in index.html from Hellō CDN -->
-	<wc-footer></wc-footer>
-</div>
+		<!-- Web component imported in index.html from Hellō CDN -->
+		<wc-footer></wc-footer>
+	</div>
 {/if}

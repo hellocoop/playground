@@ -36,9 +36,9 @@
 	{#if dropdowns.request}
 		<div class="relative" transition:slide={{ duration: 150 }}>
 			<div
-				class="relative mt-2 overflow-x-auto break-words rounded-xs bg-[#F2F6FB] p-4 dark:bg-charcoal"
+				class="dark:bg-charcoal relative mt-2 overflow-x-auto rounded-xs bg-[#F2F6FB] p-4 break-words"
 			>
-				<span class="absolute right-4 top-4">
+				<span class="absolute top-4 right-4">
 					<CopyButton content={authzUrl} />
 				</span>
 				<span class="url-container block text-sm">

@@ -10,7 +10,7 @@
 		<span class="font-medium" style="word-break: break-word;">{label}</span>
 		<CopyText content={JSON.stringify(json, null, 2)} />
 	</div>
-	<p class="mt-2 break-words font-sans text-sm">
+	<p class="mt-2 font-sans text-sm break-words">
 		{@html highlight('json', JSON.stringify(json, null, 2))}
 	</p>
 </section>

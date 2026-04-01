@@ -21,15 +21,15 @@
 
 <section
 	id="authz-response-container"
-	class="relative w-full scroll-mt-5 rounded-xs border border-charcoal px-4 pb-4 pt-6 dark:border-gray-800"
+	class="border-charcoal relative w-full scroll-mt-5 rounded-xs border px-4 pt-6 pb-4 dark:border-gray-800"
 >
 	<span
-		class="absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70"
+		class="text-charcoal/70 dark:bg-gray-1000 dark:text-gray/70 absolute -mx-2 -mt-8 bg-white px-2 font-mono text-xs uppercase"
 		>Authorization Response</span
 	>
 
 	{#if authzResponse.url}
-		<div class="divide-y divide-charcoal dark:divide-gray-800">
+		<div class="divide-charcoal divide-y dark:divide-gray-800">
 			<UrlResponse label={new URL('/authorize', authzUrl)} url={authzResponse.url} />
 
 			{#if authzResponse.token}
@@ -52,7 +52,7 @@
 						<div class="mt-4 flex flex-col items-start text-left">
 							<CopyText content={JSON.stringify(authzResponse.refreshResponse, null, 2)} />
 						</div>
-						<p class="mt-2 break-words font-sans text-sm">
+						<p class="mt-2 font-sans text-sm break-words">
 							{@html highlight('json', JSON.stringify(authzResponse.refreshResponse, null, 2))}
 						</p>
 					{/if}
