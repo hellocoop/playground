@@ -428,6 +428,7 @@
 </script>
 
 {#if mounted}
+<div class="flex min-h-screen flex-col">
 	<Header />
 
 	{#if showErrorNotification}
@@ -458,4 +459,5 @@
 
 	<!-- Web component imported in index.html from Hellō CDN -->
 	<wc-footer></wc-footer>
+</div>
 {/if}
