@@ -95,7 +95,7 @@
 					mobileMenu = false;
 				}
 			}}
-			class="fixed left-0 top-12 z-40 h-full w-full bg-black bg-opacity-60 md:hidden"
+			class="fixed left-0 top-12 z-40 h-full w-full bg-black/60 md:hidden"
 		></div>
 	{/if}
 </header>
