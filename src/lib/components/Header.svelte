@@ -1,6 +1,5 @@
 <script>
 	import { slide } from 'svelte/transition';
-	import ExternalLinkIcon from './Icons/ExternalLinkIcon.svelte';
 	import MenuIcon from './Icons/MenuIcon.svelte';
 	import CloseIcon from './Icons/CloseIcon.svelte';
 
@@ -32,10 +31,9 @@
 		<a
 			href="https://hello.dev"
 			target="_blank"
-			class="nav-link relative hidden items-center font-normal hover:underline md:inline-flex"
+			class="ext-link-icon nav-link relative hidden items-center font-normal md:inline-flex"
 		>
 			<span>hello.dev</span>
-			<ExternalLinkIcon />
 		</a>
 	</div>
 	<span class="flex flex-shrink-0 justify-center md:w-1/3">
@@ -45,9 +43,8 @@
 		<ul class="hidden space-x-4 md:flex">
 			{#each navLinks as { text, link }}
 				<li class="nav-link relative text-sm font-normal">
-					<a href={link} target="_blank" class="inline-flex items-center hover:underline">
+					<a href={link} target="_blank" class="ext-link-icon inline-flex items-center">
 						{text}
-						<ExternalLinkIcon />
 					</a>
 				</li>
 			{/each}
@@ -64,10 +61,9 @@
 					<a
 						href="https://hello.dev"
 						target="_blank"
-						class="inline-flex items-center font-medium hover:underline"
+						class="ext-link-icon inline-flex items-center font-medium"
 					>
 						hello.dev
-						<ExternalLinkIcon />
 					</a>
 				</li>
 				{#each navLinks as { text, link }}
@@ -75,10 +71,9 @@
 						<a
 							href={link}
 							target="_blank"
-							class="inline-flex items-center font-medium hover:underline"
+							class="ext-link-icon inline-flex items-center font-medium"
 						>
 							{text}
-							<ExternalLinkIcon />
 						</a>
 					</li>
 				{/each}
