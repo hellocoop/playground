@@ -263,7 +263,7 @@
 				const dpopToken = await new jose.SignJWT(dpopPayload)
 					.setProtectedHeader({
 						alg: algorithm || 'EdDSA',
-						typ: 'dpop+id_token',
+						typ: 'dpop+jwt',
 						jwk: publicJwkMinimal
 					})
 					.sign(signingKey);
@@ -394,7 +394,7 @@
 				const dpopToken = await new jose.SignJWT(dpopPayload)
 					.setProtectedHeader({
 						alg: algorithm || 'EdDSA',
-						typ: 'dpop+id_token',
+						typ: 'dpop+jwt',
 						jwk: publicJwkMinimal
 					})
 					.sign(signingKey);
