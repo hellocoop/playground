@@ -5,11 +5,12 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build  --outDir S3",
-		"preview": "vite preview  --outDir S3",
+		"build": "vite build  --outDir dist",
+		"preview": "vite preview  --outDir dist",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
-		"test": "echo \"Error: no test specified\" && exit 0"
+		"test": "echo \"Error: no test specified\" && exit 0",
+		"deploy": "wrangler deploy"
 	},
 	"devDependencies": {
 		"@hellocoop/helper-browser": "^2.4.3",
@@ -25,7 +26,8 @@
 		"svelte": "^5.4.0",
 		"sveltejs-tippy": "^3.0.0",
 		"tailwindcss": "^4.2.2",
-		"vite": "^6.0.2"
+		"vite": "^6.0.2",
+		"wrangler": "^4.129.0"
 	},
 	"dependencies": {
 		"jose": "^6.0.12"

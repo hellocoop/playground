@@ -1,0 +1,16 @@
+# playground.hello.dev — Vite/Svelte single-page app served as Worker static assets.
+# `npm run build` writes the site to dist/.
+# worker/index.js only handles POST /api/event (Plausible proxy); everything else is assets.
+name = "playground-hello-dev"
+main = "worker/index.js"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api/event"]
+
+[[routes]]
+pattern = "playground.hello.dev"
+custom_domain = true

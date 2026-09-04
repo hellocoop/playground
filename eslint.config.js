@@ -40,7 +40,7 @@ export default [
 			'build/',
 			'.svelte-kit/',
 			'dist/',
-			'S3/',
+			'dist/',
 			'test-results/',
 			'*.md',
 			'src/**/*/Setup.svelte'
