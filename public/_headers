@@ -1,0 +1,6 @@
+# Response headers for playground.hello.dev (Cloudflare Workers static assets).
+# CSP mirrors the former CloudFront ResponseHeadersPolicy (CDN/cdk/lib/csp.ts).
+# connect-src is intentionally broad: users enter arbitrary auth server URLs.
+/*
+  Content-Security-Policy: default-src 'none'; style-src 'self' https://cdn.hello.coop 'unsafe-inline'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; img-src 'self' https: data: blob:; script-src 'self' 'wasm-unsafe-eval' https://cdn.hello.coop; connect-src http: https:;
+  X-Content-Type-Options: nosniff

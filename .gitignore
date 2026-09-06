@@ -23,4 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-S3
+
+# wrangler local state
+.wrangler
