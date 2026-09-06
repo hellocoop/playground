@@ -11,9 +11,6 @@ binding = "ASSETS"
 not_found_handling = "single-page-application"
 run_worker_first = ["/api/event"]
 
-# Until the hello.dev zone is active in Cloudflare the worker is reachable on workers.dev only.
-# At cutover, restore:
-# [[routes]]
-# pattern = "playground.hello.dev"
-# custom_domain = true
-workers_dev = true
+[[routes]]
+pattern = "playground.hello.dev"
+custom_domain = true
